@@ -1,88 +1,117 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Text;
 using System.Windows;
 using Wpf.Ui.Appearance;
 
-namespace OOPWPFProject
+namespace OOPWPFProject;
+
+public partial class MainWindow : Window
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary> 
-    public partial class MainWindow : Window
+    public record Place(
+        string NameOfPlace,
+        string Country,
+        string Description,
+        double? Rating,
+        DateOnly? DateOfVisiting);
+    public ObservableCollection<Place> Places { get; set; } = [];
+
+    public MainWindow()
     {
-        public MainWindow()
-        {
-            InitializeComponent();
-            ApplicationThemeManager.Apply(this);
+        InitializeComponent();
+        ApplicationThemeManager.Apply(this);
+        DataContext = this;
+    }
+
+    private async void AddPlacePressed(object sender, RoutedEventArgs e)
+    {
+        List<string> missingFields = [];
+
+        if (string.IsNullOrWhiteSpace(CityTextBox.Text)) {
+            missingFields.Add("Назва міста");
+        }
+        if (string.IsNullOrWhiteSpace(CountryTextBox.Text)){
+            missingFields.Add("Країна"); 
+        }
+        if (string.IsNullOrWhiteSpace(DescriptionTextBox.Text)) {
+            missingFields.Add("Опис");
         }
 
-        private async void AddPlacePressed(object sender, RoutedEventArgs e)
+        if (missingFields.Count > 0)
         {
-
-            List<string> missingFields = [];
-
-            if (string.IsNullOrWhiteSpace(CityTextBox.Text))
-                missingFields.Add(" Назва міста");
-
-            if (string.IsNullOrWhiteSpace(CountryTextBox.Text))
-                missingFields.Add(" Країна");
-
-            if (string.IsNullOrWhiteSpace(DescriptionTextBox.Text))
-                missingFields.Add(" Опис");
-
-            if (!DatePickerBox.SelectedDate.HasValue)
-                missingFields.Add(" Дата відвідування");
-
-            if (Rating.Value == 0)
-                missingFields.Add(" Рейтинг");
-
-            if (missingFields.Count > 0)
+            var errorDialog = new Wpf.Ui.Controls.MessageBox
             {
-                string errorMessage = "Неможливо додати запис. Не задані поля:\n\n" + string.Join("\n", missingFields);
-
-                var errorDialog = new Wpf.Ui.Controls.MessageBox
-                {
-                    Title = "Помилка запису!",
-                    Content = errorMessage,
-                    CloseButtonText = "ОК"
-                };
-
-                /// <summary>
-                ///  Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
-                /// </summary> 
-                errorDialog.ShowDialogAsync();
-                
-
-                return;
-            }
-
-            string city = CityTextBox.Text;
-            string country = CountryTextBox.Text;
-            string description = DescriptionTextBox.Text;
-            string visitDate = DatePickerBox.SelectedDate.Value.ToString("dd.MM.yyyy");
-            double rating = Rating.Value; 
-
-            string message = $"Місто: {city}\nКраїна: {country}\nОпис: {description}\nДата: {visitDate}\nРейтинг: {rating}";
-
-            var successDialog = new Wpf.Ui.Controls.MessageBox
-            {
-                Title = "Успіх",
-                Content = message,
+                Title = "Помилка запису!",
+                Content = "Неможливо додати запис. Не задані обов'язкові поля:\n\n" + string.Join("\n", missingFields),
                 CloseButtonText = "ОК"
             };
-
-            /// <summary>
-            /// 'MessageBox.ShowDialog()' is obsolete: 'Use ShowDialogAsync instead'
-            /// <summary/>
-            await successDialog.ShowDialogAsync();
+            await errorDialog.ShowDialogAsync();
+            return;
         }
 
-        private void ClearFormPressed(object sender, RoutedEventArgs e)
+        DateOnly? visitDate = DatePickerBox.SelectedDate.HasValue ? DateOnly.FromDateTime(DatePickerBox.SelectedDate.Value) : null;
+
+        double? rating = Rating.Value > 0 ? Rating.Value : null;
+
+        Places.Add(new Place(
+            CityTextBox.Text,
+            CountryTextBox.Text,
+            DescriptionTextBox.Text,
+            rating,
+            visitDate));
+
+        StringBuilder messageBuilder = new();
+        messageBuilder.AppendLine($"Місто: {CityTextBox.Text}");
+        messageBuilder.AppendLine($"Країна: {CountryTextBox.Text}");
+        messageBuilder.AppendLine($"Опис: {DescriptionTextBox.Text}");
+
+        if (visitDate.HasValue)
+            messageBuilder.AppendLine($"Дата: {visitDate.Value:dd.MM.yyyy}");
+
+        if (rating.HasValue)
+            messageBuilder.AppendLine($"Рейтинг: {rating.Value}");
+        var successDialog = new Wpf.Ui.Controls.MessageBox
         {
-            CityTextBox.Clear();
-            CountryTextBox.Clear();
-            DescriptionTextBox.Clear();
-            DatePickerBox.SelectedDate = null;
-            Rating.Value = 0;
+            Title = "Успіх",
+            Content = messageBuilder.ToString().TrimEnd(),
+            CloseButtonText = "ОК"
+        };
+
+        await successDialog.ShowDialogAsync();
+
+        ClearForm();
+    }
+
+    private void ClearFormPressed(object sender, RoutedEventArgs e)
+    {
+        ClearForm();
+    }
+
+    private async void DeletePlacePressed(object sender, RoutedEventArgs e)
+    {
+        if (PlacesDataGrid.SelectedItem is Place selectedPlace)
+        {
+            Places.Remove(selectedPlace);
         }
+        else
+        {
+            var warningDialog = new Wpf.Ui.Controls.MessageBox
+            {
+                Title = "Увага",
+                Content = "Будь ласка, виберіть запис у таблиці для видалення.",
+                CloseButtonText = "ОК"
+            };
+            await warningDialog.ShowDialogAsync();
+        }
+    }
+
+    private void ClearForm()
+    {
+        CityTextBox.Clear();
+        CountryTextBox.Clear();
+        DescriptionTextBox.Clear();
+        DatePickerBox.SelectedDate = null;
+        Rating.Value = 0;
     }
 }
