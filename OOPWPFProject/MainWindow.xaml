@@ -13,7 +13,12 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}" BorderThickness="0,0,1,0">
+        <ScrollViewer 
+            Grid.Column="0" 
+            VerticalScrollBarVisibility="Auto" 
+            HorizontalScrollBarVisibility="Disabled" 
+            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}" 
+            BorderThickness="0,0,1,0">
             <StackPanel Margin="20" HorizontalAlignment="Stretch">
 
                 <ui:TextBlock Text="Назва міста" Margin="0,0,0,4" />
@@ -51,31 +56,58 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <ui:Button Grid.Column="0" HorizontalAlignment="Stretch" Appearance="Primary" Click="AddPlacePressed">
+                    <ui:Button 
+                        Grid.Column="0" 
+                        HorizontalAlignment="Stretch" 
+                        Appearance="Success" 
+                        Icon="{ui:SymbolIcon Symbol=Add12}"
+                        Click="AddPlacePressed">
                         Додати запис
                     </ui:Button>
-                    <ui:Button Grid.Column="2" HorizontalAlignment="Stretch" Click="ClearFormPressed">
+                    <ui:Button 
+                        Grid.Column="2"
+                        Appearance="Secondary" 
+                        HorizontalAlignment="Stretch" 
+                        Icon="{ui:SymbolIcon Symbol=ClearFormatting16}"
+                        Click="ClearFormPressed"
+                        >
                         Очистити форму
                     </ui:Button>
                 </Grid>
             </StackPanel>
         </ScrollViewer>
 
-        <ui:DataGrid x:Name="PlacesDataGrid" 
-                     Grid.Column="1" 
-                     Margin="10"
-                     ItemsSource="{Binding Places}" 
-                     AutoGenerateColumns="False" 
-                     IsReadOnly="True"
-                     SelectionMode="Single"
-                     HeadersVisibility="Column">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Місто" Binding="{Binding NameOfPlace}" Width="*"/>
-                <DataGridTextColumn Header="Країна" Binding="{Binding Country}" Width="*"/>
-                <DataGridTextColumn Header="Опис" Binding="{Binding Description}" Width="2*"/>
-                <DataGridTextColumn Header="Дата" Binding="{Binding DateOfVisiting, StringFormat=\{0:dd.MM.yyyy\}}" Width="100"/>
-                <DataGridTextColumn Header="Рейтинг" Binding="{Binding Rating}" Width="80"/>
-            </DataGrid.Columns>
-        </ui:DataGrid>
+        <Grid Grid.Column="1" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <ui:DataGrid x:Name="PlacesDataGrid" 
+                         Grid.Row="0"
+                         ItemsSource="{Binding Places}" 
+                         AutoGenerateColumns="False" 
+                         IsReadOnly="True"
+                         SelectionMode="Single"
+                         HeadersVisibility="Column"
+                         Margin="0,0,0,16">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Місто" Binding="{Binding NameOfPlace}" Width="*"/>
+                    <DataGridTextColumn Header="Країна" Binding="{Binding Country}" Width="*"/>
+                    <DataGridTextColumn Header="Опис" Binding="{Binding Description}" Width="2*"/>
+                    <DataGridTextColumn Header="Дата" Binding="{Binding DateOfVisiting, StringFormat=\{0:dd.MM.yyyy\}}" Width="100"/>
+                    <DataGridTextColumn Header="Рейтинг" Binding="{Binding Rating}" Width="80"/>
+                </DataGrid.Columns>
+            </ui:DataGrid>
+
+            <ui:Button Grid.Row="1" 
+                       Appearance="Danger" 
+                       HorizontalAlignment="Right" 
+                       Click="DeletePlacePressed"
+                       Icon="{ui:SymbolIcon Symbol=Delete24}">
+                Видалити обраний запис
+            </ui:Button>
+        </Grid>
+
     </Grid>
 </Window>

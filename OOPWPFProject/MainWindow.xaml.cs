@@ -99,7 +99,7 @@ public partial class MainWindow : Window
             var warningDialog = new Wpf.Ui.Controls.MessageBox
             {
                 Title = "Увага",
-                Content = "Будь ласка, виберіть запис у таблиці для видалення.",
+                Content = "Виберіть запис у таблиці для видалення.",
                 CloseButtonText = "ОК"
             };
             await warningDialog.ShowDialogAsync();
@@ -114,4 +114,5 @@ public partial class MainWindow : Window
         DatePickerBox.SelectedDate = null;
         Rating.Value = 0;
     }
+
 }
