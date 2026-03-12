@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
 using Wpf.Ui.Appearance;
@@ -9,12 +7,14 @@ namespace OOPWPFProject;
 
 public partial class MainWindow : Window
 {
-    public record Place(
-        string NameOfPlace,
-        string Country,
-        string Description,
-        double? Rating,
-        DateOnly? DateOfVisiting);
+    public class Place(string nameOfPlace, string country, string description, double? rating, DateOnly? dateOfVisiting)
+    {
+        public string NameOfPlace { get; set; } = nameOfPlace;
+        public string Country { get; set; } = country;
+        public string Description { get; set; } = description;
+        public double? Rating { get; set; } = rating;
+        public DateOnly? DateOfVisiting { get; set; } = dateOfVisiting;
+    }
     public ObservableCollection<Place> Places { get; set; } = [];
 
     public MainWindow()
@@ -23,18 +23,22 @@ public partial class MainWindow : Window
         ApplicationThemeManager.Apply(this);
         DataContext = this;
     }
-
     private async void AddPlacePressed(object sender, RoutedEventArgs e)
     {
         List<string> missingFields = [];
 
-        if (string.IsNullOrWhiteSpace(CityTextBox.Text)) {
+        if (string.IsNullOrWhiteSpace(CityTextBox.Text))
+        {
             missingFields.Add("Назва міста");
         }
-        if (string.IsNullOrWhiteSpace(CountryTextBox.Text)){
-            missingFields.Add("Країна"); 
+
+        if (string.IsNullOrWhiteSpace(CountryTextBox.Text))
+        {
+            missingFields.Add("Країна");
         }
-        if (string.IsNullOrWhiteSpace(DescriptionTextBox.Text)) {
+
+        if (string.IsNullOrWhiteSpace(DescriptionTextBox.Text))
+        {
             missingFields.Add("Опис");
         }
 
@@ -54,12 +58,14 @@ public partial class MainWindow : Window
 
         double? rating = Rating.Value > 0 ? Rating.Value : null;
 
-        Places.Add(new Place(
-            CityTextBox.Text,
-            CountryTextBox.Text,
-            DescriptionTextBox.Text,
-            rating,
-            visitDate));
+
+        var newPlace = new Place(CityTextBox.Text,
+                                CountryTextBox.Text,
+                                DescriptionTextBox.Text,
+                                rating,
+                                visitDate);
+
+        Places.Add(newPlace);
 
         StringBuilder messageBuilder = new();
         messageBuilder.AppendLine($"Місто: {CityTextBox.Text}");
@@ -67,10 +73,15 @@ public partial class MainWindow : Window
         messageBuilder.AppendLine($"Опис: {DescriptionTextBox.Text}");
 
         if (visitDate.HasValue)
+        {
             messageBuilder.AppendLine($"Дата: {visitDate.Value:dd.MM.yyyy}");
+        }
 
         if (rating.HasValue)
+        {
             messageBuilder.AppendLine($"Рейтинг: {rating.Value}");
+        }
+
         var successDialog = new Wpf.Ui.Controls.MessageBox
         {
             Title = "Успіх",
