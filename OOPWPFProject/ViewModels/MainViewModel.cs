@@ -1,0 +1,153 @@
+﻿using OOPWPFProject.Models;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Text;
+using System.Windows;
+using System.Windows.Media;
+
+namespace OOPWPFProject.ViewModels;
+
+internal class MainViewModel : BaseViewModel
+{
+    private readonly ObservableCollection<Place> _places;
+    public ObservableCollection<Place> Places { get; } = [];
+
+    private string _newName = string.Empty;
+    public string NewName
+    {
+        get => _newName;
+        set
+        {
+            SetProperty(ref _newName, value);
+
+        }
+    }
+
+    private string _newCountry = string.Empty;
+    public string NewCountry
+    {
+        get => _newCountry;
+        set
+        {
+            SetProperty(ref _newCountry, value);
+        }
+    }
+
+    private string _newDescription = string.Empty;
+    public string NewDescription
+    {
+        get => _newDescription;
+        set { 
+            SetProperty(ref _newDescription, value); 
+        }
+    }
+
+    private DateTime? _newVisitDate;
+    public DateTime? NewVisitDate
+    {
+        get => _newVisitDate;
+        set => SetProperty(ref _newVisitDate, value);
+    }
+
+    private double _newRating;
+    public double NewRating
+    {
+        get => _newRating;
+        set => SetProperty(ref _newRating, value);
+    }
+
+    private Place? _selectedPlace;
+    public Place? SelectedPlace
+    {
+        get => _selectedPlace;
+        set
+        {
+            SetProperty(ref _selectedPlace, value);
+            DeletePlaceCommand.RaiseCanExecuteChanged();
+        }
+    }
+
+    public RelayCommand AddPlaceCommand { get; }
+    public RelayCommand DeletePlaceCommand { get; }
+    public RelayCommand ClearFormCommand { get; }
+
+    public MainViewModel()
+    {
+        AddPlaceCommand = new RelayCommand(
+            execute: _ => AddPlace(), 
+            canExecute: _ => CanAddPlace()
+            );
+        DeletePlaceCommand = new RelayCommand(
+            execute: _ => DeletePlace(), 
+            canExecute: _ => SelectedPlace != null
+            );
+        ClearFormCommand = new RelayCommand(
+            execute: _ => ClearForm()
+            );
+    }
+
+    private bool CanAddPlace()
+    {
+        return !string.IsNullOrWhiteSpace(NewName) &&
+               !string.IsNullOrWhiteSpace(NewCountry) &&
+               !string.IsNullOrWhiteSpace(NewDescription);
+    }
+
+    private async void AddPlace()
+    {
+        DateOnly? visitDate = NewVisitDate.HasValue ? DateOnly.FromDateTime(NewVisitDate.Value) : null;
+        double? rating = NewRating > 0 ? NewRating : null;
+
+        var newPlace = new Place
+        {
+            NameOfPlace = NewName,
+            Country = NewCountry,
+            Description = NewDescription,
+            Rating = rating,
+            DateOfVisiting = visitDate
+        };
+
+        _places.Add( newPlace );
+
+        StringBuilder messageBuilder = new();
+        messageBuilder.AppendLine($"Місто: {NewName}");
+        messageBuilder.AppendLine($"Країна: {NewCountry}");
+        messageBuilder.AppendLine($"Опис: {NewDescription}");
+        if (visitDate.HasValue)
+        {
+            messageBuilder.AppendLine($"Дата: {visitDate.Value:dd.MM.yyyy}");
+        }
+
+        if (rating.HasValue)
+        {
+            messageBuilder.AppendLine($"Рейтинг: {rating.Value}");
+        }
+
+        var successDialog = new Wpf.Ui.Controls.MessageBox
+        {
+            Title = "Успіх",
+            Content = messageBuilder.ToString().TrimEnd(),
+            CloseButtonText = "ОК"  
+        };
+
+        await successDialog.ShowDialogAsync();
+
+        ClearForm();
+    }
+
+
+    private void DeletePlace()
+    {
+
+    }
+
+    private void ClearForm()
+    {
+        NewName = string.Empty;
+        NewCountry= string.Empty;
+        NewDescription = string.Empty;
+        NewVisitDate = null;
+        NewRating = 0;
+    }
+}

@@ -1,58 +1,33 @@
-﻿using System.Collections.ObjectModel;
-using System.Text;
+﻿using System.Text;
 using System.Windows;
+using System.Collections.ObjectModel;
 using Wpf.Ui.Appearance;
+using OOPWPFProject.ViewModels;
+
 
 namespace OOPWPFProject;
 
 public partial class MainWindow : Window
 {
-    public class Place(string nameOfPlace, string country, string description, double? rating, DateOnly? dateOfVisiting)
-    {
-        public string NameOfPlace { get; set; } = nameOfPlace;
-        public string Country { get; set; } = country;
-        public string Description { get; set; } = description;
-        public double? Rating { get; set; } = rating;
-        public DateOnly? DateOfVisiting { get; set; } = dateOfVisiting;
-    }
-    public ObservableCollection<Place> Places { get; set; } = [];
+    //public class Place(string nameOfPlace, string country, string description, double? rating, DateOnly? dateOfVisiting)
+    //{
+    //    public string NameOfPlace { get; set; } = nameOfPlace;
+    //    public string Country { get; set; } = country;
+    //    public string Description { get; set; } = description;
+    //    public double? Rating { get; set; } = rating;
+    //    public DateOnly? DateOfVisiting { get; set; } = dateOfVisiting;
+    //}
+    //public ObservableCollection<Place> Places { get; set; } = [];
 
     public MainWindow()
     {
         InitializeComponent();
         ApplicationThemeManager.Apply(this);
-        DataContext = this;
+        DataContext = new MainViewModel();
     }
+    /**
     private async void AddPlacePressed(object sender, RoutedEventArgs e)
     {
-        List<string> missingFields = [];
-
-        if (string.IsNullOrWhiteSpace(CityTextBox.Text))
-        {
-            missingFields.Add("Назва міста");
-        }
-
-        if (string.IsNullOrWhiteSpace(CountryTextBox.Text))
-        {
-            missingFields.Add("Країна");
-        }
-
-        if (string.IsNullOrWhiteSpace(DescriptionTextBox.Text))
-        {
-            missingFields.Add("Опис");
-        }
-
-        if (missingFields.Count > 0)
-        {
-            var errorDialog = new Wpf.Ui.Controls.MessageBox
-            {
-                Title = "Помилка запису!",
-                Content = "Неможливо додати запис. Не задані обов'язкові поля:\n\n" + string.Join("\n", missingFields),
-                CloseButtonText = "ОК"
-            };
-            await errorDialog.ShowDialogAsync();
-            return;
-        }
 
         DateOnly? visitDate = DatePickerBox.SelectedDate.HasValue ? DateOnly.FromDateTime(DatePickerBox.SelectedDate.Value) : null;
 
@@ -125,5 +100,5 @@ public partial class MainWindow : Window
         DatePickerBox.SelectedDate = null;
         Rating.Value = 0;
     }
-
+    */
 }
