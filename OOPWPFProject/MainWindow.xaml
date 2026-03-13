@@ -9,17 +9,22 @@
         Foreground="{DynamicResource TextFillColorPrimaryBrush}">
 
     <Grid>
+        <!-- Місце для лівої панельки і списку місць -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="350" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
+       <!--Ліва панель-->
+        
         <ScrollViewer 
             Grid.Column="0" 
             VerticalScrollBarVisibility="Auto" 
             HorizontalScrollBarVisibility="Disabled" 
             BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}" 
             BorderThickness="0,0,1,0">
+            
+            <!-- Текстбокси: місто, крахна, опис -->
             <StackPanel Margin="20" HorizontalAlignment="Stretch">
 
                 <ui:TextBlock Text="Назва міста *" Margin="0,0,0,4" />
@@ -42,6 +47,7 @@
                             MinHeight="60" 
                             Margin="0,0,0,16"/>
 
+                <!-- поділ на 2 колонки для дати і рейтингу -->
                 <Grid Margin="0,0,0,24">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -49,17 +55,20 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
+                   <!-- дата -->
                     <StackPanel Grid.Column="0">
                         <ui:TextBlock Text="Дата відвідування" Margin="0,0,0,4"/>
                         <DatePicker x:Name="DatePickerBox" SelectedDate="{Binding NewVisitDate}" HorizontalAlignment="Stretch"/>
                     </StackPanel>
 
+                    <!-- рейтинг -->
                     <StackPanel Grid.Column="2">
                         <ui:TextBlock Text="Рейтинг" Margin="0,0,0,4"/>
                         <ui:RatingControl x:Name="Rating" Value="{Binding NewRating}" HalfStarEnabled="False"/>
                     </StackPanel>
                 </Grid>
 
+                <!-- поділ на 2 колонки для кнопки додавання і очищення -->
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="5*" />
@@ -67,6 +76,7 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
+                    <!-- кнопка "додати" -->
                     <ui:Button 
                         Grid.Column="0" 
                         HorizontalAlignment="Stretch" 
@@ -75,28 +85,32 @@
                         Command="{Binding AddPlaceCommand}">
                         Додати запис
                     </ui:Button>
+                    
+                    <!-- кнопка "очистити" -->
                     <ui:Button 
                         Grid.Column="2"
                         Appearance="Secondary" 
                         HorizontalAlignment="Stretch" 
                         Icon="{ui:SymbolIcon Symbol=ClearFormatting16}"
                         Command="{Binding ClearFormCommand}"
-                        >
-                        
-                    </ui:Button>
+                    />
                 </Grid>
+                
                 <ui:TextBlock Opacity="0.6">
-                  * - обов'язкові поля
+                  * - обов'язкові для заповнення поля
                 </ui:TextBlock>
+                
             </StackPanel>
         </ScrollViewer>
 
+        <!-- список місць -->
         <Grid Grid.Column="1" Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
+            <!-- датаГрід визначення і біндінг до коду -->
             <ui:DataGrid x:Name="PlacesDataGrid" 
                  Grid.Row="0"
                  ItemsSource="{Binding Places}" 
@@ -106,11 +120,13 @@
                  SelectionMode="Single"
                 HeadersVisibility="Column"
                 Margin="0,0,0,16">
-                <DataGrid.Columns>
+                
+                <!-- колонки датагріда-->
+                    <DataGrid.Columns>
                     <DataGridTextColumn Header="Місто" Binding="{Binding NameOfPlace}" Width="*"/>
                     <DataGridTextColumn Header="Країна" Binding="{Binding Country}" Width="*"/>
                     <DataGridTextColumn Header="Опис" Binding="{Binding Description}" Width="2*"/>
-                    <DataGridTextColumn Header="Дата" Binding="{Binding DateOfVisiting, StringFormat=\{0:dd.MM.yyyy\}}" Width="100"/>
+                    <DataGridTextColumn Header="Дата" Binding="{Binding DateOfVisiting, StringFormat=dd.MM.yyyy}" Width="100"/>
                     <DataGridTextColumn Header="Рейтинг" Binding="{Binding Rating}" Width="80"/>
                 </DataGrid.Columns>
             </ui:DataGrid>

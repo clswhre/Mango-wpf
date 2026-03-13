@@ -10,9 +10,9 @@ namespace OOPWPFProject.ViewModels;
 
 internal class MainViewModel : BaseViewModel
 {
-    //private readonly ObservableCollection<Place> _places;
     public ObservableCollection<Place> Places { get; } = [];
-
+    
+    // сеттери полей класу
     private string _newName = string.Empty;
     public string NewName
     {
@@ -70,6 +70,7 @@ internal class MainViewModel : BaseViewModel
         }
     }
 
+    // Команди дял впф біндінга
     public RelayCommand AddPlaceCommand { get; }
     public RelayCommand DeletePlaceCommand { get; }
     public RelayCommand ClearFormCommand { get; }
@@ -98,6 +99,7 @@ internal class MainViewModel : BaseViewModel
 
     private async void AddPlace()
     {
+        // перевірка необов'язкових поліи
         DateOnly? visitDate = NewVisitDate.HasValue ? DateOnly.FromDateTime(NewVisitDate.Value) : null;
         double? rating = NewRating > 0 ? NewRating : null;
 
@@ -110,8 +112,9 @@ internal class MainViewModel : BaseViewModel
             DateOfVisiting = visitDate
         };
 
-        Places.Add( newPlace );
+        Places.Add(newPlace);
 
+        // меседж білдер для тексту меседжбокса
         StringBuilder messageBuilder = new();
         messageBuilder.AppendLine($"Місто: {NewName}");
         messageBuilder.AppendLine($"Країна: {NewCountry}");
@@ -137,7 +140,6 @@ internal class MainViewModel : BaseViewModel
 
         ClearForm();
     }
-
 
     private void DeletePlace()
     {

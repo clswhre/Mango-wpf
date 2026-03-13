@@ -17,6 +17,8 @@ internal class Place : INotifyPropertyChanged
     private double? _rating = null;
     private DateOnly? _dateOfVisiting = null;
 
+    // сеттери полей
+    
     public string NameOfPlace
     {
         get => _name;
@@ -37,7 +39,6 @@ internal class Place : INotifyPropertyChanged
             if (_country != value) {
                 _country = value;
                 OnPropertyChanged();
-
             }
         }
     }
@@ -50,7 +51,6 @@ internal class Place : INotifyPropertyChanged
             if (_description != value) {
                 _description = value;
                 OnPropertyChanged();
-
             }
         }
     }
@@ -81,23 +81,12 @@ internal class Place : INotifyPropertyChanged
         }
     }
 
+    // якась дурня скопійована з прикладу Дениса Васильовича
+
     public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    private RelayCommand addPlaceCommand;
-    public ICommand AddPlaceCommand => addPlaceCommand ??= new RelayCommand(AddPlace);
-
-    private void AddPlace(object commandParameter)
-    {
-    }
-
-    private RelayCommand clearFormCommand;
-    public ICommand ClearFormCommand => clearFormCommand ??= new RelayCommand(ClearForm);
-
-    private void ClearForm(object commandParameter)
-    {
-    }
 }
