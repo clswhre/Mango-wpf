@@ -10,7 +10,7 @@ namespace OOPWPFProject.ViewModels;
 
 internal class MainViewModel : BaseViewModel
 {
-    private readonly ObservableCollection<Place> _places;
+    //private readonly ObservableCollection<Place> _places;
     public ObservableCollection<Place> Places { get; } = [];
 
     private string _newName = string.Empty;
@@ -20,7 +20,7 @@ internal class MainViewModel : BaseViewModel
         set
         {
             SetProperty(ref _newName, value);
-
+            AddPlaceCommand.RaiseCanExecuteChanged();
         }
     }
 
@@ -31,6 +31,7 @@ internal class MainViewModel : BaseViewModel
         set
         {
             SetProperty(ref _newCountry, value);
+            AddPlaceCommand.RaiseCanExecuteChanged();
         }
     }
 
@@ -39,7 +40,8 @@ internal class MainViewModel : BaseViewModel
     {
         get => _newDescription;
         set { 
-            SetProperty(ref _newDescription, value); 
+            SetProperty(ref _newDescription, value);
+            AddPlaceCommand.RaiseCanExecuteChanged();
         }
     }
 
@@ -108,7 +110,7 @@ internal class MainViewModel : BaseViewModel
             DateOfVisiting = visitDate
         };
 
-        _places.Add( newPlace );
+        Places.Add( newPlace );
 
         StringBuilder messageBuilder = new();
         messageBuilder.AppendLine($"Місто: {NewName}");
@@ -139,7 +141,11 @@ internal class MainViewModel : BaseViewModel
 
     private void DeletePlace()
     {
-
+        if (SelectedPlace != null)
+        {
+            Places.Remove(SelectedPlace);
+            SelectedPlace = null;
+        }
     }
 
     private void ClearForm()

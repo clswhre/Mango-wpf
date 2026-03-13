@@ -1,9 +1,10 @@
-﻿using System;
+﻿using OOPWPFProject.ViewModels;
+using System;
 using System.Text;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-
+using System.Windows.Input;
 
 namespace OOPWPFProject.Models;
 
@@ -86,4 +87,17 @@ internal class Place : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
+    private RelayCommand addPlaceCommand;
+    public ICommand AddPlaceCommand => addPlaceCommand ??= new RelayCommand(AddPlace);
+
+    private void AddPlace(object commandParameter)
+    {
+    }
+
+    private RelayCommand clearFormCommand;
+    public ICommand ClearFormCommand => clearFormCommand ??= new RelayCommand(ClearForm);
+
+    private void ClearForm(object commandParameter)
+    {
+    }
 }
