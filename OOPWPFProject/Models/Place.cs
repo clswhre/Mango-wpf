@@ -1,10 +1,11 @@
 ﻿using OOPWPFProject.ViewModels;
 using System;
-using System.Text;
-using System.ComponentModel;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace OOPWPFProject.Models;
 
@@ -89,4 +90,50 @@ internal class Place : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
+    public Place() { }
+
+    public Place(string name, string country, string description)
+    {
+        NameOfPlace = name;
+        Country = country;
+        Description = description;
+    }
+
+    public async void DisplayInfo()
+    {
+        StringBuilder messageBuilder = new();
+        messageBuilder.AppendLine($"Місто: {NameOfPlace}");
+        messageBuilder.AppendLine($"Країна: {Country}");
+        messageBuilder.AppendLine($"Опис: {Description}");
+        if (DateOfVisiting.HasValue)
+        {
+            messageBuilder.AppendLine($"Дата: {DateOfVisiting.Value:dd.MM.yyyy}");
+        }
+
+        if (Rating.HasValue)
+        {
+            messageBuilder.AppendLine($"Рейтинг: {Rating.Value}");
+        }
+
+        var successDialog = new Wpf.Ui.Controls.MessageBox
+        {
+            Title = "Успіх",
+            Content = messageBuilder.ToString().TrimEnd(),
+            CloseButtonText = "ОК"
+        };
+
+        await successDialog.ShowDialogAsync();
+
+    }
+
+    public Place Clone()
+    {
+        return new Place(NameOfPlace, Country, Description)
+        {
+            Rating = this.Rating,
+            DateOfVisiting = this.DateOfVisiting
+        };
+    }
+
 }
+

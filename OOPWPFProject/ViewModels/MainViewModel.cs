@@ -12,7 +12,7 @@ internal class MainViewModel : BaseViewModel
 {
     public ObservableCollection<Place> Places { get; } = [];
     
-    // сеттери полей класу
+    // сеттери полей нового місця
     private string _newName = string.Empty;
     public string NewName
     {
@@ -114,29 +114,7 @@ internal class MainViewModel : BaseViewModel
 
         Places.Add(newPlace);
 
-        // меседж білдер для тексту меседжбокса
-        StringBuilder messageBuilder = new();
-        messageBuilder.AppendLine($"Місто: {NewName}");
-        messageBuilder.AppendLine($"Країна: {NewCountry}");
-        messageBuilder.AppendLine($"Опис: {NewDescription}");
-        if (visitDate.HasValue)
-        {
-            messageBuilder.AppendLine($"Дата: {visitDate.Value:dd.MM.yyyy}");
-        }
-
-        if (rating.HasValue)
-        {
-            messageBuilder.AppendLine($"Рейтинг: {rating.Value}");
-        }
-
-        var successDialog = new Wpf.Ui.Controls.MessageBox
-        {
-            Title = "Успіх",
-            Content = messageBuilder.ToString().TrimEnd(),
-            CloseButtonText = "ОК"  
-        };
-
-        await successDialog.ShowDialogAsync();
+        newPlace.DisplayInfo();
 
         ClearForm();
     }

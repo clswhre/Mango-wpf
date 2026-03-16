@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using Wpf.Ui.Appearance;
 using OOPWPFProject.ViewModels;
 
-
 namespace OOPWPFProject;
 
 public partial class MainWindow : Window
