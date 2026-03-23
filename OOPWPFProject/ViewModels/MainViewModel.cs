@@ -1,25 +1,22 @@
 ﻿using OOPWPFProject.Models;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
-using System.Windows;
-using System.Windows.Media;
 
 namespace OOPWPFProject.ViewModels;
 
 internal class MainViewModel : BaseViewModel
 {
+    private EntityManager<Place> _placeManager = new();
+
     public ObservableCollection<Place> Places { get; } = [];
-    
-    // сеттери полей нового місця
+
+    // СЕТТЕРИ/АКСЕССОРИ New* полей
     private string _newName = string.Empty;
     public string NewName
     {
         get => _newName;
         set
         {
-            SetProperty(ref _newName, value);
+            _newName = value;
             AddPlaceCommand.RaiseCanExecuteChanged();
         }
     }
@@ -30,7 +27,7 @@ internal class MainViewModel : BaseViewModel
         get => _newCountry;
         set
         {
-            SetProperty(ref _newCountry, value);
+            _newCountry = value;
             AddPlaceCommand.RaiseCanExecuteChanged();
         }
     }
@@ -39,8 +36,9 @@ internal class MainViewModel : BaseViewModel
     public string NewDescription
     {
         get => _newDescription;
-        set { 
-            SetProperty(ref _newDescription, value);
+        set
+        {
+            _newDescription = value;
             AddPlaceCommand.RaiseCanExecuteChanged();
         }
     }
@@ -49,14 +47,24 @@ internal class MainViewModel : BaseViewModel
     public DateTime? NewVisitDate
     {
         get => _newVisitDate;
-        set => SetProperty(ref _newVisitDate, value);
+        set
+        {
+            _newVisitDate = value;
+            AddPlaceCommand.RaiseCanExecuteChanged();
+        }
     }
 
     private double _newRating;
     public double NewRating
     {
         get => _newRating;
-        set => SetProperty(ref _newRating, value);
+        set => _newRating = value;
+    }
+    private string? _newNotes;
+    public string? NewNotes
+    {
+        get => _newNotes;
+        set => _newNotes = value;
     }
 
     private Place? _selectedPlace;
@@ -65,29 +73,34 @@ internal class MainViewModel : BaseViewModel
         get => _selectedPlace;
         set
         {
-            SetProperty(ref _selectedPlace, value);
+            _selectedPlace = value;
             DeletePlaceCommand.RaiseCanExecuteChanged();
         }
     }
 
-    // Команди дял впф біндінга
+
+    // RelayCommand-и для WPF-біндінга
     public RelayCommand AddPlaceCommand { get; }
     public RelayCommand DeletePlaceCommand { get; }
     public RelayCommand ClearFormCommand { get; }
+    public RelayCommand ShowByIndexCommand { get; }
 
     public MainViewModel()
     {
         AddPlaceCommand = new RelayCommand(
-            execute: _ => AddPlace(), 
+            execute: _ => AddPlace(),
             canExecute: _ => CanAddPlace()
-            );
+        );
         DeletePlaceCommand = new RelayCommand(
-            execute: _ => DeletePlace(), 
+            execute: _ => DeletePlace(),
             canExecute: _ => SelectedPlace != null
-            );
+        );
         ClearFormCommand = new RelayCommand(
             execute: _ => ClearForm()
-            );
+        );
+        ShowByIndexCommand = new RelayCommand(
+            execute: _ => ShowByIndex()
+        );
     }
 
     private bool CanAddPlace()
@@ -100,19 +113,22 @@ internal class MainViewModel : BaseViewModel
     private async void AddPlace()
     {
         // перевірка необов'язкових поліи
-        DateOnly? visitDate = NewVisitDate.HasValue ? DateOnly.FromDateTime(NewVisitDate.Value) : null;
-        double? rating = NewRating > 0 ? NewRating : null;
+        DateOnly? checkedVisitDate = NewVisitDate.HasValue ? DateOnly.FromDateTime(NewVisitDate.Value) : null;
+        double? checkedRating = NewRating > 0 ? NewRating : null;
+        string? checkedNotes = string.IsNullOrEmpty(NewNotes) ? NewNotes : null;
 
-        var newPlace = new Place
+        Place newPlace = new Place
         {
             NameOfPlace = NewName,
             Country = NewCountry,
             Description = NewDescription,
-            Rating = rating,
-            DateOfVisiting = visitDate
+            DateOfVisiting = checkedVisitDate,
+            Rating = checkedRating,
+            Notes = checkedNotes,
         };
 
         Places.Add(newPlace);
+        _placeManager.Add(newPlace);
 
         newPlace.DisplayInfo();
 
@@ -125,15 +141,58 @@ internal class MainViewModel : BaseViewModel
         {
             Places.Remove(SelectedPlace);
             SelectedPlace = null;
+            PlaceAtIndexDisplay = string.Empty;
         }
     }
 
     private void ClearForm()
     {
         NewName = string.Empty;
-        NewCountry= string.Empty;
+        NewCountry = string.Empty;
         NewDescription = string.Empty;
         NewVisitDate = null;
         NewRating = 0;
+        NewNotes = null;
+    }
+
+
+    private int _indexToShow;
+    public int IndexToShow
+    {
+        get => _indexToShow;
+        set => SetProperty(ref _indexToShow, value);
+    }
+
+    private string _placeAtIndexDisplay = string.Empty;
+    public string PlaceAtIndexDisplay
+    {
+        get => _placeAtIndexDisplay;
+        set => SetProperty(ref _placeAtIndexDisplay, value);
+    }
+
+    private void ShowByIndex()
+    {
+        try
+        {
+            if (IndexToShow < 0 || IndexToShow >= _placeManager.GetAll().Count())
+            {
+                PlaceAtIndexDisplay = $"Індекс [{IndexToShow}] не в межах списку)";
+                return;
+            }
+
+            Place place = _placeManager[IndexToShow];
+            if (place != null)
+            {
+                PlaceAtIndexDisplay = $"[{IndexToShow}] {place.NameOfPlace}, {place.Country} | Дата: {place.DateOfVisiting:dd/MM/yyyy} | Рейтинг: {place.Rating}";
+            }
+            else
+            {
+                PlaceAtIndexDisplay = $"Індекс[{IndexToShow}] = null";
+            }
+        }
+        catch (ArgumentOutOfRangeException ex)
+        {
+            PlaceAtIndexDisplay = $"Помилка: {ex.Message}";
+        }
     }
 }
