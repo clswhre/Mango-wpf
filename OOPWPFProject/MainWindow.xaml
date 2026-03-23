@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         xmlns:local="clr-namespace:OOPWPFProject"
-        Title="Mango" Height="550" Width="1000" MinHeight="500" MinWidth="800" WindowStartupLocation="CenterScreen"
+        Title="Mango" Height="650" Width="1200" MinHeight="650" MinWidth="1200" WindowStartupLocation="CenterScreen"
         FontFamily="Cascadia Code" FontWeight="Regular"
         Background="{DynamicResource ApplicationBackgroundBrush}"
         Foreground="{DynamicResource TextFillColorPrimaryBrush}">
@@ -15,7 +15,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-       <!--Ліва панель-->
+       <!-- ЛІВА ПАНЕЛЬ -->
         
         <ScrollViewer 
             Grid.Column="0" 
@@ -24,30 +24,38 @@
             BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}" 
             BorderThickness="0,0,1,0">
             
-            <!-- Текстбокси: місто, крахна, опис -->
+            <!-- ТЕКСТБОКСИ: місто, країна, опис -->
             <StackPanel Margin="20" HorizontalAlignment="Stretch">
 
                 <ui:TextBlock Text="Назва міста *" Margin="0,0,0,4" />
                 <ui:TextBox x:Name="CityTextBox" 
                             Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged}" 
-                            PlaceholderText="Нью-Йорк" 
+                            PlaceholderText="Львів" 
                             Margin="0,0,0,16"/>
 
                 <ui:TextBlock Text="Країна *" Margin="0,0,0,4" />
                 <ui:TextBox x:Name="CountryTextBox" 
                             Text="{Binding NewCountry, UpdateSourceTrigger=PropertyChanged}" 
-                            PlaceholderText="Сполучені Штати Америки" 
+                            PlaceholderText="Україна" 
                             Margin="0,0,0,16" 
                             AutomationProperties.IsRequiredForForm="True"/>
 
                 <ui:TextBlock Text="Опис *" Margin="0,0,0,4" />
-                <ui:TextBox x:Name="DescriptionTextBox" Text="{Binding NewDescription, UpdateSourceTrigger=PropertyChanged}" 
-                            PlaceholderText="Місто..." 
-                            TextWrapping="Wrap"
-                            MinHeight="60" 
-                            Margin="0,0,0,16"/>
+                <ui:TextBox x:Name="DescriptionTextBox" 
+                    Text="{Binding NewDescription, UpdateSourceTrigger=PropertyChanged}" 
+                    PlaceholderText="Це місто кави, місто тисячі левів,&#x0a;місто джазу, дощу,шоколаду, терас&#x0a;і пристрасного танго." 
+                    TextWrapping="Wrap"
+                    AcceptsReturn="True"
+                    MinHeight="70" 
+                    Margin="0,0,0,16"/>
 
-                <!-- поділ на 2 колонки для дати і рейтингу -->
+                <ui:TextBlock Text="Примітки" Margin="0,0,0,4" />
+                <ui:TextBox x:Name="NotesTextBox" 
+                        Text="{Binding NewNotes, UpdateSourceTrigger=PropertyChanged}" 
+                        PlaceholderText="Додаткова інформація..." 
+                        Margin="0,0,0,16"/>
+
+                <!-- 2 Колонки: Дата + Рейтинг -->
                 <Grid Margin="0,0,0,24">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -55,20 +63,20 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                   <!-- дата -->
+                    <!-- Дата -->
                     <StackPanel Grid.Column="0">
                         <ui:TextBlock Text="Дата відвідування" Margin="0,0,0,4"/>
                         <DatePicker x:Name="DatePickerBox" SelectedDate="{Binding NewVisitDate}" HorizontalAlignment="Stretch"/>
                     </StackPanel>
 
-                    <!-- рейтинг -->
+                    <!-- Рейтинг -->
                     <StackPanel Grid.Column="2">
                         <ui:TextBlock Text="Рейтинг" Margin="0,0,0,4"/>
-                        <ui:RatingControl x:Name="Rating" Value="{Binding NewRating}" HalfStarEnabled="False"/>
+                        <ui:RatingControl x:Name="Rating" Value="{Binding NewRating, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HalfStarEnabled="False"/>
                     </StackPanel>
                 </Grid>
 
-                <!-- поділ на 2 колонки для кнопки додавання і очищення -->
+                <!-- 2 Колонки: "Додати місце" + "Очистити форму" -->
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="5*" />
@@ -76,7 +84,7 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <!-- кнопка "додати" -->
+                    <!-- КНОПКА "Додати місце" -->
                     <ui:Button 
                         Grid.Column="0" 
                         HorizontalAlignment="Stretch" 
@@ -85,52 +93,123 @@
                         Command="{Binding AddPlaceCommand}">
                         Додати запис
                     </ui:Button>
-                    
-                    <!-- кнопка "очистити" -->
+
+                    <!-- КНОПКА "Очистити форму" -->
                     <ui:Button 
                         Grid.Column="2"
                         Appearance="Secondary" 
                         HorizontalAlignment="Stretch" 
-                        Icon="{ui:SymbolIcon Symbol=ClearFormatting16}"
+                        Icon="{ui:SymbolIcon Symbol=Broom20}"
                         Command="{Binding ClearFormCommand}"
                     />
                 </Grid>
-                
+                <!-- Примітка: Обов'язкові поля -->
                 <ui:TextBlock Opacity="0.6">
-                  * - обов'язкові для заповнення поля
+                    * - обов'язкові для заповнення поля
                 </ui:TextBlock>
-                
+                <!-- Блок для індексатора (Завдання 5) -->
+                <Separator Margin="0,10,0,10" />
+                <ui:TextBlock Text="Пошук за індексом" FontWeight="Bold" Margin="0,0,0,8" />
+
+                <Grid Margin="0,0,0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="60" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <ui:TextBlock Grid.Column="0" Text="Індекс:" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <ui:TextBox 
+                        Grid.Column="1" 
+                        Text="{Binding IndexToShow, UpdateSourceTrigger=PropertyChanged}" 
+                        PlaceholderText="0"/>
+
+                    <ui:Button 
+                        Grid.Column="3"
+                        Content="Показати" 
+                        Command="{Binding ShowByIndexCommand}" 
+                        Appearance="Secondary"
+                        HorizontalAlignment="Left"
+                        Margin="10,0,0,0"/>
+                </Grid>
+
+                <!-- Результат показу за індексом -->
+                <ui:TextBlock Text="Результат:" Margin="0,0,0,4" Opacity="0.8" />
+                <Border BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}" 
+                        BorderThickness="1" 
+                        CornerRadius="4" 
+                        Padding="8"
+                        Background="{DynamicResource ControlAltFillColorSecondaryBrush}"
+                        MinHeight="40"
+                        Margin="0,0,0,16">
+                    <TextBlock Text="{Binding PlaceAtIndexDisplay, FallbackValue='Введіть індекс і натисніть Показати'}" 
+                               TextWrapping="Wrap"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                </Border>
+
+
+
             </StackPanel>
         </ScrollViewer>
 
-        <!-- список місць -->
+        <!-- СПИСОК -->
         <Grid Grid.Column="1" Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!-- датаГрід визначення і біндінг до коду -->
+            <!-- DATAGRID: прив'язка до Places -->
             <ui:DataGrid x:Name="PlacesDataGrid" 
-                 Grid.Row="0"
-                 ItemsSource="{Binding Places}" 
-                 SelectedItem="{Binding SelectedPlace}"
-                 AutoGenerateColumns="False" 
-                 IsReadOnly="True"
-                 SelectionMode="Single"
+                Grid.Row="0"
+                ItemsSource="{Binding Places}" 
+                SelectedItem="{Binding SelectedPlace}"
+                AutoGenerateColumns="False" 
+                IsReadOnly="True"
+                SelectionMode="Single"
                 HeadersVisibility="Column"
                 Margin="0,0,0,16">
-                
-                <!-- колонки датагріда-->
-                    <DataGrid.Columns>
-                    <DataGridTextColumn Header="Місто" Binding="{Binding NameOfPlace}" Width="*"/>
+
+                <!-- КОЛОНКИ ДАТАГРІДА -->
+                <!-- Назва місця + зірка при рейтингу > 4 -->
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Місто" Width="*" SortMemberPath="NameOfPlace">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <ui:SymbolIcon x:Name="StarIcon" 
+                                           Symbol="Star12"
+                                           Filled="True"
+                                           Foreground="#FFD700" 
+                                           Margin="0,0,6,0" 
+                                           Visibility="Collapsed" />
+                                    <TextBlock Text="{Binding NameOfPlace}" VerticalAlignment="Center" />
+                                </StackPanel>
+
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding IsHighlyRated}" Value="True">
+                                        <Setter TargetName="StarIcon" Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+
+                    <!-- КРАЇНА / ОПИС / РЕЙТИНГ / ПРИМІТКИ -->
                     <DataGridTextColumn Header="Країна" Binding="{Binding Country}" Width="*"/>
-                    <DataGridTextColumn Header="Опис" Binding="{Binding Description}" Width="2*"/>
-                    <DataGridTextColumn Header="Дата" Binding="{Binding DateOfVisiting, StringFormat=dd.MM.yyyy}" Width="100"/>
-                    <DataGridTextColumn Header="Рейтинг" Binding="{Binding Rating}" Width="80"/>
+                    <DataGridTextColumn Header="Опис" Binding="{Binding Description, Mode=OneWay}" Width="1.5*"/>
+                    <DataGridTextColumn Header="Дата" Binding="{Binding DateOfVisiting, Mode=TwoWay, StringFormat='{}{0:dd/MM/yyyy}'}" Width="*"/>
+                    <DataGridTextColumn Header="Рейтинг" Binding="{Binding Rating, Mode=OneWay}" Width="*"/>
+                    <DataGridTextColumn Header="Примітки" Binding="{Binding Notes, Mode=TwoWay}" Width="*"/>
+
                 </DataGrid.Columns>
             </ui:DataGrid>
 
+            <!-- КНОПКА "Видалити запис" -->
             <ui:Button Grid.Row="1" 
                        Appearance="Danger" 
                        HorizontalAlignment="Right" 
@@ -139,6 +218,5 @@
                 Видалити обраний запис
             </ui:Button>
         </Grid>
-
     </Grid>
 </Window>
