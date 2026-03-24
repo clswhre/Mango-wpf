@@ -87,7 +87,10 @@ internal class MainViewModel : BaseViewModel
             );
         ClearFormCommand = new RelayCommand(
             execute: _ => ClearForm()
-            );
+        );
+        ShowByIndexCommand = new RelayCommand(
+            execute: _ => ShowByIndex()
+        );
     }
 
     private bool CanAddPlace()
