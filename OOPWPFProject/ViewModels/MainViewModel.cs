@@ -1,5 +1,7 @@
 ﻿using OOPWPFProject.Models;
 using System.Collections.ObjectModel;
+using System.Text;
+using Wpf.Ui.Controls;
 
 namespace OOPWPFProject.ViewModels;
 
@@ -10,70 +12,60 @@ internal class MainViewModel : BaseViewModel
     public ObservableCollection<Place> Places { get; } = [];
 
     // СЕТТЕРИ/АКСЕССОРИ New* полей
-    private string _newName = string.Empty;
     public string NewName
     {
-        get => _newName;
+        get;
         set
         {
-            _newName = value;
+            field = value;
             AddPlaceCommand.RaiseCanExecuteChanged();
         }
-    }
+    } = string.Empty;
 
-    private string _newCountry = string.Empty;
     public string NewCountry
     {
-        get => _newCountry;
+        get;
         set
         {
-            _newCountry = value;
+            field = value;
             AddPlaceCommand.RaiseCanExecuteChanged();
         }
-    }
+    } = string.Empty;
 
-    private string _newDescription = string.Empty;
     public string NewDescription
     {
-        get => _newDescription;
+        get;
         set
         {
-            _newDescription = value;
+            field = value;
             AddPlaceCommand.RaiseCanExecuteChanged();
         }
-    }
+    } = string.Empty;
 
-    private DateTime? _newVisitDate;
     public DateTime? NewVisitDate
     {
-        get => _newVisitDate;
+        get;
         set
         {
-            _newVisitDate = value;
+            field = value;
             AddPlaceCommand.RaiseCanExecuteChanged();
         }
-    }
+    } = null;
 
-    private double _newRating;
     public double NewRating
     {
-        get => _newRating;
-        set => _newRating = value;
+        get; set;
     }
-    private string? _newNotes;
     public string? NewNotes
     {
-        get => _newNotes;
-        set => _newNotes = value;
+        get; set;
     }
 
-    private Place? _selectedPlace;
     public Place? SelectedPlace
     {
-        get => _selectedPlace;
-        set
+        get; set
         {
-            _selectedPlace = value;
+            field = value;
             DeletePlaceCommand.RaiseCanExecuteChanged();
         }
     }
@@ -105,9 +97,9 @@ internal class MainViewModel : BaseViewModel
 
     private bool CanAddPlace()
     {
-        return !string.IsNullOrWhiteSpace(NewName) &&
-               !string.IsNullOrWhiteSpace(NewCountry) &&
-               !string.IsNullOrWhiteSpace(NewDescription);
+        return !string.IsNullOrWhiteSpace( NewName ) &&
+               !string.IsNullOrWhiteSpace( NewCountry ) &&
+               !string.IsNullOrWhiteSpace( NewDescription );
     }
 
     private async void AddPlace()
@@ -117,7 +109,7 @@ internal class MainViewModel : BaseViewModel
         double? checkedRating = NewRating > 0 ? NewRating : null;
         string? checkedNotes = string.IsNullOrEmpty(NewNotes) ? NewNotes : null;
 
-        Place newPlace = new Place
+        Place newPlace = new()
         {
             NameOfPlace = NewName,
             Country = NewCountry,
@@ -127,19 +119,28 @@ internal class MainViewModel : BaseViewModel
             Notes = checkedNotes,
         };
 
-        Places.Add(newPlace);
-        _placeManager.Add(newPlace);
+        Places.Add( newPlace );
+        _placeManager.Add( newPlace );
 
-        newPlace.DisplayInfo();
+        var content = newPlace.DisplayInfo();
+
+        MessageBox successDialog = new()
+        {
+            Title = "Успіх",
+            Content = content,
+            CloseButtonText = "ОК"
+        };
+
+        await successDialog.ShowDialogAsync();
 
         ClearForm();
     }
 
     private void DeletePlace()
     {
-        if (SelectedPlace != null)
+        if ( SelectedPlace != null )
         {
-            Places.Remove(SelectedPlace);
+            Places.Remove( SelectedPlace );
             SelectedPlace = null;
             PlaceAtIndexDisplay = string.Empty;
         }
@@ -155,42 +156,52 @@ internal class MainViewModel : BaseViewModel
         NewNotes = null;
     }
 
-
-    private int _indexToShow;
     public int IndexToShow
     {
-        get => _indexToShow;
-        set => SetProperty(ref _indexToShow, value);
+        get;
+        set => SetProperty( ref field, value );
     }
-
-    private string _placeAtIndexDisplay = string.Empty;
     public string PlaceAtIndexDisplay
     {
-        get => _placeAtIndexDisplay;
-        set => SetProperty(ref _placeAtIndexDisplay, value);
-    }
+        get;
+        set => SetProperty( ref field, value );
+    } = string.Empty;
 
     private void ShowByIndex()
     {
         try
         {
-            if (IndexToShow < 0 || IndexToShow >= _placeManager.GetAll().Count())
+            if ( IndexToShow < 0 || IndexToShow >= _placeManager.GetAll().Count() )
             {
                 PlaceAtIndexDisplay = $"Індекс [{IndexToShow}] не в межах списку)";
                 return;
             }
 
             Place place = _placeManager[IndexToShow];
-            if (place != null)
+            if ( place != null )
             {
-                PlaceAtIndexDisplay = $"[{IndexToShow}] {place.NameOfPlace}, {place.Country} | Дата: {place.DateOfVisiting:dd/MM/yyyy} | Рейтинг: {place.Rating}";
+                StringBuilder messageBuilder = new();
+                messageBuilder.Append( $" [{IndexToShow}] | {place.NameOfPlace} , {place.Country}: {place.Description} " );
+
+                if ( place.DateOfVisiting.HasValue )
+                {
+                    messageBuilder.Append( $" @ {place.DateOfVisiting.Value.ToString( "dd/MM/yyyy" )} " );
+                }
+
+                if ( place.Rating.HasValue )
+                {
+                    messageBuilder.Append( $" | {place.Rating.Value}★" );
+                }
+
+                PlaceAtIndexDisplay = messageBuilder.ToString().Trim();
+
             }
             else
             {
                 PlaceAtIndexDisplay = $"Індекс[{IndexToShow}] = null";
             }
         }
-        catch (ArgumentOutOfRangeException ex)
+        catch ( ArgumentOutOfRangeException ex )
         {
             PlaceAtIndexDisplay = $"Помилка: {ex.Message}";
         }

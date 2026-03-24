@@ -7,13 +7,6 @@ namespace OOPWPFProject.Models;
 
 internal class Place : INotifyPropertyChanged
 {
-
-    // private string _name = string.Empty;
-    // private string _country = string.Empty;
-    // private string _description = string.Empty;
-    // private double? _rating = null;
-    // private DateOnly? _dateOfVisiting = null;
-    // private string? _notes = string.Empty;
     private string? _travelSummary = string.Empty;
     private bool? _isHighlyRated = null;
 
@@ -56,7 +49,7 @@ internal class Place : INotifyPropertyChanged
                 OnPropertyChanged();
             }
         }
-    }
+    } = string.Empty;
 
     public double? Rating
     {
@@ -102,7 +95,10 @@ internal class Place : INotifyPropertyChanged
     {
         get
         {
-            return $"{NameOfPlace} - {DateOfVisiting}";
+            string dateDisplay = DateOfVisiting.HasValue 
+                ? DateOfVisiting.Value.ToString("dd/MM/yyyy") 
+                : "<пусто>";
+            return $"{NameOfPlace} - {dateDisplay}";
         }
     }
 
@@ -120,7 +116,7 @@ internal class Place : INotifyPropertyChanged
         Description = description;
     }
 
-    public async void DisplayInfo()
+    public string DisplayInfo()
     {
         StringBuilder messageBuilder = new();
         messageBuilder.AppendLine($"Місто: {NameOfPlace}");
@@ -136,14 +132,8 @@ internal class Place : INotifyPropertyChanged
             messageBuilder.AppendLine($"Рейтинг: {Rating.Value}");
         }
 
-        MessageBox successDialog = new Wpf.Ui.Controls.MessageBox
-        {
-            Title = "Успіх",
-            Content = messageBuilder.ToString().TrimEnd(),
-            CloseButtonText = "ОК"
-        };
-
-        await successDialog.ShowDialogAsync();
+        string information = messageBuilder.ToString().TrimEnd();
+        return information;
     }
 
     public Place Clone()

@@ -107,7 +107,41 @@
                 <ui:TextBlock Opacity="0.6">
                     * - обов'язкові для заповнення поля
                 </ui:TextBlock>
-                
+
+                <!-- ІНДЕКСАТОР -->
+                <Separator Margin="0,16" />
+                <ui:TextBlock Text="Пошук за індексом" Margin="0,0,0,12" FontWeight="Bold" />
+
+                <ui:TextBlock Text="Введіть індекс" Margin="0,0,0,4" />
+                <Grid Margin="0,0,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <ui:NumberBox 
+                        Grid.Column="0"
+                        Value="{Binding IndexToShow, UpdateSourceTrigger=PropertyChanged}"
+                        Minimum="0"
+                        HorizontalAlignment="Stretch" />
+
+                    <ui:Button 
+                        Grid.Column="2"
+                        Appearance="Secondary"
+                        Icon="{ui:SymbolIcon Symbol=Search12}"
+                        Command="{Binding ShowByIndexCommand}"
+                        Padding="12,8" />
+                </Grid>
+
+                <ui:TextBlock Text="Результат:" Margin="0,0,0,4" Opacity="0.7" FontSize="12" />
+                <TextBlock 
+                    Text="{Binding PlaceAtIndexDisplay}"
+                    TextWrapping="Wrap"
+                    MinHeight="40"
+                    Padding="8"
+/>
+
             </StackPanel>
         </ScrollViewer>
 
