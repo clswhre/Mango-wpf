@@ -1,11 +1,7 @@
-﻿using OOPWPFProject.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Windows.Input;
-using System.Windows.Media;
+using Wpf.Ui.Controls;
 
 namespace OOPWPFProject.Models;
 
@@ -17,15 +13,19 @@ internal class Place : INotifyPropertyChanged
     private string _description = string.Empty;
     private double? _rating = null;
     private DateOnly? _dateOfVisiting = null;
+    private string? _notes = string.Empty;
+    private string? _travelSummary = string.Empty;
+    private bool? _isHighlyRated = null;
 
-    // сеттери полей
-    
+    // СЕТТЕРИ/АКСЕССОРИ полей
+
     public string NameOfPlace
     {
         get => _name;
         set
         {
-            if (_name != value) {
+            if (_name != value)
+            {
                 _name = value;
                 OnPropertyChanged();
             }
@@ -37,7 +37,8 @@ internal class Place : INotifyPropertyChanged
         get => _country;
         set
         {
-            if (_country != value) {
+            if (_country != value)
+            {
                 _country = value;
                 OnPropertyChanged();
             }
@@ -49,7 +50,8 @@ internal class Place : INotifyPropertyChanged
         get => _description;
         set
         {
-            if (_description != value) {
+            if (_description != value)
+            {
                 _description = value;
                 OnPropertyChanged();
             }
@@ -65,6 +67,7 @@ internal class Place : INotifyPropertyChanged
             {
                 _rating = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(IsHighlyRated));
             }
         }
     }
@@ -82,12 +85,30 @@ internal class Place : INotifyPropertyChanged
         }
     }
 
-    // якась дурня скопійована з прикладу Дениса Васильовича
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    public string? Notes
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        get => _notes;
+        set
+        {
+            if (_notes != value)
+            {
+                _notes = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public string TravelSummary
+    {
+        get
+        {
+            return $"{NameOfPlace} - {DateOfVisiting}";
+        }
+    }
+
+    public bool IsHighlyRated
+    {
+        get => Rating >= 4;
     }
 
     public Place() { }
@@ -115,7 +136,7 @@ internal class Place : INotifyPropertyChanged
             messageBuilder.AppendLine($"Рейтинг: {Rating.Value}");
         }
 
-        var successDialog = new Wpf.Ui.Controls.MessageBox
+        MessageBox successDialog = new Wpf.Ui.Controls.MessageBox
         {
             Title = "Успіх",
             Content = messageBuilder.ToString().TrimEnd(),
@@ -123,7 +144,6 @@ internal class Place : INotifyPropertyChanged
         };
 
         await successDialog.ShowDialogAsync();
-
     }
 
     public Place Clone()
@@ -131,9 +151,14 @@ internal class Place : INotifyPropertyChanged
         return new Place(NameOfPlace, Country, Description)
         {
             Rating = this.Rating,
-            DateOfVisiting = this.DateOfVisiting
+            DateOfVisiting = this.DateOfVisiting,
+            Notes = this.Notes,
         };
     }
 
+    public event PropertyChangedEventHandler? PropertyChanged;
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 }
-

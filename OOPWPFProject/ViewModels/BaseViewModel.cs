@@ -1,11 +1,8 @@
-﻿using OOPWPFProject.Models;
-using System;
-using System.Text;
-using System.ComponentModel;
-using System.Collections.Generic;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace OOPWPFProject.ViewModels;
+
 internal abstract class BaseViewModel : INotifyPropertyChanged
 {
 

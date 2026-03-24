@@ -1,8 +1,6 @@
-﻿using System.Text;
+﻿using OOPWPFProject.ViewModels;
 using System.Windows;
-using System.Collections.ObjectModel;
 using Wpf.Ui.Appearance;
-using OOPWPFProject.ViewModels;
 
 namespace OOPWPFProject;
 
