@@ -8,12 +8,12 @@ namespace OOPWPFProject.Models;
 internal class Place : INotifyPropertyChanged
 {
 
-    private string _name = string.Empty;
-    private string _country = string.Empty;
-    private string _description = string.Empty;
-    private double? _rating = null;
-    private DateOnly? _dateOfVisiting = null;
-    private string? _notes = string.Empty;
+    // private string _name = string.Empty;
+    // private string _country = string.Empty;
+    // private string _description = string.Empty;
+    // private double? _rating = null;
+    // private DateOnly? _dateOfVisiting = null;
+    // private string? _notes = string.Empty;
     private string? _travelSummary = string.Empty;
     private bool? _isHighlyRated = null;
 
@@ -21,38 +21,38 @@ internal class Place : INotifyPropertyChanged
 
     public string NameOfPlace
     {
-        get => _name;
+        get => field;
         set
         {
-            if (_name != value)
+            if (field != value)
             {
-                _name = value;
+                field = value;
                 OnPropertyChanged();
             }
         }
-    }
+    } = string.Empty;
 
     public string Country
     {
-        get => _country;
+        get => field;
         set
         {
-            if (_country != value)
+            if (field != value)
             {
-                _country = value;
+                field = value;
                 OnPropertyChanged();
             }
         }
-    }
+    } = string.Empty;
 
     public string Description
     {
-        get => _description;
+        get => field;
         set
         {
-            if (_description != value)
+            if (field != value)
             {
-                _description = value;
+                field = value;
                 OnPropertyChanged();
             }
         }
@@ -60,12 +60,12 @@ internal class Place : INotifyPropertyChanged
 
     public double? Rating
     {
-        get => _rating;
+        get => field;
         set
         {
-            if (_rating != value)
+            if (field != value)
             {
-                _rating = value;
+                field = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsHighlyRated));
             }
@@ -74,12 +74,12 @@ internal class Place : INotifyPropertyChanged
 
     public DateOnly? DateOfVisiting
     {
-        get => _dateOfVisiting;
+        get => field;
         set
         {
-            if (_dateOfVisiting != value)
+            if (field != value)
             {
-                _dateOfVisiting = value;
+                field = value;
                 OnPropertyChanged();
             }
         }
@@ -87,12 +87,12 @@ internal class Place : INotifyPropertyChanged
 
     public string? Notes
     {
-        get => _notes;
+        get => field;
         set
         {
-            if (_notes != value)
+            if (field != value)
             {
-                _notes = value;
+                field = value;
                 OnPropertyChanged();
             }
         }
