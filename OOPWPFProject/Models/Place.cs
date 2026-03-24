@@ -11,7 +11,6 @@ internal class Place : INotifyPropertyChanged
     private bool? _isHighlyRated = null;
 
     // СЕТТЕРИ/АКСЕССОРИ полей
-
     public string NameOfPlace
     {
         get => field;
@@ -97,7 +96,7 @@ internal class Place : INotifyPropertyChanged
         {
             string dateDisplay = DateOfVisiting.HasValue 
                 ? DateOfVisiting.Value.ToString("dd/MM/yyyy") 
-                : "<пусто>";
+                : "Без дати";
             return $"{NameOfPlace} - {dateDisplay}";
         }
     }

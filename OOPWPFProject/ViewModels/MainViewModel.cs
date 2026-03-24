@@ -107,7 +107,7 @@ internal class MainViewModel : BaseViewModel
         // перевірка необов'язкових поліи
         DateOnly? checkedVisitDate = NewVisitDate.HasValue ? DateOnly.FromDateTime(NewVisitDate.Value) : null;
         double? checkedRating = NewRating > 0 ? NewRating : null;
-        string? checkedNotes = string.IsNullOrEmpty(NewNotes) ? NewNotes : null;
+        string? checkedNotes = string.IsNullOrEmpty(NewNotes) ? null : NewNotes;
 
         Place newPlace = new()
         {
@@ -122,7 +122,7 @@ internal class MainViewModel : BaseViewModel
         Places.Add( newPlace );
         _placeManager.Add( newPlace );
 
-        var content = newPlace.DisplayInfo();
+        string content = newPlace.DisplayInfo();
 
         MessageBox successDialog = new()
         {
