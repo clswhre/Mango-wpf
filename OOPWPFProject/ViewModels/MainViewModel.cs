@@ -1,7 +1,6 @@
 ﻿using OOPWPFProject.Models;
 using System.Collections.ObjectModel;
 using System.Text;
-using Wpf.Ui.Controls;
 
 namespace OOPWPFProject.ViewModels;
 
@@ -18,6 +17,7 @@ internal class MainViewModel : BaseViewModel
         set
         {
             field = value;
+            OnPropertyChanged();
             AddPlaceCommand.RaiseCanExecuteChanged();
         }
     } = string.Empty;
@@ -28,6 +28,7 @@ internal class MainViewModel : BaseViewModel
         set
         {
             field = value;
+            OnPropertyChanged();
             AddPlaceCommand.RaiseCanExecuteChanged();
         }
     } = string.Empty;
@@ -38,6 +39,7 @@ internal class MainViewModel : BaseViewModel
         set
         {
             field = value;
+            OnPropertyChanged();
             AddPlaceCommand.RaiseCanExecuteChanged();
         }
     } = string.Empty;
@@ -48,24 +50,38 @@ internal class MainViewModel : BaseViewModel
         set
         {
             field = value;
+            OnPropertyChanged();
             AddPlaceCommand.RaiseCanExecuteChanged();
         }
     } = null;
 
     public double NewRating
     {
-        get; set;
+        get; 
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+        }
     }
+
     public string? NewNotes
     {
-        get; set;
+        get; 
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+        }
     }
 
     public Place? SelectedPlace
     {
-        get; set
+        get; 
+        set
         {
             field = value;
+            OnPropertyChanged();
             DeletePlaceCommand.RaiseCanExecuteChanged();
         }
     }
@@ -102,7 +118,7 @@ internal class MainViewModel : BaseViewModel
                !string.IsNullOrWhiteSpace( NewDescription );
     }
 
-    private async void AddPlace()
+    private void AddPlace()
     {
         // перевірка необов'язкових поліи
         DateOnly? checkedVisitDate = NewVisitDate.HasValue ? DateOnly.FromDateTime(NewVisitDate.Value) : null;
@@ -121,17 +137,6 @@ internal class MainViewModel : BaseViewModel
 
         Places.Add( newPlace );
         _placeManager.Add( newPlace );
-
-        string content = newPlace.DisplayInfo();
-
-        MessageBox successDialog = new()
-        {
-            Title = "Успіх",
-            Content = content,
-            CloseButtonText = "ОК"
-        };
-
-        await successDialog.ShowDialogAsync();
 
         ClearForm();
     }

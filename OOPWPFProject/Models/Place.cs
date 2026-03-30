@@ -7,9 +7,6 @@ namespace OOPWPFProject.Models;
 
 internal class Place : INotifyPropertyChanged
 {
-    private string? _travelSummary = string.Empty;
-    private bool? _isHighlyRated = null;
-
     // СЕТТЕРИ/АКСЕССОРИ полей
     public string NameOfPlace
     {
