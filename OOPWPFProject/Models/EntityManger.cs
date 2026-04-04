@@ -2,43 +2,43 @@
 
 public class EntityManager<T>
 {
-    private readonly List<T> places = [];
+    private readonly List<T> values = [];
 
     public T this[int idx]
     {
         get {
-            if (idx < 0 || idx >= places.Count)
+            if (idx < 0 || idx >= values.Count)
             {
                 throw new ArgumentOutOfRangeException();
             }
             else
             {
-                return places[idx];
+                return values[idx];
             }
         }
         set
         {
-            if (idx < 0 || idx >= places.Count)
+            if (idx < 0 || idx >= values.Count)
             {
                 throw new ArgumentOutOfRangeException();
             }
-            places[idx] = value;
+            values[idx] = value;
         }
     }
 
     public void Add(T place)
     {
-        places.Add(place);
+        values.Add(place);
     }
 
     public IEnumerable<T> GetAll()
     {
-        return places;
+        return values;
     }
 
     public void DisplayAll()
     {
-        foreach (var place in places)
+        foreach (var place in values)
         {
             Console.WriteLine(place.ToString());
         }
