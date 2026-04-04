@@ -8,6 +8,7 @@ namespace OOPWPFProject.Models;
 internal class Place : INotifyPropertyChanged
 {
     // СЕТТЕРИ/АКСЕССОРИ полей
+
     public string NameOfPlace
     {
         get => field;
@@ -112,7 +113,7 @@ internal class Place : INotifyPropertyChanged
         Description = description;
     }
 
-    public string DisplayInfo()
+    public virtual string GetDetails()
     {
         StringBuilder messageBuilder = new();
         messageBuilder.AppendLine($"Місто: {NameOfPlace}");

@@ -4,11 +4,37 @@ using System.Text;
 
 namespace OOPWPFProject.ViewModels;
 
+public enum PlaceType
+{
+    Normal,
+    Historical,
+    Natural
+}
+
 internal class MainViewModel : BaseViewModel
 {
     private EntityManager<Place> _placeManager = new();
+    private PlaceType _selectedPlaceType = PlaceType.Normal;
 
     public ObservableCollection<Place> Places { get; } = [];
+
+    public ObservableCollection<PlaceType> PlaceTypes { get; } =
+    [
+        PlaceType.Normal,
+        PlaceType.Historical,
+        PlaceType.Natural
+    ];
+
+    public PlaceType SelectedPlaceType
+    {
+        get => _selectedPlaceType;
+        set
+        {
+            _selectedPlaceType = value;
+            OnPropertyChanged();
+            ClearSpecializedFields();
+        }
+    }
 
     // СЕТТЕРИ/АКСЕССОРИ New* полей
     public string NewName
@@ -75,6 +101,48 @@ internal class MainViewModel : BaseViewModel
         }
     }
 
+    // для історичниц місць
+    public DateOnly? HistoricalYearBuilt
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public int HistoricalSignificance
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+        }
+    }
+
+    // для природніх місь
+    public DateOnly? NaturalYearBuilt
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool NaturalProtectedStatus
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+        }
+    }
+
     public Place? SelectedPlace
     {
         get; 
@@ -120,19 +188,52 @@ internal class MainViewModel : BaseViewModel
 
     private void AddPlace()
     {
-        // перевірка необов'язкових поліи
+        // перевірка необов'язкових полів
         DateOnly? checkedVisitDate = NewVisitDate.HasValue ? DateOnly.FromDateTime(NewVisitDate.Value) : null;
         double? checkedRating = NewRating > 0 ? NewRating : null;
         string? checkedNotes = string.IsNullOrEmpty(NewNotes) ? null : NewNotes;
 
-        Place newPlace = new()
+        Place newPlace = null;
+
+        switch ( SelectedPlaceType )
         {
-            NameOfPlace = NewName,
-            Country = NewCountry,
-            Description = NewDescription,
-            DateOfVisiting = checkedVisitDate,
-            Rating = checkedRating,
-            Notes = checkedNotes,
+            case PlaceType.Normal:
+                newPlace = new Place()
+                {
+                    NameOfPlace = NewName,
+                    Country = NewCountry,
+                    Description = NewDescription,
+                    DateOfVisiting = checkedVisitDate,
+                    Rating = checkedRating,
+                    Notes = checkedNotes,
+                };
+                break;
+            case PlaceType.Historical:
+                newPlace = new HistoricalPlace()
+                {
+                    NameOfPlace = NewName,
+                    Country = NewCountry,
+                    Description = NewDescription,
+                    DateOfVisiting = checkedVisitDate,
+                    Rating = checkedRating,
+                    Notes = checkedNotes,
+                    YearBuilt = HistoricalYearBuilt,
+                    Significance = HistoricalSignificance
+                };
+                break;
+            case PlaceType.Natural:
+                newPlace = new NaturalPlace()
+                {
+                    NameOfPlace = NewName,
+                    Country = NewCountry,
+                    Description = NewDescription,
+                    DateOfVisiting = checkedVisitDate,
+                    Rating = checkedRating,
+                    Notes = checkedNotes,
+                    YearBuilt = NaturalYearBuilt,
+                    ProtectedStatus = NaturalProtectedStatus
+                };
+                break;
         };
 
         Places.Add( newPlace );
@@ -159,6 +260,15 @@ internal class MainViewModel : BaseViewModel
         NewVisitDate = null;
         NewRating = 0;
         NewNotes = null;
+        ClearSpecializedFields();
+    }
+
+    private void ClearSpecializedFields()
+    {
+        HistoricalYearBuilt = null;
+        HistoricalSignificance = 0;
+        NaturalYearBuilt = null;
+        NaturalProtectedStatus = false;
     }
 
     public int IndexToShow

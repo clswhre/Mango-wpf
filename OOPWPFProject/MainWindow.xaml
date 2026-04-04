@@ -2,11 +2,22 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-        xmlns:local="clr-namespace:OOPWPFProject"
-        Title="Mango" Height="650" Width="1600" MinHeight="650" MinWidth="1600" WindowStartupLocation="CenterScreen"
-        FontFamily="Cascadia Code" FontWeight="Regular"
+        xmlns:local="clr-namespace:OOPWPFProject" xmlns:viewmodels="clr-namespace:OOPWPFProject.ViewModels" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:converters="clr-namespace:OOPWPFProject.Converters"
+        Title="Mango" 
+        Height="650" 
+        Width="1600" 
+        MinHeight="650" 
+        MinWidth="1600" 
+        WindowStartupLocation="CenterScreen"
+        FontFamily="Cascadia Code" 
+        FontWeight="Regular"
         Background="{DynamicResource ApplicationBackgroundBrush}"
         Foreground="{DynamicResource TextFillColorPrimaryBrush}">
+
+    <Window.Resources>
+        <converters:PlaceTypeToVisibilityConverter x:Key="PlaceTypeToVisibility" />
+    </Window.Resources>
 
     <Grid>
         <!-- Місце для лівої панельки і списку місць -->
@@ -15,15 +26,15 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-       <!-- ЛІВА ПАНЕЛЬ -->
-        
+        <!-- ЛІВА ПАНЕЛЬ -->
+
         <ScrollViewer 
             Grid.Column="0" 
             VerticalScrollBarVisibility="Auto" 
             HorizontalScrollBarVisibility="Disabled" 
             BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}" 
             BorderThickness="0,0,1,0">
-            
+
             <!-- ТЕКСТБОКСИ: місто, країна, опис -->
             <StackPanel Margin="20" HorizontalAlignment="Stretch">
 
@@ -74,8 +85,39 @@
                         <ui:TextBlock Text="Рейтинг" Margin="0,0,0,4"/>
                         <ui:RatingControl x:Name="Rating" Value="{Binding NewRating, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HalfStarEnabled="False"/>
                     </StackPanel>
+
                 </Grid>
 
+            <StackPanel >
+                <ui:TextBlock>
+                    Тип місця
+                </ui:TextBlock>
+                <ComboBox
+                    Margin="0,0,0,20"
+                    ItemsSource="{Binding PlaceTypes}"
+                    SelectedItem="{Binding SelectedPlaceType, Mode=TwoWay}" 
+                    />
+            </StackPanel>
+
+            <!-- Поля для Historical -->
+            <StackPanel Visibility="{Binding SelectedPlaceType, Converter={StaticResource PlaceTypeToVisibility}, ConverterParameter=Historical}" Margin="0,0,0,12">
+                <ui:TextBlock Text="Рік побудови" Margin="0,0,0,4" />
+                <DatePicker SelectedDate="{Binding HistoricalYearBuilt, Mode=TwoWay}" />
+                <ui:TextBlock Text="Значимість (1-10)" Margin="0,8,0,4" />
+                <TextBox Text="{Binding HistoricalSignificance, Mode=TwoWay}" />
+            </StackPanel>
+
+            <!-- Поля для Natural -->
+            <StackPanel Visibility="{Binding SelectedPlaceType, Converter={StaticResource PlaceTypeToVisibility}, ConverterParameter=Natural}" Margin="0,0,0,12">
+                <ui:TextBlock Text="Рік утворення" Margin="0,0,0,4" />
+                <DatePicker SelectedDate="{Binding NaturalYearBuilt, Mode=TwoWay}" />
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <ui:TextBlock Text="Під захистом" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <CheckBox IsChecked="{Binding NaturalProtectedStatus, Mode=TwoWay}" />
+                </StackPanel>
+            </StackPanel>
+
+                
                 <!-- 2 Колонки: "Додати місце" + "Очистити форму" -->
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -108,39 +150,40 @@
                     * - обов'язкові для заповнення поля
                 </ui:TextBlock>
 
-                <!-- ІНДЕКСАТОР -->
-                <Separator Margin="0,16" />
-                <ui:TextBlock Text="Пошук за індексом" Margin="0,0,0,12" FontWeight="Bold" />
 
-                <ui:TextBlock Text="Введіть індекс" Margin="0,0,0,4" />
-                <Grid Margin="0,0,0,8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="10" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+                <!-- ІНДЕКСАТОР (скривати/показувати через Expander) -->
+                <Expander Header="Пошук за індексом" IsExpanded="False" Margin="0,5,0,8">
+                    <StackPanel>
+                        <ui:TextBlock Text="Введіть індекс" Margin="0,0,0,4" />
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-                    <ui:NumberBox 
-                        Grid.Column="0"
-                        Value="{Binding IndexToShow, UpdateSourceTrigger=PropertyChanged}"
-                        Minimum="0"
-                        HorizontalAlignment="Stretch" />
+                            <ui:NumberBox 
+                                Grid.Column="0"
+                                Value="{Binding IndexToShow, UpdateSourceTrigger=PropertyChanged}"
+                                Minimum="0"
+                                HorizontalAlignment="Stretch" />
 
-                    <ui:Button 
-                        Grid.Column="2"
-                        Appearance="Secondary"
-                        Icon="{ui:SymbolIcon Symbol=Search12}"
-                        Command="{Binding ShowByIndexCommand}"
-                        Padding="12,8" />
-                </Grid>
+                            <ui:Button 
+                                Grid.Column="2"
+                                Appearance="Secondary"
+                                Icon="{ui:SymbolIcon Symbol=Search12}"
+                                Command="{Binding ShowByIndexCommand}"
+                                Padding="12,8" />
+                        </Grid>
 
-                <ui:TextBlock Text="Результат:" Margin="0,0,0,4" Opacity="0.7" FontSize="12" />
-                <TextBlock 
-                    Text="{Binding PlaceAtIndexDisplay}"
-                    TextWrapping="Wrap"
-                    MinHeight="40"
-                    Padding="8"
-/>
+                        <ui:TextBlock Text="Результат:" Margin="0,0,0,4" Opacity="0.7" FontSize="12" />
+                        <TextBlock 
+                            Text="{Binding PlaceAtIndexDisplay}"
+                            TextWrapping="Wrap"
+                            MinHeight="40"
+                            Padding="8" />
+                    </StackPanel>
+                </Expander>
 
             </StackPanel>
         </ScrollViewer>
