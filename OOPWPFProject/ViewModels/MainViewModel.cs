@@ -150,8 +150,14 @@ internal class MainViewModel : BaseViewModel
         {
             field = value;
             OnPropertyChanged();
+            OnPropertyChanged( nameof( SelectedPlaceDetails ) );
             DeletePlaceCommand.RaiseCanExecuteChanged();
         }
+    }
+
+    public string SelectedPlaceDetails
+    {
+        get => SelectedPlace?.GetDetails() ?? "Виберіть запис для перегляду деталей";
     }
 
 

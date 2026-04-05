@@ -129,8 +129,8 @@ internal class Place : INotifyPropertyChanged
             messageBuilder.AppendLine($"Рейтинг: {Rating.Value}");
         }
 
-        string information = messageBuilder.ToString().TrimEnd();
-        return information;
+        //string information = messageBuilder.ToString().TrimEnd();
+        return messageBuilder.ToString();
     }
 
     public Place Clone()

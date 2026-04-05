@@ -13,12 +13,13 @@ internal class HistoricalPlace : Place
     public override string GetDetails()
     {
         StringBuilder messageBuilder = new(base.GetDetails());
-        if (YearBuilt.HasValue)
+        if ( YearBuilt.HasValue )
         {
-            messageBuilder.AppendLine($"Рік побудови: {YearBuilt.Value.Year}");
+            messageBuilder.AppendLine( $"Рік побудови: {YearBuilt.Value.Year}" );
         }
         else
         {
+        
             messageBuilder.AppendLine("Рік побудови: Невідомо");
         }
 

@@ -26,7 +26,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <!-- ЛІВА ПАНЕЛЬ -->
+        <!-- #region "ЛІВА ПАНЕЛЬ" -->
 
         <ScrollViewer 
             Grid.Column="0" 
@@ -35,7 +35,7 @@
             BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}" 
             BorderThickness="0,0,1,0">
 
-            <!-- ТЕКСТБОКСИ: місто, країна, опис -->
+            <!-- #region "ТЕКСТБОКСИ: місто, країна, опис" -->
             <StackPanel Margin="20" HorizontalAlignment="Stretch">
 
                 <ui:TextBlock Text="Назва міста *" Margin="0,0,0,4" />
@@ -65,8 +65,9 @@
                         Text="{Binding NewNotes, UpdateSourceTrigger=PropertyChanged}" 
                         PlaceholderText="Додаткова інформація..." 
                         Margin="0,0,0,16"/>
-
-                <!-- 2 Колонки: Дата + Рейтинг -->
+                <!--#endregion-->
+                
+                <!-- #region "Колонки: Дата + Рейтинг" -->
                 <Grid Margin="0,0,0,24">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -87,7 +88,9 @@
                     </StackPanel>
 
                 </Grid>
+                <!--#endregion-->
 
+                <!--#region "Тип місця + поля що залежать від вибору"-->
             <StackPanel >
                 <ui:TextBlock>
                     Тип місця
@@ -103,8 +106,15 @@
             <StackPanel Visibility="{Binding SelectedPlaceType, Converter={StaticResource PlaceTypeToVisibility}, ConverterParameter=Historical}" Margin="0,0,0,12">
                 <ui:TextBlock Text="Рік побудови" Margin="0,0,0,4" />
                 <DatePicker SelectedDate="{Binding HistoricalYearBuilt, Mode=TwoWay}" />
+
                 <ui:TextBlock Text="Значимість (1-10)" Margin="0,8,0,4" />
-                <TextBox Text="{Binding HistoricalSignificance, Mode=TwoWay}" />
+
+                <Slider TickPlacement="Both"
+                    Minimum="1" Maximum="10"
+                    IsSnapToTickEnabled="True"
+                    TickFrequency="1"
+                    Value="{Binding HistoricalSignificance, Mode=TwoWay}"
+                />
             </StackPanel>
 
             <!-- Поля для Natural -->
@@ -116,9 +126,9 @@
                     <CheckBox IsChecked="{Binding NaturalProtectedStatus, Mode=TwoWay}" />
                 </StackPanel>
             </StackPanel>
-
+            <!--#endregion-->
                 
-                <!-- 2 Колонки: "Додати місце" + "Очистити форму" -->
+                <!-- #region 2 Колонки: "Додати місце" + "Очистити форму" -->
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="5*" />
@@ -149,9 +159,9 @@
                 <ui:TextBlock Opacity="0.6">
                     * - обов'язкові для заповнення поля
                 </ui:TextBlock>
+                <!--#endregion-->
 
-
-                <!-- ІНДЕКСАТОР (скривати/показувати через Expander) -->
+                <!-- #region "ІНДЕКСАТОР" -->
                 <Expander Header="Пошук за індексом" IsExpanded="False" Margin="0,5,0,8">
                     <StackPanel>
                         <ui:TextBlock Text="Введіть індекс" Margin="0,0,0,4" />
@@ -184,18 +194,20 @@
                             Padding="8" />
                     </StackPanel>
                 </Expander>
+                <!--#endregion-->
 
             </StackPanel>
         </ScrollViewer>
+        <!--#endregion-->
 
-        <!-- СПИСОК -->
+        <!-- #region "СПИСОК МІСЦЬ + деталі" -->
         <Grid Grid.Column="1" Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!-- DATAGRID: прив'язка до Places -->
+            <!--  #region "Датагрід " -->
             <ui:DataGrid x:Name="PlacesDataGrid" 
                 Grid.Row="0"
                 ItemsSource="{Binding Places}" 
@@ -206,7 +218,7 @@
                 HeadersVisibility="Column"
                 Margin="0,0,0,16">
 
-                <!-- КОЛОНКИ ДАТАГРІДА -->
+                <!-- #region "КОЛОНКИ ДАТАГРІДА" -->
                 <!-- Назва місця + зірка при рейтингу > 4 -->
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Header="Місто" Width="*" SortMemberPath="NameOfPlace">
@@ -231,6 +243,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
+                    
 
 
                     <!-- КРАЇНА / ОПИС / РЕЙТИНГ / ПРИМІТКИ -->
@@ -242,15 +255,47 @@
                     <DataGridTextColumn Header="Підсумок подорожі" Binding="{Binding TravelSummary, Mode=OneTime}" Width="*"/>
                 </DataGrid.Columns>
             </ui:DataGrid>
+            <!--#endregion-->
+            <!--#endregion-->
+            <!-- #region "ПАНЕЛЬ ДЕТАЛЕЙ" -->
+           
+            <!-- татишопесня 
+            сюди підключить мб якусь апішку 
+            + парсить картинку з вікіпедії на крусову-->
+            
+            <Border 
+                Grid.Row="1"
+                Background="{DynamicResource ControlAltFillColorSecondaryBrush}"
+                BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="16"
+                Margin="0,8,0,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <ui:TextBlock 
+                            Text="Деталі місця" 
+                            FontSize="16" 
+                            FontWeight="Bold"
+                            Margin="0,0,0,12" />
 
-            <!-- КНОПКА "Видалити запис" -->
-            <ui:Button Grid.Row="1" 
+                        <TextBlock 
+                            Text="{Binding SelectedPlaceDetails, Mode=OneWay}"
+                            TextWrapping="Wrap"
+                            LineHeight="1.5" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+            <!--#endregion-->
+            <!-- #region "КНОПКА "Видалити запис"" -->
+            <ui:Button Grid.Row="2" 
                        Appearance="Danger" 
                        HorizontalAlignment="Right" 
                        Command="{Binding DeletePlaceCommand}"
                        Icon="{ui:SymbolIcon Symbol=Delete24}">
                 Видалити обраний запис
             </ui:Button>
+            <!--#endregion-->
         </Grid>
+        <!--#endregion-->
     </Grid>
 </Window>
