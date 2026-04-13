@@ -1,15 +1,15 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Wpf.Ui.Controls;
+using System.Collections.ObjectModel;
 
 namespace OOPWPFProject.Models;
 
-internal class Place : INotifyPropertyChanged
+internal class Place : AbstractPlace, INotifyPropertyChanged, IReviewable
 {
     // СЕТТЕРИ/АКСЕССОРИ полей
 
-    public string NameOfPlace
+    public override required string Name
     {
         get => field;
         set
@@ -22,7 +22,7 @@ internal class Place : INotifyPropertyChanged
         }
     } = string.Empty;
 
-    public string Country
+    public override required string Country
     {
         get => field;
         set
@@ -35,7 +35,7 @@ internal class Place : INotifyPropertyChanged
         }
     } = string.Empty;
 
-    public string Description
+    public override required string Description
     {
         get => field;
         set
@@ -53,16 +53,16 @@ internal class Place : INotifyPropertyChanged
         get => field;
         set
         {
-            if (field != value)
+            if ( field != value )
             {
                 field = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(IsHighlyRated));
+                OnPropertyChanged( nameof( IsHighlyRated ) );
             }
         }
     }
-
-    public DateOnly? DateOfVisiting
+    
+    public DateOnly? Date
     {
         get => field;
         set
@@ -74,6 +74,19 @@ internal class Place : INotifyPropertyChanged
             }
         }
     }
+
+    public string? Review
+    {
+        get => field;
+        set
+        {
+            if ( field != value )
+            {
+                field = value;
+                OnPropertyChanged();
+            }
+        }
+    } = string.Empty;
 
     public string? Notes
     {
@@ -92,10 +105,10 @@ internal class Place : INotifyPropertyChanged
     {
         get
         {
-            string dateDisplay = DateOfVisiting.HasValue 
-                ? DateOfVisiting.Value.ToString("dd/MM/yyyy") 
+            string dateDisplay = Date.HasValue 
+                ? Date.Value.ToString("dd/MM/yyyy") 
                 : "Без дати";
-            return $"{NameOfPlace} - {dateDisplay}";
+            return $"{Name} - {dateDisplay}";
         }
     }
 
@@ -104,24 +117,26 @@ internal class Place : INotifyPropertyChanged
         get => Rating >= 4;
     }
 
+    public ObservableCollection<KeyValuePair<string, double?>> Reviews { get; } = [];
+
     public Place() { }
 
     public Place(string name, string country, string description)
     {
-        NameOfPlace = name;
+        Name = name;
         Country = country;
         Description = description;
     }
 
-    public virtual string GetDetails()
+    public override string GetDetails()
     {
         StringBuilder messageBuilder = new();
-        messageBuilder.AppendLine($"Місто: {NameOfPlace}");
+        messageBuilder.AppendLine($"Місто: {Name}");
         messageBuilder.AppendLine($"Країна: {Country}");
         messageBuilder.AppendLine($"Опис: {Description}");
-        if (DateOfVisiting.HasValue)
+        if (Date.HasValue)
         {
-            messageBuilder.AppendLine($"Дата: {DateOfVisiting.Value:dd.MM.yyyy}");
+            messageBuilder.AppendLine($"Дата: {Date.Value:dd.MM.yyyy}");
         }
 
         if (Rating.HasValue)
@@ -129,23 +144,57 @@ internal class Place : INotifyPropertyChanged
             messageBuilder.AppendLine($"Рейтинг: {Rating.Value}");
         }
 
-        //string information = messageBuilder.ToString().TrimEnd();
+        if (Reviews.Any())
+        {
+            messageBuilder.AppendLine($"Середній рейтинг відгуків: {GetAverageRating():F1}");
+        }
+
         return messageBuilder.ToString();
     }
 
-    public Place Clone()
-    {
-        return new Place(NameOfPlace, Country, Description)
-        {
-            Rating = this.Rating,
-            DateOfVisiting = this.DateOfVisiting,
-            Notes = this.Notes,
-        };
-    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    public void AddReview(string reviewText, double? rating)
+    {
+        string review = $"{rating} || {reviewText} ";
+        Reviews.Add( new KeyValuePair<string, double?>( $"{reviewText}", rating ) );
+
+        OnPropertyChanged(nameof(Rating));
+        OnPropertyChanged(nameof(IsHighlyRated));
+    }
+
+    public void AddReview(string review)
+    {
+        Reviews.Add(new KeyValuePair<string, double?>(review, null));
+        OnPropertyChanged(nameof(Rating));
+        OnPropertyChanged(nameof(IsHighlyRated));
+    }
+
+    public void RemoveReview(string review)
+    {
+        if (string.IsNullOrEmpty(review))
+        {
+            return;
+        }
+
+        var item = Reviews.FirstOrDefault(r => r.Key == review);
+        if (item.Key != null)
+        {
+            Reviews.Remove(item);
+            OnPropertyChanged(nameof(Reviews));
+            OnPropertyChanged(nameof(Rating));
+            OnPropertyChanged(nameof(IsHighlyRated));
+        }
+    }
+
+    public double GetAverageRating()
+    {
+        var validRatings = Reviews.Where(r => r.Value.HasValue).Select(r => r.Value.Value);
+        return validRatings.Any() ? validRatings.Average() : 0.0;
     }
 }

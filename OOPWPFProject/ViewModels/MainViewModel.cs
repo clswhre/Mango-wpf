@@ -1,6 +1,9 @@
-﻿using OOPWPFProject.Models;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Text;
+using System.Windows;
+
+using OOPWPFProject.Models;
+using System.Linq;
 
 namespace OOPWPFProject.ViewModels;
 
@@ -18,6 +21,8 @@ internal class MainViewModel : BaseViewModel
 
     public ObservableCollection<Place> Places { get; } = [];
 
+
+    #region "PlaceType + Visibility"
     public ObservableCollection<PlaceType> PlaceTypes { get; } =
     [
         PlaceType.Normal,
@@ -30,12 +35,22 @@ internal class MainViewModel : BaseViewModel
         get => _selectedPlaceType;
         set
         {
-            _selectedPlaceType = value;
-            OnPropertyChanged();
-            ClearSpecializedFields();
+            if (SetProperty(ref _selectedPlaceType, value))
+            {
+                OnPropertyChanged(nameof(IsNaturalSelected));
+                OnPropertyChanged(nameof(IsHistoricalSelected));
+                ClearSpecializedFields();
+            }
         }
     }
 
+    public Visibility IsNaturalSelected =>
+        SelectedPlaceType == PlaceType.Natural ? Visibility.Visible : Visibility.Collapsed;
+    public Visibility IsHistoricalSelected =>
+        SelectedPlaceType == PlaceType.Historical ? Visibility.Visible : Visibility.Collapsed;
+
+    #endregion
+    
     // СЕТТЕРИ/АКСЕССОРИ New* полей
     public string NewName
     {
@@ -151,9 +166,13 @@ internal class MainViewModel : BaseViewModel
             field = value;
             OnPropertyChanged();
             OnPropertyChanged( nameof( SelectedPlaceDetails ) );
+            OnPropertyChanged( nameof( IsSelectedPlaceExists ) );
             DeletePlaceCommand.RaiseCanExecuteChanged();
         }
     }
+
+    public Visibility IsSelectedPlaceExists =>
+        SelectedPlace is not null ? Visibility.Visible : Visibility.Collapsed;
 
     public string SelectedPlaceDetails
     {
@@ -166,6 +185,29 @@ internal class MainViewModel : BaseViewModel
     public RelayCommand DeletePlaceCommand { get; }
     public RelayCommand ClearFormCommand { get; }
     public RelayCommand ShowByIndexCommand { get; }
+    public RelayCommand AddReviewCommand { get; }
+    public RelayCommand RemoveReviewCommand { get; }
+
+    public string NewReviewText
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+            AddReviewCommand.RaiseCanExecuteChanged();
+        }
+    } = string.Empty;
+
+    public double? NewReviewRating
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+        }
+    } = null;
 
     public MainViewModel()
     {
@@ -182,6 +224,16 @@ internal class MainViewModel : BaseViewModel
         );
         ShowByIndexCommand = new RelayCommand(
             execute: _ => ShowByIndex()
+        );
+
+        AddReviewCommand = new RelayCommand(
+            execute: _ => AddReview(),
+            canExecute: _ => CanAddReview()
+        );
+
+        RemoveReviewCommand = new RelayCommand(
+            execute: p => RemoveReview(p as string),
+            canExecute: p => SelectedPlace != null && p is string
         );
     }
 
@@ -206,23 +258,23 @@ internal class MainViewModel : BaseViewModel
             case PlaceType.Normal:
                 newPlace = new Place()
                 {
-                    NameOfPlace = NewName,
+                    Name = NewName,
                     Country = NewCountry,
                     Description = NewDescription,
-                    DateOfVisiting = checkedVisitDate,
+                    Date = checkedVisitDate,
                     Rating = checkedRating,
-                    Notes = checkedNotes,
+                    Review = checkedNotes,
                 };
                 break;
             case PlaceType.Historical:
                 newPlace = new HistoricalPlace()
                 {
-                    NameOfPlace = NewName,
+                    Name = NewName,
                     Country = NewCountry,
                     Description = NewDescription,
-                    DateOfVisiting = checkedVisitDate,
+                    Date = checkedVisitDate,
                     Rating = checkedRating,
-                    Notes = checkedNotes,
+                    Review = checkedNotes,
                     YearBuilt = HistoricalYearBuilt,
                     Significance = HistoricalSignificance
                 };
@@ -230,12 +282,12 @@ internal class MainViewModel : BaseViewModel
             case PlaceType.Natural:
                 newPlace = new NaturalPlace()
                 {
-                    NameOfPlace = NewName,
+                    Name = NewName,
                     Country = NewCountry,
                     Description = NewDescription,
-                    DateOfVisiting = checkedVisitDate,
+                    Date = checkedVisitDate,
                     Rating = checkedRating,
-                    Notes = checkedNotes,
+                    Review = checkedNotes,
                     YearBuilt = NaturalYearBuilt,
                     ProtectedStatus = NaturalProtectedStatus
                 };
@@ -256,6 +308,34 @@ internal class MainViewModel : BaseViewModel
             SelectedPlace = null;
             PlaceAtIndexDisplay = string.Empty;
         }
+    }
+
+    private bool CanAddReview()
+    {
+        return SelectedPlace != null && !string.IsNullOrWhiteSpace(NewReviewText);
+    }
+
+    private void AddReview()
+    {
+        if (SelectedPlace == null)
+            return;
+
+        SelectedPlace.AddReview(NewReviewText, NewReviewRating);
+        NewReviewText = string.Empty;
+        NewReviewRating = null;
+
+        OnPropertyChanged(nameof(SelectedPlaceDetails));
+        AddReviewCommand.RaiseCanExecuteChanged();
+        DeletePlaceCommand.RaiseCanExecuteChanged();
+    }
+
+    private void RemoveReview(string? reviewText)
+    {
+        if (SelectedPlace == null || string.IsNullOrEmpty(reviewText))
+            return;
+
+        SelectedPlace.RemoveReview(reviewText);
+        OnPropertyChanged(nameof(SelectedPlaceDetails));
     }
 
     private void ClearForm()
@@ -302,11 +382,11 @@ internal class MainViewModel : BaseViewModel
             if ( place != null )
             {
                 StringBuilder messageBuilder = new();
-                messageBuilder.Append( $" [{IndexToShow}] | {place.NameOfPlace} , {place.Country}: {place.Description} " );
+                messageBuilder.Append( $" [{IndexToShow}] | {place.Name} , {place.Country}: {place.Description} " );
 
-                if ( place.DateOfVisiting.HasValue )
+                if ( place.Date.HasValue )
                 {
-                    messageBuilder.Append( $" @ {place.DateOfVisiting.Value.ToString( "dd/MM/yyyy" )} " );
+                    messageBuilder.Append( $" @ {place.Date.Value.ToString( "dd/MM/yyyy" )} " );
                 }
 
                 if ( place.Rating.HasValue )
