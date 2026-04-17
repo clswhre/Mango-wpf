@@ -187,6 +187,52 @@ internal class MainViewModel : BaseViewModel
     public RelayCommand ShowByIndexCommand { get; }
     public RelayCommand AddReviewCommand { get; }
     public RelayCommand RemoveReviewCommand { get; }
+    public RelayCommand overridedOperatorActon { get; }
+
+    public ObservableCollection<string> Operators { get; } = [ "+", ">", "<", "==", "!=" ];
+
+    public Place? SelectedObject1
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+            overridedOperatorActon?.RaiseCanExecuteChanged();
+        }
+    }
+
+    public Place? SelectedObject2
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+            overridedOperatorActon?.RaiseCanExecuteChanged();
+        }
+    }
+
+    public string? SelectedOperator
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+            overridedOperatorActon?.RaiseCanExecuteChanged();
+        }
+    }
+
+    public string OperatorResult
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+        }
+    } = string.Empty;
 
     public string NewReviewText
     {
@@ -234,6 +280,11 @@ internal class MainViewModel : BaseViewModel
         RemoveReviewCommand = new RelayCommand(
             execute: p => RemoveReview(p as string),
             canExecute: p => SelectedPlace != null && p is string
+        );
+
+        overridedOperatorActon = new RelayCommand(
+            execute: _ => ExecuteOperator(),
+            canExecute: _ => SelectedObject1 != null && SelectedObject2 != null && !string.IsNullOrEmpty(SelectedOperator)
         );
     }
 
@@ -336,6 +387,37 @@ internal class MainViewModel : BaseViewModel
 
         SelectedPlace.RemoveReview(reviewText);
         OnPropertyChanged(nameof(SelectedPlaceDetails));
+    }
+
+    private void ExecuteOperator()
+    {
+        if (SelectedObject1 == null || SelectedObject2 == null || string.IsNullOrEmpty(SelectedOperator))
+            return;
+
+        switch (SelectedOperator)
+        {
+            case "==":
+                OperatorResult = (SelectedObject1 == SelectedObject2).ToString();
+                break;
+            case "!=":
+                OperatorResult = (SelectedObject1 != SelectedObject2).ToString();
+                break;
+            case ">":
+                OperatorResult = $"1-й має більший рейтинг: {SelectedObject1 > SelectedObject2}";
+                break;
+            case "<":
+                OperatorResult = $"1-й має менший рейтинг: {SelectedObject1 < SelectedObject2}";
+                break;
+            case "+":
+                var newPlace = SelectedObject1 + SelectedObject2;
+                OperatorResult = newPlace != null 
+                    ? $"Новий об'єкт:\nНазва: {newPlace.Name}\nОпис: {newPlace.Description}" 
+                    : "Помилка додавання";
+                break;
+            default:
+                OperatorResult = "Невідома операція";
+                break;
+        }
     }
 
     private void ClearForm()

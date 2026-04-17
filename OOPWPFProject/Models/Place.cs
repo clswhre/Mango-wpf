@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Collections.ObjectModel;
+using System.CodeDom;
 
 namespace OOPWPFProject.Models;
 
@@ -9,7 +10,7 @@ internal class Place : AbstractPlace, INotifyPropertyChanged, IReviewable
 {
     // СЕТТЕРИ/АКСЕССОРИ полей
 
-    public override required string Name
+    public override  string Name
     {
         get => field;
         set
@@ -22,7 +23,7 @@ internal class Place : AbstractPlace, INotifyPropertyChanged, IReviewable
         }
     } = string.Empty;
 
-    public override required string Country
+    public override  string Country
     {
         get => field;
         set
@@ -35,7 +36,7 @@ internal class Place : AbstractPlace, INotifyPropertyChanged, IReviewable
         }
     } = string.Empty;
 
-    public override required string Description
+    public override  string Description
     {
         get => field;
         set
@@ -99,7 +100,7 @@ internal class Place : AbstractPlace, INotifyPropertyChanged, IReviewable
                 OnPropertyChanged();
             }
         }
-    }
+    }   
 
     public string TravelSummary
     {
@@ -116,6 +117,8 @@ internal class Place : AbstractPlace, INotifyPropertyChanged, IReviewable
     {
         get => Rating >= 4;
     }
+
+
 
     public ObservableCollection<KeyValuePair<string, double?>> Reviews { get; } = [];
 
@@ -196,5 +199,50 @@ internal class Place : AbstractPlace, INotifyPropertyChanged, IReviewable
     {
         var validRatings = Reviews.Where(r => r.Value.HasValue).Select(r => r.Value.Value);
         return validRatings.Any() ? validRatings.Average() : 0.0;
+    }
+
+
+    public static Place? operator +( Place? p1, Place? p2 )
+    {
+        if ( p1 is null || p2 is null ) return null;
+        var newName = p1.Name + " " + p2.Name.TrimEnd();
+        var newCountry = p1.Country;
+        var newDescription = p1.Description + " " +  p2.Description.TrimEnd();
+        return new Place( newName, newCountry, newDescription );
+    }
+    public static bool operator >( Place? p1, Place? p2 )
+    {
+        if (p1 is null || p2 is null) return false;
+        return p1.Rating > p2.Rating;
+    }
+    public static bool operator <( Place? p1, Place? p2 )
+    {
+        if (p1 is null || p2 is null) return false;
+        return p1.Rating < p2.Rating;
+    }
+    public static bool operator ==( Place? p1, Place? p2 )
+    {
+        if (ReferenceEquals(p1, p2)) return true;
+        if (p1 is null || p2 is null) return false;
+        return ( p1.Rating == p2.Rating );
+    }
+    public static bool operator !=( Place? p1, Place? p2 )
+    {
+        return !(p1 == p2);
+    }
+
+
+    public override bool Equals( object obj )
+    {
+        if ( obj is Place other )
+        {
+            return this == other;
+        }
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return Name.GetHashCode();
     }
 }
