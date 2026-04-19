@@ -27,6 +27,7 @@ namespace OOPWPFProject
 
 
             Logger.LogInfo( "Програма почала роботу" );
+            Logger.LoadData();
         }
 
         protected override void OnExit( ExitEventArgs e )
@@ -34,7 +35,7 @@ namespace OOPWPFProject
             base.OnExit( e );
 
             Logger.SaveData();
-            Logger.LogInfo( $"Програма завершила роботу (Час роботи  {Logger.WorkingTime} )" );
+            Logger.LogInfo( $"Програма завершила роботу (Час роботи  {Logger.WorkingTime()} )" );
         }
     }
 }

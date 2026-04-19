@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 using OOPWPFProject.ViewModels;
 
@@ -32,18 +33,58 @@ public static class Logger
 
     public static void SaveData()
     {
-
-        foreach ( Place place in MainViewModel.Places )
+        try
         {
-            try
+            JsonSerializerOptions options = new()
             {
-                string placeData = JsonSerializer.Serialize(place);
-                File.AppendAllText( App.SaveFilePath, placeData );
-            }
-            catch ( Exception e )
+                WriteIndented = true
+            };
+
+            string json = JsonSerializer.Serialize( MainViewModel.Places, options );
+            File.WriteAllText( App.SaveFilePath, json );
+        }
+        catch ( Exception e )
+        {
+            Logger.LogInfo( $"Помилка збереження: {e.Message}" );
+        }
+    }
+
+    public static void LoadData()
+    {
+        try
+        {
+            if ( !File.Exists( App.SaveFilePath ) )
             {
-                Logger.LogInfo( $"Помилка : {e}" );
+                return;
             }
+
+            string json = File.ReadAllText(App.SaveFilePath);
+            if ( string.IsNullOrWhiteSpace( json ) )
+            {
+                return;
+            }
+
+            JsonSerializerOptions options = new()
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            List<Place>? loadedPlaces = JsonSerializer.Deserialize<List<Place>>( json, options );
+            if ( loadedPlaces is null )
+            {
+                return;
+            }
+
+            MainViewModel.Places.Clear();
+
+            foreach ( var place in loadedPlaces )
+            {
+                MainViewModel.Places.Add( place );
+            }
+        }
+        catch ( Exception e )
+        {
+            LogInfo( $"Помилка завантаження: {e.Message}" );
         }
     }
 }

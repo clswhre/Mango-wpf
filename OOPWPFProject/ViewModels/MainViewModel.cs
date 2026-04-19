@@ -3,7 +3,6 @@ using System.Text;
 using System.Windows;
 
 using OOPWPFProject.Models;
-using System.Linq;
 
 namespace OOPWPFProject.ViewModels;
 
@@ -17,13 +16,15 @@ public enum PlaceType
 internal class MainViewModel : BaseViewModel
 {
     private EntityManager<Place> _placeManager = new();
-    private PlaceType _selectedPlaceType = PlaceType.Normal;
 
     public static ObservableCollection<Place> Places { get; } = [];
 
 
     #region "PlaceType + Visibility"
-    public ObservableCollection<PlaceType> PlaceTypes { get; } =
+    public ObservableCollection<PlaceType> PlaceTypes
+    {
+        get;
+    } =
     [
         PlaceType.Normal,
         PlaceType.Historical,
@@ -32,17 +33,17 @@ internal class MainViewModel : BaseViewModel
 
     public PlaceType SelectedPlaceType
     {
-        get => _selectedPlaceType;
+        get;
         set
         {
-            if (SetProperty(ref _selectedPlaceType, value))
+            if ( SetProperty( ref field, value ) )
             {
-                OnPropertyChanged(nameof(IsNaturalSelected));
-                OnPropertyChanged(nameof(IsHistoricalSelected));
+                OnPropertyChanged( nameof( IsNaturalSelected ) );
+                OnPropertyChanged( nameof( IsHistoricalSelected ) );
                 ClearSpecializedFields();
             }
         }
-    }
+    } = PlaceType.Normal;
 
     public Visibility IsNaturalSelected =>
         SelectedPlaceType == PlaceType.Natural ? Visibility.Visible : Visibility.Collapsed;
@@ -50,7 +51,7 @@ internal class MainViewModel : BaseViewModel
         SelectedPlaceType == PlaceType.Historical ? Visibility.Visible : Visibility.Collapsed;
 
     #endregion
-    
+
     // СЕТТЕРИ/АКСЕССОРИ New* полей
     public string NewName
     {
@@ -98,7 +99,7 @@ internal class MainViewModel : BaseViewModel
 
     public double NewRating
     {
-        get; 
+        get;
         set
         {
             field = value;
@@ -108,7 +109,7 @@ internal class MainViewModel : BaseViewModel
 
     public string? NewNotes
     {
-        get; 
+        get;
         set
         {
             field = value;
@@ -160,7 +161,7 @@ internal class MainViewModel : BaseViewModel
 
     public Place? SelectedPlace
     {
-        get; 
+        get;
         set
         {
             field = value;
@@ -174,22 +175,40 @@ internal class MainViewModel : BaseViewModel
     public Visibility IsSelectedPlaceExists =>
         SelectedPlace is not null ? Visibility.Visible : Visibility.Collapsed;
 
-    public string SelectedPlaceDetails
-    {
-        get => SelectedPlace?.GetDetails() ?? "Виберіть запис для перегляду деталей";
-    }
+    public string SelectedPlaceDetails => SelectedPlace?.GetDetails() ?? "Виберіть запис для перегляду деталей";
 
 
     // RelayCommand-и для WPF-біндінга
-    public RelayCommand AddPlaceCommand { get; }
-    public RelayCommand DeletePlaceCommand { get; }
-    public RelayCommand ClearFormCommand { get; }
-    public RelayCommand ShowByIndexCommand { get; }
-    public RelayCommand AddReviewCommand { get; }
-    public RelayCommand RemoveReviewCommand { get; }
-    public RelayCommand overridedOperatorActon { get; }
+    public RelayCommand AddPlaceCommand
+    {
+        get;
+    }
+    public RelayCommand DeletePlaceCommand
+    {
+        get;
+    }
+    public RelayCommand ClearFormCommand
+    {
+        get;
+    }
+    public RelayCommand ShowByIndexCommand
+    {
+        get;
+    }
+    public RelayCommand AddReviewCommand
+    {
+        get;
+    }
+    public RelayCommand RemoveReviewCommand
+    {
+        get;
+    }
+    public RelayCommand overridedOperatorActon
+    {
+        get;
+    }
 
-    public ObservableCollection<string> Operators { get; } = [ "+", ">", "<", "==", "!=" ];
+    public ObservableCollection<string> Operators { get; } = ["+", ">", "<", "==", "!="];
 
     public Place? SelectedObject1
     {
@@ -278,13 +297,13 @@ internal class MainViewModel : BaseViewModel
         );
 
         RemoveReviewCommand = new RelayCommand(
-            execute: p => RemoveReview(p as string),
+            execute: p => RemoveReview( p as string ),
             canExecute: p => SelectedPlace != null && p is string
         );
 
         overridedOperatorActon = new RelayCommand(
             execute: _ => ExecuteOperator(),
-            canExecute: _ => SelectedObject1 != null && SelectedObject2 != null && !string.IsNullOrEmpty(SelectedOperator)
+            canExecute: _ => SelectedObject1 != null && SelectedObject2 != null && !string.IsNullOrEmpty( SelectedOperator )
         );
     }
 
@@ -302,7 +321,7 @@ internal class MainViewModel : BaseViewModel
         double? checkedRating = NewRating > 0 ? NewRating : null;
         string? checkedNotes = string.IsNullOrEmpty(NewNotes) ? null : NewNotes;
 
-        Place newPlace = null;
+        Place? newPlace = null;
 
         switch ( SelectedPlaceType )
         {
@@ -343,7 +362,8 @@ internal class MainViewModel : BaseViewModel
                     ProtectedStatus = NaturalProtectedStatus
                 };
                 break;
-        };
+        }
+        ;
 
         Places.Add( newPlace );
         _placeManager.Add( newPlace );
@@ -363,44 +383,50 @@ internal class MainViewModel : BaseViewModel
 
     private bool CanAddReview()
     {
-        return SelectedPlace != null && !string.IsNullOrWhiteSpace(NewReviewText);
+        return SelectedPlace != null && !string.IsNullOrWhiteSpace( NewReviewText );
     }
 
     private void AddReview()
     {
-        if (SelectedPlace == null)
+        if ( SelectedPlace == null )
+        {
             return;
+        }
 
-        SelectedPlace.AddReview(NewReviewText, NewReviewRating);
+        SelectedPlace.AddReview( NewReviewText, NewReviewRating );
         NewReviewText = string.Empty;
         NewReviewRating = null;
 
-        OnPropertyChanged(nameof(SelectedPlaceDetails));
+        OnPropertyChanged( nameof( SelectedPlaceDetails ) );
         AddReviewCommand.RaiseCanExecuteChanged();
         DeletePlaceCommand.RaiseCanExecuteChanged();
     }
 
-    private void RemoveReview(string? reviewText)
+    private void RemoveReview( string? reviewText )
     {
-        if (SelectedPlace == null || string.IsNullOrEmpty(reviewText))
+        if ( SelectedPlace == null || string.IsNullOrEmpty( reviewText ) )
+        {
             return;
+        }
 
-        SelectedPlace.RemoveReview(reviewText);
-        OnPropertyChanged(nameof(SelectedPlaceDetails));
+        SelectedPlace.RemoveReview( reviewText );
+        OnPropertyChanged( nameof( SelectedPlaceDetails ) );
     }
 
     private void ExecuteOperator()
     {
-        if (SelectedObject1 == null || SelectedObject2 == null || string.IsNullOrEmpty(SelectedOperator))
+        if ( SelectedObject1 == null || SelectedObject2 == null || string.IsNullOrEmpty( SelectedOperator ) )
+        {
             return;
+        }
 
-        switch (SelectedOperator)
+        switch ( SelectedOperator )
         {
             case "==":
-                OperatorResult = (SelectedObject1 == SelectedObject2).ToString();
+                OperatorResult = ( SelectedObject1 == SelectedObject2 ).ToString();
                 break;
             case "!=":
-                OperatorResult = (SelectedObject1 != SelectedObject2).ToString();
+                OperatorResult = ( SelectedObject1 != SelectedObject2 ).ToString();
                 break;
             case ">":
                 OperatorResult = $"1-й має більший рейтинг: {SelectedObject1 > SelectedObject2}";
@@ -409,9 +435,9 @@ internal class MainViewModel : BaseViewModel
                 OperatorResult = $"1-й має менший рейтинг: {SelectedObject1 < SelectedObject2}";
                 break;
             case "+":
-                var newPlace = SelectedObject1 + SelectedObject2;
-                OperatorResult = newPlace != null 
-                    ? $"Новий об'єкт:\nНазва: {newPlace.Name}\nОпис: {newPlace.Description}" 
+                Place? newPlace = SelectedObject1 + SelectedObject2;
+                OperatorResult = newPlace != null
+                    ? $"Новий об'єкт:\nНазва: {newPlace.Name}\nОпис: {newPlace.Description}"
                     : "Помилка додавання";
                 break;
             default:
