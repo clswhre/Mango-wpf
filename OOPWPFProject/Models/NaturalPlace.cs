@@ -21,7 +21,7 @@ internal class NaturalPlace : Place
             messageBuilder.AppendLine("Рік утворення: Невідомо");
         }
 
-        if ( ProtectedStatus.HasValue )
+        if ( ProtectedStatus.HasValue && ProtectedStatus == true)
         {
             messageBuilder.AppendLine( $"Об'єкт під захистом" ) ;
         }

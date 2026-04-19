@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OOPWPFProject.ViewModels;
+namespace OOPWPFProject.Models;
 
 internal class HistoricalPlace : Place
 {

@@ -25,7 +25,7 @@ namespace OOPWPFProject
                 Directory.CreateDirectory( DataDirectoryPath );
             }
 
-            Logger.SaveData();
+
             Logger.LogInfo( "Програма почала роботу" );
         }
 
@@ -33,11 +33,7 @@ namespace OOPWPFProject
         {
             base.OnExit( e );
 
-            if ( !File.Exists( SaveFilePath ) )
-            {
-                File.Create( SaveFilePath );
-            }
-
+            Logger.SaveData();
             Logger.LogInfo( $"Програма завершила роботу (Час роботи  {Logger.WorkingTime} )" );
         }
     }
