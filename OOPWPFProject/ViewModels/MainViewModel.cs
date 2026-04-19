@@ -19,7 +19,7 @@ internal class MainViewModel : BaseViewModel
     private EntityManager<Place> _placeManager = new();
     private PlaceType _selectedPlaceType = PlaceType.Normal;
 
-    public ObservableCollection<Place> Places { get; } = [];
+    public static ObservableCollection<Place> Places { get; } = [];
 
 
     #region "PlaceType + Visibility"
