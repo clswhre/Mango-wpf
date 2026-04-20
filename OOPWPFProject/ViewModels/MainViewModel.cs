@@ -3,7 +3,6 @@ using System.Text;
 using System.Windows;
 
 using OOPWPFProject.Models;
-using System.Linq;
 
 namespace OOPWPFProject.ViewModels;
 
@@ -17,13 +16,15 @@ public enum PlaceType
 internal class MainViewModel : BaseViewModel
 {
     private EntityManager<Place> _placeManager = new();
-    private PlaceType _selectedPlaceType = PlaceType.Normal;
 
-    public ObservableCollection<Place> Places { get; } = [];
+    public static ObservableCollection<Place> Places { get; } = [];
 
 
     #region "PlaceType + Visibility"
-    public ObservableCollection<PlaceType> PlaceTypes { get; } =
+    public ObservableCollection<PlaceType> PlaceTypes
+    {
+        get;
+    } =
     [
         PlaceType.Normal,
         PlaceType.Historical,
@@ -32,25 +33,27 @@ internal class MainViewModel : BaseViewModel
 
     public PlaceType SelectedPlaceType
     {
-        get => _selectedPlaceType;
+        get;
         set
         {
-            if (SetProperty(ref _selectedPlaceType, value))
+            if ( SetProperty( ref field, value ) )
             {
-                OnPropertyChanged(nameof(IsNaturalSelected));
-                OnPropertyChanged(nameof(IsHistoricalSelected));
+                OnPropertyChanged( nameof( IsNaturalSelected ) );
+                OnPropertyChanged( nameof( IsHistoricalSelected ) );
                 ClearSpecializedFields();
             }
         }
-    }
+    } = PlaceType.Normal;
 
     public Visibility IsNaturalSelected =>
         SelectedPlaceType == PlaceType.Natural ? Visibility.Visible : Visibility.Collapsed;
     public Visibility IsHistoricalSelected =>
         SelectedPlaceType == PlaceType.Historical ? Visibility.Visible : Visibility.Collapsed;
 
+    public Visibility IsPlaceExists => Places.Any() ? Visibility.Visible : Visibility.Collapsed;
+
     #endregion
-    
+
     // СЕТТЕРИ/АКСЕССОРИ New* полей
     public string NewName
     {
@@ -98,7 +101,7 @@ internal class MainViewModel : BaseViewModel
 
     public double NewRating
     {
-        get; 
+        get;
         set
         {
             field = value;
@@ -108,7 +111,7 @@ internal class MainViewModel : BaseViewModel
 
     public string? NewNotes
     {
-        get; 
+        get;
         set
         {
             field = value;
@@ -160,7 +163,7 @@ internal class MainViewModel : BaseViewModel
 
     public Place? SelectedPlace
     {
-        get; 
+        get;
         set
         {
             field = value;
@@ -174,22 +177,69 @@ internal class MainViewModel : BaseViewModel
     public Visibility IsSelectedPlaceExists =>
         SelectedPlace is not null ? Visibility.Visible : Visibility.Collapsed;
 
-    public string SelectedPlaceDetails
-    {
-        get => SelectedPlace?.GetDetails() ?? "Виберіть запис для перегляду деталей";
-    }
+    public string SelectedPlaceDetails => SelectedPlace?.GetDetails() ?? "Виберіть запис для перегляду деталей";
 
 
     // RelayCommand-и для WPF-біндінга
-    public RelayCommand AddPlaceCommand { get; }
-    public RelayCommand DeletePlaceCommand { get; }
-    public RelayCommand ClearFormCommand { get; }
-    public RelayCommand ShowByIndexCommand { get; }
-    public RelayCommand AddReviewCommand { get; }
-    public RelayCommand RemoveReviewCommand { get; }
-    public RelayCommand overridedOperatorActon { get; }
+    public RelayCommand AddPlaceCommand
+    {
+        get;
+    }
+    public RelayCommand DeletePlaceCommand
+    {
+        get;
+    }
+    public RelayCommand ClearFormCommand
+    {
+        get;
+    }
+    public RelayCommand ShowByIndexCommand
+    {
+        get;
+    }
+    public RelayCommand AddReviewCommand
+    {
+        get;
+    }
+    public RelayCommand HighlyRatedSaveCommand
+    {
+        get;
+    }
+    public RelayCommand HighlyRatedLoadCommand
+    {
+        get;
+    }
+    public RelayCommand RemoveReviewCommand
+    {
+        get;
+    }
+    public RelayCommand overridedOperatorActon
+    {
+        get;
+    }
 
-    public ObservableCollection<string> Operators { get; } = [ "+", ">", "<", "==", "!=" ];
+    public string NewReviewText
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+            AddReviewCommand.RaiseCanExecuteChanged();
+        }
+    } = string.Empty;
+
+    public double? NewReviewRating
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+        }
+    } = null;
+
+    public ObservableCollection<string> Operators { get; } = ["+", ">", "<", "==", "!="];
 
     public Place? SelectedObject1
     {
@@ -234,29 +284,14 @@ internal class MainViewModel : BaseViewModel
         }
     } = string.Empty;
 
-    public string NewReviewText
-    {
-        get;
-        set
-        {
-            field = value;
-            OnPropertyChanged();
-            AddReviewCommand.RaiseCanExecuteChanged();
-        }
-    } = string.Empty;
-
-    public double? NewReviewRating
-    {
-        get;
-        set
-        {
-            field = value;
-            OnPropertyChanged();
-        }
-    } = null;
-
     public MainViewModel()
     {
+        Places.CollectionChanged += ( _, _ ) =>
+        {
+            OnPropertyChanged( nameof( IsPlaceExists ) );
+            HighlyRatedSaveCommand?.RaiseCanExecuteChanged();
+        };
+
         AddPlaceCommand = new RelayCommand(
             execute: _ => AddPlace(),
             canExecute: _ => CanAddPlace()
@@ -277,16 +312,27 @@ internal class MainViewModel : BaseViewModel
             canExecute: _ => CanAddReview()
         );
 
+        HighlyRatedSaveCommand = new RelayCommand(
+            execute: _ => SavePlacesWithHightRating(),
+            canExecute: _ => Places.Any()
+        );
+
+        HighlyRatedLoadCommand = new RelayCommand(
+            execute: _ => LoadHighlyRatedPlaces()
+        );
+
         RemoveReviewCommand = new RelayCommand(
-            execute: p => RemoveReview(p as string),
+            execute: p => RemoveReview( p as string ),
             canExecute: p => SelectedPlace != null && p is string
         );
 
         overridedOperatorActon = new RelayCommand(
             execute: _ => ExecuteOperator(),
-            canExecute: _ => SelectedObject1 != null && SelectedObject2 != null && !string.IsNullOrEmpty(SelectedOperator)
+            canExecute: _ => SelectedObject1 != null && SelectedObject2 != null && !string.IsNullOrEmpty( SelectedOperator )
         );
+
     }
+
 
     private bool CanAddPlace()
     {
@@ -302,7 +348,7 @@ internal class MainViewModel : BaseViewModel
         double? checkedRating = NewRating > 0 ? NewRating : null;
         string? checkedNotes = string.IsNullOrEmpty(NewNotes) ? null : NewNotes;
 
-        Place newPlace = null;
+        Place? newPlace = null;
 
         switch ( SelectedPlaceType )
         {
@@ -343,10 +389,20 @@ internal class MainViewModel : BaseViewModel
                     ProtectedStatus = NaturalProtectedStatus
                 };
                 break;
-        };
+        }
+        ;
 
-        Places.Add( newPlace );
-        _placeManager.Add( newPlace );
+        if ( newPlace is not null && !PlaceAlreadyExists( newPlace ) )
+        {
+            Places.Add( newPlace );
+            _placeManager.Add( newPlace );
+            HighlyRatedSaveCommand.RaiseCanExecuteChanged();
+            Logger.LogInfo( $"Дія (Додано): Додано місце '{newPlace.Name}', країна '{newPlace.Country}'" );
+        }
+        else if ( newPlace is not null )
+        {
+            Logger.LogInfo( $"Дія (Змінено): Спроба додати дубль місця '{newPlace.Name}' відхилена" );
+        }
 
         ClearForm();
     }
@@ -355,52 +411,64 @@ internal class MainViewModel : BaseViewModel
     {
         if ( SelectedPlace != null )
         {
+            string removedPlaceName = SelectedPlace.Name;
+            string removedPlaceCountry = SelectedPlace.Country;
             Places.Remove( SelectedPlace );
             SelectedPlace = null;
             PlaceAtIndexDisplay = string.Empty;
+            HighlyRatedSaveCommand.RaiseCanExecuteChanged();
+            Logger.LogInfo( $"Дія (Видалено): Видалено місце '{removedPlaceName}', країна '{removedPlaceCountry}'" );
         }
     }
 
     private bool CanAddReview()
     {
-        return SelectedPlace != null && !string.IsNullOrWhiteSpace(NewReviewText);
+        return SelectedPlace != null && !string.IsNullOrWhiteSpace( NewReviewText );
     }
 
     private void AddReview()
     {
-        if (SelectedPlace == null)
+        if ( SelectedPlace == null )
+        {
             return;
+        }
 
-        SelectedPlace.AddReview(NewReviewText, NewReviewRating);
+        SelectedPlace.AddReview( NewReviewText, NewReviewRating );
+        Logger.LogInfo( $"Дія (Змінено): Додано відгук для місця '{SelectedPlace.Name}'" );
         NewReviewText = string.Empty;
         NewReviewRating = null;
 
-        OnPropertyChanged(nameof(SelectedPlaceDetails));
+        OnPropertyChanged( nameof( SelectedPlaceDetails ) );
         AddReviewCommand.RaiseCanExecuteChanged();
         DeletePlaceCommand.RaiseCanExecuteChanged();
     }
 
-    private void RemoveReview(string? reviewText)
+    private void RemoveReview( string? reviewText )
     {
-        if (SelectedPlace == null || string.IsNullOrEmpty(reviewText))
+        if ( SelectedPlace == null || string.IsNullOrEmpty( reviewText ) )
+        {
             return;
+        }
 
-        SelectedPlace.RemoveReview(reviewText);
-        OnPropertyChanged(nameof(SelectedPlaceDetails));
+        SelectedPlace.RemoveReview( reviewText );
+        Logger.LogInfo( $"Дія (Змінено): Видалено відгук для місця '{SelectedPlace.Name}'" );
+        OnPropertyChanged( nameof( SelectedPlaceDetails ) );
     }
 
     private void ExecuteOperator()
     {
-        if (SelectedObject1 == null || SelectedObject2 == null || string.IsNullOrEmpty(SelectedOperator))
+        if ( SelectedObject1 == null || SelectedObject2 == null || string.IsNullOrEmpty( SelectedOperator ) )
+        {
             return;
+        }
 
-        switch (SelectedOperator)
+        switch ( SelectedOperator )
         {
             case "==":
-                OperatorResult = (SelectedObject1 == SelectedObject2).ToString();
+                OperatorResult = ( SelectedObject1 == SelectedObject2 ).ToString();
                 break;
             case "!=":
-                OperatorResult = (SelectedObject1 != SelectedObject2).ToString();
+                OperatorResult = ( SelectedObject1 != SelectedObject2 ).ToString();
                 break;
             case ">":
                 OperatorResult = $"1-й має більший рейтинг: {SelectedObject1 > SelectedObject2}";
@@ -409,9 +477,9 @@ internal class MainViewModel : BaseViewModel
                 OperatorResult = $"1-й має менший рейтинг: {SelectedObject1 < SelectedObject2}";
                 break;
             case "+":
-                var newPlace = SelectedObject1 + SelectedObject2;
-                OperatorResult = newPlace != null 
-                    ? $"Новий об'єкт:\nНазва: {newPlace.Name}\nОпис: {newPlace.Description}" 
+                Place? newPlace = SelectedObject1 + SelectedObject2;
+                OperatorResult = newPlace != null
+                    ? $"Новий об'єкт:\nНазва: {newPlace.Name}\nОпис: {newPlace.Description}"
                     : "Помилка додавання";
                 break;
             default:
@@ -488,5 +556,51 @@ internal class MainViewModel : BaseViewModel
         {
             PlaceAtIndexDisplay = $"Помилка: {ex.Message}";
         }
+    }
+
+    private void SavePlacesWithHightRating()
+    {
+        try
+        {
+            Saver.HightlyRatedSave( Saver.CoolSaveFilePath );
+            Logger.LogInfo( "Дія (Збережено): Збережено високооцінені місця у файл CoolSave.json" );
+        }
+        catch ( Exception e )
+        {
+            Logger.LogInfo( $"Помилка збереження: {e.Message}" );
+        }
+    }
+
+    private void LoadHighlyRatedPlaces()
+    {
+        try
+        {
+            List<Place> loadedPlaces = Saver.LoadHightlyRated( Saver.CoolSaveFilePath );
+
+            foreach ( Place place in loadedPlaces )
+            {
+                if ( !PlaceAlreadyExists( place ) )
+                {
+                    Places.Add( place );
+                    _placeManager.Add( place );
+                    Logger.LogInfo( $"Дія (Додано): Завантажено місце '{place.Name}' із CoolSave.json" );
+                }
+            }
+
+            Logger.LogInfo( $"Завантажено високооцінені місця: {loadedPlaces.Count}" );
+        }
+        catch ( Exception e )
+        {
+            Logger.LogInfo( $"Помилка завантаження high-rated: {e.Message}" );
+        }
+    }
+
+    private bool PlaceAlreadyExists( Place candidate )
+    {
+        return Places.Any( p => p is not null
+            && p.Name == candidate.Name
+            && p.Country == candidate.Country
+            && p.Description == candidate.Description
+            && p == candidate );
     }
 }

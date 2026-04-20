@@ -18,7 +18,7 @@
     <Grid>
         <!-- Місце для лівої панельки і списку місць -->
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="350" />
+            <ColumnDefinition Width="400" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
@@ -155,6 +155,36 @@
                 <ui:TextBlock Opacity="0.6">
                     * - обов'язкові для заповнення поля
                 </ui:TextBlock>
+
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="5" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+
+                        <ui:Button
+                            Grid.Column="0" 
+                            Margin="0,8,0,0"
+                            Appearance="Primary"
+                            Icon="{ui:SymbolIcon Symbol=Save20}"
+                            Command="{Binding HighlyRatedSaveCommand}">
+                            Зберегти 
+                        </ui:Button>
+
+                        <ui:Button
+                            Grid.Column="2" 
+                            Margin="0,8,0,0"
+                            Appearance="Secondary"
+                            Icon="{ui:SymbolIcon Symbol=FolderOpen20}"
+                            Command="{Binding HighlyRatedLoadCommand}">
+                            Завантажити
+                        </ui:Button>
+
+                    </Grid>
+
+
                 <!--#endregion-->
 
                 <!-- #region "ІНДЕКСАТОР" -->
@@ -218,17 +248,18 @@
         <!--#endregion-->
 
         <!-- #region "СПИСОК МІСЦЬ + деталі" -->
-        <Grid Grid.Column="1" Margin="10">
+        <Grid Grid.Column="1" Margin="10" Visibility="{Binding IsPlaceExists}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!--  #region "Датагрід " -->
-            <ui:DataGrid x:Name="PlacesDataGrid" 
+            <ui:DataGrid x:Name="PlacesDataGrid"  
                 Grid.Row="0"
                 ItemsSource="{Binding Places}" 
                 SelectedItem="{Binding SelectedPlace}"
+                         Visibility="{Binding IsPlaceExists}"
                 AutoGenerateColumns="False" 
                 IsReadOnly="True"
                 SelectionMode="Single"
@@ -286,9 +317,10 @@
                 BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
                 BorderThickness="0,1,0,0"
                 Padding="16"
-                Margin="0,8,0,0">
-                
-                    <StackPanel>
+                Margin="0,8,0,0"
+                Visibility="{Binding IsDetailsVisible}">
+
+                <StackPanel Visibility="{Binding IsDetailsVisible}">
                         <Grid Margin="0,0,0,12">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -301,6 +333,7 @@
                                 FontSize="16" 
                                 FontWeight="Bold"
                                 VerticalAlignment="Center"
+                                Visibility="{Binding IsDetailsVisible}"
                             />
 
                             <!-- #region "КНОПКА "Видалити запис"" -->
@@ -317,7 +350,8 @@
                             <TextBlock 
                             Text="{Binding SelectedPlaceDetails, Mode=OneWay}"
                             TextWrapping="Wrap"
-                            LineHeight="1.5" />
+                            LineHeight="1.5" 
+                                Visibility="{Binding IsDetailsVisible}"/>
                             <!-- Reviews  -->
                         <StackPanel Margin="0,12,0,0"
                                     Visibility="{Binding IsSelectedPlaceExists}">

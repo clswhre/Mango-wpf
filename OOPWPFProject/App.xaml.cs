@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
+
+using OOPWPFProject.Models;
 
 namespace OOPWPFProject
 {
@@ -7,6 +10,36 @@ namespace OOPWPFProject
     /// </summary>
     public partial class App : Application
     {
-    }
 
+
+        public static DateTime StartTime
+        {
+            get;
+            private set;
+        }
+
+        protected override void OnStartup( StartupEventArgs e )
+        {
+            base.OnStartup( e );
+            StartTime = DateTime.Now;
+
+            if ( !Directory.Exists( Saver.DataDirectoryPath ) )
+            {
+                Directory.CreateDirectory( Saver.DataDirectoryPath );
+            }
+
+
+            Logger.LogInfo( " ========== Програма почала роботу ========== " );
+            Logger.LoadData( Saver.SaveFilePath );
+        }
+
+        protected override void OnExit( ExitEventArgs e )
+        {
+            base.OnExit( e );
+
+            Logger.SaveData( Saver.SaveFilePath );
+            string workingTime = Logger.WorkingTime();
+            Logger.LogInfo( $"Програма завершила роботу (Час роботи  {workingTime} )" );
+        }
+    }
 }
