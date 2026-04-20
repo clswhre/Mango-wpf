@@ -38,7 +38,7 @@ namespace OOPWPFProject
             base.OnExit( e );
 
             Logger.SaveData( Saver.SaveFilePath );
-            var workingTime = Logger.WorkingTime();
+            string workingTime = Logger.WorkingTime();
             Logger.LogInfo( $"Програма завершила роботу (Час роботи  {workingTime} )" );
         }
     }

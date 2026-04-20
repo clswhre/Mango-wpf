@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.IO;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 using OOPWPFProject.ViewModels;
 
@@ -37,12 +36,12 @@ public static class Logger
         return workingTime;
     }
 
-    public static void SaveData( string path)
+    public static void SaveData( string path )
     {
         try
         {
             string json = JsonSerializer.Serialize( MainViewModel.Places, options );
-            File.WriteAllText( path , json );
+            File.WriteAllText( path, json );
         }
         catch ( Exception e )
         {
@@ -50,7 +49,7 @@ public static class Logger
         }
     }
 
-    public static void LoadData(string path)
+    public static void LoadData( string path )
     {
         try
         {
@@ -73,7 +72,7 @@ public static class Logger
 
             MainViewModel.Places.Clear();
 
-            foreach ( var place in loadedPlaces )
+            foreach ( Place place in loadedPlaces )
             {
                 MainViewModel.Places.Add( place );
             }

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text.Json;
+
 using OOPWPFProject.ViewModels;
 
 namespace OOPWPFProject.Models;
@@ -11,7 +12,7 @@ internal class Saver
     public static string SaveFilePath => Path.Combine( DataDirectoryPath, "Save.json" );
     public static string CoolSaveFilePath => Path.Combine( DataDirectoryPath, "CoolSave.json" );
 
-    public static void HightlyRatedSave( string path)
+    public static void HightlyRatedSave( string path )
     {
         try
         {

@@ -286,7 +286,7 @@ internal class MainViewModel : BaseViewModel
 
     public MainViewModel()
     {
-        Places.CollectionChanged += (_, _) =>
+        Places.CollectionChanged += ( _, _ ) =>
         {
             OnPropertyChanged( nameof( IsPlaceExists ) );
             HighlyRatedSaveCommand?.RaiseCanExecuteChanged();
@@ -565,7 +565,7 @@ internal class MainViewModel : BaseViewModel
             Saver.HightlyRatedSave( Saver.CoolSaveFilePath );
             Logger.LogInfo( "Дія (Збережено): Збережено високооцінені місця у файл CoolSave.json" );
         }
-        catch(Exception e )
+        catch ( Exception e )
         {
             Logger.LogInfo( $"Помилка збереження: {e.Message}" );
         }

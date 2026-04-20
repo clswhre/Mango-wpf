@@ -212,9 +212,9 @@ internal class Place : AbstractPlace, INotifyPropertyChanged, IReviewable
             return null;
         }
 
-        var newName = p1.Name + " " + p2.Name.TrimEnd();
-        var newCountry = p1.Country;
-        var newDescription = p1.Description + " " +  p2.Description.TrimEnd();
+        string newName = p1.Name + " " + p2.Name.TrimEnd();
+        string newCountry = p1.Country;
+        string newDescription = p1.Description + " " +  p2.Description.TrimEnd();
         return new Place( newName, newCountry, newDescription );
     }
     public static bool operator >( Place? p1, Place? p2 )
@@ -227,12 +227,7 @@ internal class Place : AbstractPlace, INotifyPropertyChanged, IReviewable
     }
     public static bool operator ==( Place? p1, Place? p2 )
     {
-        if ( ReferenceEquals( p1, p2 ) )
-        {
-            return true;
-        }
-
-        return p1 is not null && p2 is not null && p1.Rating == p2.Rating;
+        return ReferenceEquals( p1, p2 ) || ( p1 is not null && p2 is not null && p1.Rating == p2.Rating );
     }
     public static bool operator !=( Place? p1, Place? p2 )
     {
