@@ -50,6 +50,8 @@ internal class MainViewModel : BaseViewModel
     public Visibility IsHistoricalSelected =>
         SelectedPlaceType == PlaceType.Historical ? Visibility.Visible : Visibility.Collapsed;
 
+    public Visibility IsPlaceExists => Places.Any() ? Visibility.Visible : Visibility.Collapsed;
+
     #endregion
 
     // СЕТТЕРИ/АКСЕССОРИ New* полей
@@ -199,6 +201,14 @@ internal class MainViewModel : BaseViewModel
     {
         get;
     }
+    public RelayCommand HighlyRatedSaveCommand
+    {
+        get;
+    }
+    public RelayCommand HighlyRatedLoadCommand
+    {
+        get;
+    }
     public RelayCommand RemoveReviewCommand
     {
         get;
@@ -207,6 +217,27 @@ internal class MainViewModel : BaseViewModel
     {
         get;
     }
+
+    public string NewReviewText
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+            AddReviewCommand.RaiseCanExecuteChanged();
+        }
+    } = string.Empty;
+
+    public double? NewReviewRating
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+        }
+    } = null;
 
     public ObservableCollection<string> Operators { get; } = ["+", ">", "<", "==", "!="];
 
@@ -253,29 +284,14 @@ internal class MainViewModel : BaseViewModel
         }
     } = string.Empty;
 
-    public string NewReviewText
-    {
-        get;
-        set
-        {
-            field = value;
-            OnPropertyChanged();
-            AddReviewCommand.RaiseCanExecuteChanged();
-        }
-    } = string.Empty;
-
-    public double? NewReviewRating
-    {
-        get;
-        set
-        {
-            field = value;
-            OnPropertyChanged();
-        }
-    } = null;
-
     public MainViewModel()
     {
+        Places.CollectionChanged += (_, _) =>
+        {
+            OnPropertyChanged( nameof( IsPlaceExists ) );
+            HighlyRatedSaveCommand?.RaiseCanExecuteChanged();
+        };
+
         AddPlaceCommand = new RelayCommand(
             execute: _ => AddPlace(),
             canExecute: _ => CanAddPlace()
@@ -296,6 +312,15 @@ internal class MainViewModel : BaseViewModel
             canExecute: _ => CanAddReview()
         );
 
+        HighlyRatedSaveCommand = new RelayCommand(
+            execute: _ => SavePlacesWithHightRating(),
+            canExecute: _ => Places.Any()
+        );
+
+        HighlyRatedLoadCommand = new RelayCommand(
+            execute: _ => LoadHighlyRatedPlaces()
+        );
+
         RemoveReviewCommand = new RelayCommand(
             execute: p => RemoveReview( p as string ),
             canExecute: p => SelectedPlace != null && p is string
@@ -305,7 +330,9 @@ internal class MainViewModel : BaseViewModel
             execute: _ => ExecuteOperator(),
             canExecute: _ => SelectedObject1 != null && SelectedObject2 != null && !string.IsNullOrEmpty( SelectedOperator )
         );
+
     }
+
 
     private bool CanAddPlace()
     {
@@ -365,8 +392,12 @@ internal class MainViewModel : BaseViewModel
         }
         ;
 
-        Places.Add( newPlace );
-        _placeManager.Add( newPlace );
+        if ( newPlace is not null && !PlaceAlreadyExists( newPlace ) )
+        {
+            Places.Add( newPlace );
+            _placeManager.Add( newPlace );
+            HighlyRatedSaveCommand.RaiseCanExecuteChanged();
+        }
 
         ClearForm();
     }
@@ -378,6 +409,7 @@ internal class MainViewModel : BaseViewModel
             Places.Remove( SelectedPlace );
             SelectedPlace = null;
             PlaceAtIndexDisplay = string.Empty;
+            HighlyRatedSaveCommand.RaiseCanExecuteChanged();
         }
     }
 
@@ -514,5 +546,50 @@ internal class MainViewModel : BaseViewModel
         {
             PlaceAtIndexDisplay = $"Помилка: {ex.Message}";
         }
+    }
+
+    private void SavePlacesWithHightRating()
+    {
+        try
+        {
+            Saver.HightlyRatedSave( Saver.CoolSaveFilePath );
+            Logger.LogInfo( "Збережено файл з високооціненими місцями" );
+        }
+        catch(Exception e )
+        {
+            Logger.LogInfo( $"Помилка збереження: {e.Message}" );
+        }
+    }
+
+    private void LoadHighlyRatedPlaces()
+    {
+        try
+        {
+            List<Place> loadedPlaces = Saver.LoadHightlyRated( Saver.CoolSaveFilePath );
+
+            foreach ( Place place in loadedPlaces )
+            {
+                if ( !PlaceAlreadyExists( place ) )
+                {
+                    Places.Add( place );
+                    _placeManager.Add( place );
+                }
+            }
+
+            Logger.LogInfo( $"Завантажено високооцінені місця: {loadedPlaces.Count}" );
+        }
+        catch ( Exception e )
+        {
+            Logger.LogInfo( $"Помилка завантаження high-rated: {e.Message}" );
+        }
+    }
+
+    private bool PlaceAlreadyExists( Place candidate )
+    {
+        return Places.Any( p => p is not null
+            && p.Name == candidate.Name
+            && p.Country == candidate.Country
+            && p.Description == candidate.Description
+            && p == candidate );
     }
 }

@@ -10,9 +10,7 @@ namespace OOPWPFProject
     /// </summary>
     public partial class App : Application
     {
-        public static string DataDirectoryPath => Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.MyDocuments ), "Data" );
-        public static string LogFilePath => Path.Combine( App.DataDirectoryPath, "Log.txt" );
-        public static string SaveFilePath => Path.Combine( App.DataDirectoryPath, "Save.json" );
+
 
         public static DateTime StartTime { get; } = DateTime.Now;
 
@@ -20,22 +18,23 @@ namespace OOPWPFProject
         {
             base.OnStartup( e );
 
-            if ( !Directory.Exists( DataDirectoryPath ) )
+            if ( !Directory.Exists( Saver.DataDirectoryPath ) )
             {
-                Directory.CreateDirectory( DataDirectoryPath );
+                Directory.CreateDirectory( Saver.DataDirectoryPath );
             }
 
 
             Logger.LogInfo( "Програма почала роботу" );
-            Logger.LoadData();
+            Logger.LoadData( Saver.SaveFilePath );
         }
 
         protected override void OnExit( ExitEventArgs e )
         {
             base.OnExit( e );
 
-            Logger.SaveData();
-            Logger.LogInfo( $"Програма завершила роботу (Час роботи  {Logger.WorkingTime()} )" );
+            Logger.SaveData( Saver.SaveFilePath );
+            var workingTime = Logger.WorkingTime();
+            Logger.LogInfo( $"Програма завершила роботу (Час роботи  {workingTime} )" );
         }
     }
 }

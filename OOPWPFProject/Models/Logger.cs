@@ -10,13 +10,19 @@ namespace OOPWPFProject.Models;
 
 public static class Logger
 {
+
+    public static readonly JsonSerializerOptions options = new()
+    {
+        WriteIndented = true
+    };
+
     public static void LogInfo( string message )
     {
         try
         {
             string logEntry = $"[{DateTime.Now:HH:mm:ss dd/MM}] -> {message}{Environment.NewLine}";
 
-            File.AppendAllText( App.LogFilePath, logEntry );
+            File.AppendAllText( Saver.LogFilePath, logEntry );
         }
         catch ( Exception ex )
         {
@@ -31,17 +37,12 @@ public static class Logger
         return workingTime;
     }
 
-    public static void SaveData()
+    public static void SaveData( string path)
     {
         try
         {
-            JsonSerializerOptions options = new()
-            {
-                WriteIndented = true
-            };
-
             string json = JsonSerializer.Serialize( MainViewModel.Places, options );
-            File.WriteAllText( App.SaveFilePath, json );
+            File.WriteAllText( path , json );
         }
         catch ( Exception e )
         {
@@ -49,25 +50,20 @@ public static class Logger
         }
     }
 
-    public static void LoadData()
+    public static void LoadData(string path)
     {
         try
         {
-            if ( !File.Exists( App.SaveFilePath ) )
+            if ( !File.Exists( path ) )
             {
                 return;
             }
 
-            string json = File.ReadAllText(App.SaveFilePath);
+            string json = File.ReadAllText(path);
             if ( string.IsNullOrWhiteSpace( json ) )
             {
                 return;
             }
-
-            JsonSerializerOptions options = new()
-            {
-                PropertyNameCaseInsensitive = true
-            };
 
             List<Place>? loadedPlaces = JsonSerializer.Deserialize<List<Place>>( json, options );
             if ( loadedPlaces is null )
@@ -87,4 +83,5 @@ public static class Logger
             LogInfo( $"Помилка завантаження: {e.Message}" );
         }
     }
+
 }
