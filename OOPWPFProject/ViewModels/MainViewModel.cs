@@ -397,6 +397,11 @@ internal class MainViewModel : BaseViewModel
             Places.Add( newPlace );
             _placeManager.Add( newPlace );
             HighlyRatedSaveCommand.RaiseCanExecuteChanged();
+            Logger.LogInfo( $"Дія (Додано): Додано місце '{newPlace.Name}', країна '{newPlace.Country}'" );
+        }
+        else if ( newPlace is not null )
+        {
+            Logger.LogInfo( $"Дія (Змінено): Спроба додати дубль місця '{newPlace.Name}' відхилена" );
         }
 
         ClearForm();
@@ -406,10 +411,13 @@ internal class MainViewModel : BaseViewModel
     {
         if ( SelectedPlace != null )
         {
+            string removedPlaceName = SelectedPlace.Name;
+            string removedPlaceCountry = SelectedPlace.Country;
             Places.Remove( SelectedPlace );
             SelectedPlace = null;
             PlaceAtIndexDisplay = string.Empty;
             HighlyRatedSaveCommand.RaiseCanExecuteChanged();
+            Logger.LogInfo( $"Дія (Видалено): Видалено місце '{removedPlaceName}', країна '{removedPlaceCountry}'" );
         }
     }
 
@@ -426,6 +434,7 @@ internal class MainViewModel : BaseViewModel
         }
 
         SelectedPlace.AddReview( NewReviewText, NewReviewRating );
+        Logger.LogInfo( $"Дія (Змінено): Додано відгук для місця '{SelectedPlace.Name}'" );
         NewReviewText = string.Empty;
         NewReviewRating = null;
 
@@ -442,6 +451,7 @@ internal class MainViewModel : BaseViewModel
         }
 
         SelectedPlace.RemoveReview( reviewText );
+        Logger.LogInfo( $"Дія (Змінено): Видалено відгук для місця '{SelectedPlace.Name}'" );
         OnPropertyChanged( nameof( SelectedPlaceDetails ) );
     }
 
@@ -553,7 +563,7 @@ internal class MainViewModel : BaseViewModel
         try
         {
             Saver.HightlyRatedSave( Saver.CoolSaveFilePath );
-            Logger.LogInfo( "Збережено файл з високооціненими місцями" );
+            Logger.LogInfo( "Дія (Збережено): Збережено високооцінені місця у файл CoolSave.json" );
         }
         catch(Exception e )
         {
@@ -573,6 +583,7 @@ internal class MainViewModel : BaseViewModel
                 {
                     Places.Add( place );
                     _placeManager.Add( place );
+                    Logger.LogInfo( $"Дія (Додано): Завантажено місце '{place.Name}' із CoolSave.json" );
                 }
             }
 

@@ -12,11 +12,16 @@ namespace OOPWPFProject
     {
 
 
-        public static DateTime StartTime { get; } = DateTime.Now;
+        public static DateTime StartTime
+        {
+            get;
+            private set;
+        }
 
         protected override void OnStartup( StartupEventArgs e )
         {
             base.OnStartup( e );
+            StartTime = DateTime.Now;
 
             if ( !Directory.Exists( Saver.DataDirectoryPath ) )
             {
@@ -24,7 +29,7 @@ namespace OOPWPFProject
             }
 
 
-            Logger.LogInfo( "Програма почала роботу" );
+            Logger.LogInfo( " ========== Програма почала роботу ========== " );
             Logger.LoadData( Saver.SaveFilePath );
         }
 
