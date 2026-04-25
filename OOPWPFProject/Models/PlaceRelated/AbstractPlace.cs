@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace OOPWPFProject.Models;
+﻿namespace OOPWPFProject.Models.PlaceRelated;
 
 public abstract class AbstractPlace
 {
@@ -10,5 +6,5 @@ public abstract class AbstractPlace
     public virtual string Country { get; set; }
     public virtual string Description { get; set; }
 
-    public abstract string GetDetails();
+    public abstract string GetDetails ();
 }

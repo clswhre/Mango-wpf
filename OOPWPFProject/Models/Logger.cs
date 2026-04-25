@@ -1,9 +1,11 @@
-﻿using System.Diagnostics;
+﻿using OOPWPFProject.Models.PlaceRelated;
+using OOPWPFProject.Models.Workers;
+using OOPWPFProject.ViewModels;
+
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text.Json;
-
-using OOPWPFProject.ViewModels;
 
 namespace OOPWPFProject.Models;
 
@@ -15,7 +17,7 @@ public static class Logger
         WriteIndented = true
     };
 
-    public static void LogInfo( string message )
+    public static void LogInfo ( string message )
     {
         try
         {
@@ -29,14 +31,14 @@ public static class Logger
         }
     }
 
-    public static string WorkingTime()
+    public static string WorkingTime ()
     {
         DateTime EndTime = DateTime.Now;
         string workingTime = (EndTime - App.StartTime).ToString(@"hh\:mm\:ss", CultureInfo.CurrentCulture);
         return workingTime;
     }
 
-    public static void SaveData( string path )
+    public static void SaveData ( string path )
     {
         try
         {
@@ -49,7 +51,7 @@ public static class Logger
         }
     }
 
-    public static void LoadData( string path )
+    public static void LoadData ( string path )
     {
         try
         {
