@@ -1,8 +1,10 @@
-﻿using System.Collections.ObjectModel;
+﻿using OOPWPFProject.Models.Helpers;
+using OOPWPFProject.Models.PlaceRelated;
+using OOPWPFProject.Models.Workers;
+
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
-
-using OOPWPFProject.Models;
 
 namespace OOPWPFProject.ViewModels;
 
@@ -284,7 +286,7 @@ internal class MainViewModel : BaseViewModel
         }
     } = string.Empty;
 
-    public MainViewModel()
+    public MainViewModel ()
     {
         Places.CollectionChanged += ( _, _ ) =>
         {
@@ -334,14 +336,14 @@ internal class MainViewModel : BaseViewModel
     }
 
 
-    private bool CanAddPlace()
+    private bool CanAddPlace ()
     {
         return !string.IsNullOrWhiteSpace( NewName ) &&
                !string.IsNullOrWhiteSpace( NewCountry ) &&
                !string.IsNullOrWhiteSpace( NewDescription );
     }
 
-    private void AddPlace()
+    private void AddPlace ()
     {
         // перевірка необов'язкових полів
         DateOnly? checkedVisitDate = NewVisitDate.HasValue ? DateOnly.FromDateTime(NewVisitDate.Value) : null;
@@ -407,7 +409,7 @@ internal class MainViewModel : BaseViewModel
         ClearForm();
     }
 
-    private void DeletePlace()
+    private void DeletePlace ()
     {
         if ( SelectedPlace != null )
         {
@@ -421,12 +423,12 @@ internal class MainViewModel : BaseViewModel
         }
     }
 
-    private bool CanAddReview()
+    private bool CanAddReview ()
     {
         return SelectedPlace != null && !string.IsNullOrWhiteSpace( NewReviewText );
     }
 
-    private void AddReview()
+    private void AddReview ()
     {
         if ( SelectedPlace == null )
         {
@@ -443,7 +445,7 @@ internal class MainViewModel : BaseViewModel
         DeletePlaceCommand.RaiseCanExecuteChanged();
     }
 
-    private void RemoveReview( string? reviewText )
+    private void RemoveReview ( string? reviewText )
     {
         if ( SelectedPlace == null || string.IsNullOrEmpty( reviewText ) )
         {
@@ -455,7 +457,7 @@ internal class MainViewModel : BaseViewModel
         OnPropertyChanged( nameof( SelectedPlaceDetails ) );
     }
 
-    private void ExecuteOperator()
+    private void ExecuteOperator ()
     {
         if ( SelectedObject1 == null || SelectedObject2 == null || string.IsNullOrEmpty( SelectedOperator ) )
         {
@@ -488,7 +490,7 @@ internal class MainViewModel : BaseViewModel
         }
     }
 
-    private void ClearForm()
+    private void ClearForm ()
     {
         NewName = string.Empty;
         NewCountry = string.Empty;
@@ -499,7 +501,7 @@ internal class MainViewModel : BaseViewModel
         ClearSpecializedFields();
     }
 
-    private void ClearSpecializedFields()
+    private void ClearSpecializedFields ()
     {
         HistoricalYearBuilt = null;
         HistoricalSignificance = 0;
@@ -518,7 +520,7 @@ internal class MainViewModel : BaseViewModel
         set => SetProperty( ref field, value );
     } = string.Empty;
 
-    private void ShowByIndex()
+    private void ShowByIndex ()
     {
         try
         {
@@ -558,7 +560,7 @@ internal class MainViewModel : BaseViewModel
         }
     }
 
-    private void SavePlacesWithHightRating()
+    private void SavePlacesWithHightRating ()
     {
         try
         {
@@ -571,7 +573,7 @@ internal class MainViewModel : BaseViewModel
         }
     }
 
-    private void LoadHighlyRatedPlaces()
+    private void LoadHighlyRatedPlaces ()
     {
         try
         {
@@ -595,7 +597,7 @@ internal class MainViewModel : BaseViewModel
         }
     }
 
-    private bool PlaceAlreadyExists( Place candidate )
+    private bool PlaceAlreadyExists ( Place candidate )
     {
         return Places.Any( p => p is not null
             && p.Name == candidate.Name

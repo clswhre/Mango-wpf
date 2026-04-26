@@ -1,9 +1,11 @@
-﻿using System.IO;
-using System.Text.Json;
-
+﻿using OOPWPFProject.Models.Helpers;
+using OOPWPFProject.Models.PlaceRelated;
 using OOPWPFProject.ViewModels;
 
-namespace OOPWPFProject.Models;
+using System.IO;
+using System.Text.Json;
+
+namespace OOPWPFProject.Models.Workers;
 
 internal class Saver
 {
@@ -12,7 +14,7 @@ internal class Saver
     public static string SaveFilePath => Path.Combine( DataDirectoryPath, "Save.json" );
     public static string CoolSaveFilePath => Path.Combine( DataDirectoryPath, "CoolSave.json" );
 
-    public static void HightlyRatedSave( string path )
+    public static void HightlyRatedSave ( string path )
     {
         try
         {
@@ -25,7 +27,7 @@ internal class Saver
         }
     }
 
-    public static List<Place> LoadHightlyRated( string path )
+    public static List<Place> LoadHightlyRated ( string path )
     {
         try
         {

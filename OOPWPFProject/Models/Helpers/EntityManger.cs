@@ -1,4 +1,4 @@
-﻿namespace OOPWPFProject.Models;
+﻿namespace OOPWPFProject.Models.Helpers;
 
 public class EntityManager<T>
 {

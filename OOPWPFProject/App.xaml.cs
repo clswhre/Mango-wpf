@@ -1,7 +1,8 @@
-﻿using System.IO;
-using System.Windows;
+﻿using OOPWPFProject.Models.Helpers;
+using OOPWPFProject.Models.Workers;
 
-using OOPWPFProject.Models;
+using System.IO;
+using System.Windows;
 
 namespace OOPWPFProject
 {
@@ -18,7 +19,7 @@ namespace OOPWPFProject
             private set;
         }
 
-        protected override void OnStartup( StartupEventArgs e )
+        protected override void OnStartup ( StartupEventArgs e )
         {
             base.OnStartup( e );
             StartTime = DateTime.Now;
@@ -28,12 +29,11 @@ namespace OOPWPFProject
                 Directory.CreateDirectory( Saver.DataDirectoryPath );
             }
 
-
             Logger.LogInfo( " ========== Програма почала роботу ========== " );
             Logger.LoadData( Saver.SaveFilePath );
         }
 
-        protected override void OnExit( ExitEventArgs e )
+        protected override void OnExit ( ExitEventArgs e )
         {
             base.OnExit( e );
 
