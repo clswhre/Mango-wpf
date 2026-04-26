@@ -7,7 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Text.Json;
 
-namespace OOPWPFProject.Models;
+namespace OOPWPFProject.Models.Helpers;
 
 public static class Logger
 {

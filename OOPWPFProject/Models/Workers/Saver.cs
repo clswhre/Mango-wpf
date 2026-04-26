@@ -1,4 +1,5 @@
-﻿using OOPWPFProject.Models.PlaceRelated;
+﻿using OOPWPFProject.Models.Helpers;
+using OOPWPFProject.Models.PlaceRelated;
 using OOPWPFProject.ViewModels;
 
 using System.IO;
