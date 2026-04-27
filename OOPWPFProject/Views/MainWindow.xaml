@@ -17,7 +17,6 @@
 
     <DockPanel>
         <ui:TitleBar DockPanel.Dock="Top" Title="Mango" FontWeight="Bold"/>
-
         <Grid>
         <!-- Місце для лівої панельки і списку місць -->
         <Grid.ColumnDefinitions>
@@ -252,14 +251,14 @@
         <!--#endregion-->
 
         <!-- #region "СПИСОК МІСЦЬ + деталі" -->
-        <Grid Grid.Column="1" Margin="10" Visibility="{Binding IsPlaceExists}">
+        <Grid Grid.Column="1" Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!--  #region "Датагрід " -->
-            <ui:DataGrid x:Name="PlacesDataGrid"  
+                <ui:DataGrid x:Name="PlacesDataGrid"  
                 Grid.Row="0"
                 ItemsSource="{Binding Places}" 
                 SelectedItem="{Binding SelectedPlace}"
@@ -270,45 +269,51 @@
                 HeadersVisibility="Column"
                 Margin="0,0,0,16">
 
-                <!-- #region "КОЛОНКИ ДАТАГРІДА" -->
-                <!-- Назва місця + зірка при рейтингу > 4 -->
-                <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="Місто" Width="*" SortMemberPath="NameOfPlace">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <ui:SymbolIcon x:Name="StarIcon" 
+                    <!-- #region "КОЛОНКИ ДАТАГРІДА" -->
+                    <!-- Назва місця + зірка при рейтингу > 4 -->
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Місто" Width="*" SortMemberPath="NameOfPlace">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <ui:SymbolIcon x:Name="StarIcon" 
                                            Symbol="Star20"
                                            Filled="True"
                                            Foreground="#FFD700" 
                                            Margin="0,0,6,0" 
                                            Visibility="Collapsed" />
-                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
-                                </StackPanel>
+                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                                    </StackPanel>
 
-                                <DataTemplate.Triggers>
-                                    <DataTrigger Binding="{Binding IsHighlyRated}" Value="True">
-                                        <Setter TargetName="StarIcon" Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </DataTemplate.Triggers>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding IsHighlyRated}" Value="True">
+                                            <Setter TargetName="StarIcon" Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
 
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
 
-                    <!-- КРАЇНА / ОПИС / РЕЙТИНГ / ПРИМІТКИ -->
-                    <DataGridTextColumn Header="Країна" Binding="{Binding Country}" Width="*"/>
-                    <DataGridTextColumn Header="Опис" Binding="{Binding Description, Mode=OneWay}" Width="1.5*"/>
-                    <DataGridTextColumn Header="Дата" Binding="{Binding Date, Mode=OneWay, StringFormat='{}{0:dd/MM/yyyy}'}" Width="*"/>
-                    <DataGridTextColumn Header="Рейтинг" Binding="{Binding Rating, Mode=OneWay}" Width="*"/>
-                    <DataGridTextColumn Header="Примітки" Binding="{Binding Notes, Mode=TwoWay}" Width="*"/>
-                    <DataGridTextColumn Header="Підсумок подорожі" Binding="{Binding TravelSummary, Mode=OneTime}" Width="*"/>
-                </DataGrid.Columns>
-            </ui:DataGrid>
-            <!--#endregion-->
-            <!--#endregion-->
+
+                        <!-- КРАЇНА / ОПИС / РЕЙТИНГ / ПРИМІТКИ -->
+                        <DataGridTextColumn Header="Країна" Binding="{Binding Country}" Width="*"/>
+                        <DataGridTextColumn Header="Опис" Binding="{Binding Description, Mode=OneWay}" Width="1.5*"/>
+                        <DataGridTextColumn Header="Дата" Binding="{Binding Date, Mode=OneWay, StringFormat='{}{0:dd/MM/yyyy}'}" Width="*"/>
+                        <DataGridTextColumn Header="Рейтинг" Binding="{Binding Rating, Mode=OneWay}" Width="*"/>
+                        <DataGridTextColumn Header="Примітки" Binding="{Binding Notes, Mode=TwoWay}" Width="*"/>
+                        <DataGridTextColumn Header="Підсумок подорожі" Binding="{Binding TravelSummary, Mode=OneTime}" Width="*"/>
+                    </DataGrid.Columns>
+                </ui:DataGrid>
+                <!--#endregion-->
+                <ui:TextBlock 
+                    FontSize="48" FontFamily="Lucida Console" FontWeight="Light"
+                    HorizontalAlignment="Center" VerticalAlignment="Center" 
+                    Visibility="{Binding IsAddPlaceTextVisible}">
+                    Додайте місце для перегляду
+                </ui:TextBlock>
+                <!--#endregion-->
             <!-- #region "ПАНЕЛЬ ДЕТАЛЕЙ" -->
            
             <!-- татишопесня 

@@ -53,6 +53,8 @@ internal class MainViewModel : BaseViewModel
         SelectedPlaceType == PlaceType.Historical ? Visibility.Visible : Visibility.Collapsed;
 
     public Visibility IsPlaceExists => Places.Any() ? Visibility.Visible : Visibility.Collapsed;
+    public Visibility IsAddPlaceTextVisible => Places.Any() ? Visibility.Collapsed : Visibility.Visible;
+
 
     #endregion
 
@@ -305,6 +307,7 @@ internal class MainViewModel : BaseViewModel
         Places.CollectionChanged += ( _, _ ) =>
         {
             OnPropertyChanged( nameof( IsPlaceExists ) );
+            OnPropertyChanged( nameof( IsAddPlaceTextVisible ) );
             HighlyRatedSaveCommand?.RaiseCanExecuteChanged();
         };
 
