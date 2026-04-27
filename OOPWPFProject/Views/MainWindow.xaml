@@ -4,20 +4,19 @@
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         xmlns:local="clr-namespace:OOPWPFProject" xmlns:viewmodels="clr-namespace:OOPWPFProject.ViewModels" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         Title="Mango" 
-        Height="650" 
-        Width="1600" 
-        MinHeight="650" 
-        MinWidth="1600" 
+        Height="650" Width="1600" 
+        MinHeight="650" MinWidth="1600" 
         WindowStartupLocation="CenterScreen"
         FontFamily="Cascadia Code" 
-        FontWeight="Regular"
+        FontWeight="Normal"
+        Icon="/Resources/Mango.ico"
         ExtendsContentIntoTitleBar="True"
         Background="{DynamicResource ApplicationBackgroundBrush}"
         Foreground="{DynamicResource TextFillColorPrimaryBrush}">
 
 
     <DockPanel>
-        <ui:TitleBar DockPanel.Dock="Top" Title="Mango"/>
+        <ui:TitleBar DockPanel.Dock="Top" Title="Mango" FontWeight="Bold"/>
 
         <Grid>
         <!-- Місце для лівої панельки і списку місць -->
