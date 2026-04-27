@@ -129,7 +129,14 @@ internal class MainViewModel : BaseViewModel
         {
             field = value;
             OnPropertyChanged();
+            OnPropertyChanged( nameof( HistoricalYearBuiltDate ) );
         }
+    }
+
+    public DateTime? HistoricalYearBuiltDate
+    {
+        get => HistoricalYearBuilt?.ToDateTime( TimeOnly.MinValue );
+        set => HistoricalYearBuilt = value.HasValue ? DateOnly.FromDateTime( value.Value ) : null;
     }
 
     public int HistoricalSignificance
@@ -150,7 +157,14 @@ internal class MainViewModel : BaseViewModel
         {
             field = value;
             OnPropertyChanged();
+            OnPropertyChanged( nameof( NaturalYearBuiltDate ) );
         }
+    }
+
+    public DateTime? NaturalYearBuiltDate
+    {
+        get => NaturalYearBuilt?.ToDateTime( TimeOnly.MinValue );
+        set => NaturalYearBuilt = value.HasValue ? DateOnly.FromDateTime( value.Value ) : null;
     }
 
     public bool NaturalProtectedStatus
