@@ -53,6 +53,8 @@ internal class MainViewModel : BaseViewModel
         SelectedPlaceType == PlaceType.Historical ? Visibility.Visible : Visibility.Collapsed;
 
     public Visibility IsPlaceExists => Places.Any() ? Visibility.Visible : Visibility.Collapsed;
+    public Visibility IsAddPlaceTextVisible => Places.Any() ? Visibility.Collapsed : Visibility.Visible;
+
 
     #endregion
 
@@ -129,7 +131,14 @@ internal class MainViewModel : BaseViewModel
         {
             field = value;
             OnPropertyChanged();
+            OnPropertyChanged( nameof( HistoricalYearBuiltDate ) );
         }
+    }
+
+    public DateTime? HistoricalYearBuiltDate
+    {
+        get => HistoricalYearBuilt?.ToDateTime( TimeOnly.MinValue );
+        set => HistoricalYearBuilt = value.HasValue ? DateOnly.FromDateTime( value.Value ) : null;
     }
 
     public int HistoricalSignificance
@@ -150,7 +159,14 @@ internal class MainViewModel : BaseViewModel
         {
             field = value;
             OnPropertyChanged();
+            OnPropertyChanged( nameof( NaturalYearBuiltDate ) );
         }
+    }
+
+    public DateTime? NaturalYearBuiltDate
+    {
+        get => NaturalYearBuilt?.ToDateTime( TimeOnly.MinValue );
+        set => NaturalYearBuilt = value.HasValue ? DateOnly.FromDateTime( value.Value ) : null;
     }
 
     public bool NaturalProtectedStatus
@@ -291,6 +307,7 @@ internal class MainViewModel : BaseViewModel
         Places.CollectionChanged += ( _, _ ) =>
         {
             OnPropertyChanged( nameof( IsPlaceExists ) );
+            OnPropertyChanged( nameof( IsAddPlaceTextVisible ) );
             HighlyRatedSaveCommand?.RaiseCanExecuteChanged();
         };
 
