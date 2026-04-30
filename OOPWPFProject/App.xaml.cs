@@ -30,14 +30,12 @@ namespace OOPWPFProject
             }
 
             Logger.LogInfo( " ========== Програма почала роботу ========== " );
-            Logger.LoadData( Saver.SaveFilePath );
         }
 
         protected override void OnExit ( ExitEventArgs e )
         {
             base.OnExit( e );
 
-            Logger.SaveData( Saver.SaveFilePath );
             string workingTime = Logger.WorkingTime();
             Logger.LogInfo( $"Програма завершила роботу (Час роботи  {workingTime} )" );
         }

@@ -1,7 +1,5 @@
 ﻿using OOPWPFProject.Models.PlaceRelated;
 using OOPWPFProject.Models.Workers;
-using OOPWPFProject.ViewModels;
-
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -38,11 +36,11 @@ public static class Logger
         return workingTime;
     }
 
-    public static void SaveData ( string path )
+    public static void SaveData ( string path, IEnumerable<Place> places )
     {
         try
         {
-            string json = JsonSerializer.Serialize( MainViewModel.Places, options );
+            string json = JsonSerializer.Serialize( places, options );
             File.WriteAllText( path, json );
         }
         catch ( Exception e )
@@ -51,37 +49,28 @@ public static class Logger
         }
     }
 
-    public static void LoadData ( string path )
+    public static List<Place> LoadData ( string path )
     {
         try
         {
             if ( !File.Exists( path ) )
             {
-                return;
+                return [];
             }
 
             string json = File.ReadAllText(path);
             if ( string.IsNullOrWhiteSpace( json ) )
             {
-                return;
+                return [];
             }
 
             List<Place>? loadedPlaces = JsonSerializer.Deserialize<List<Place>>( json, options );
-            if ( loadedPlaces is null )
-            {
-                return;
-            }
-
-            MainViewModel.Places.Clear();
-
-            foreach ( Place place in loadedPlaces )
-            {
-                MainViewModel.Places.Add( place );
-            }
+            return loadedPlaces ?? [];
         }
         catch ( Exception e )
         {
             LogInfo( $"Помилка завантаження: {e.Message}" );
+            return [];
         }
     }
 

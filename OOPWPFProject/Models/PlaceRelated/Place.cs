@@ -10,7 +10,7 @@ namespace OOPWPFProject.Models.PlaceRelated;
 [JsonDerivedType( typeof( Place ), "place" )]
 [JsonDerivedType( typeof( HistoricalPlace ), "historical" )]
 [JsonDerivedType( typeof( NaturalPlace ), "natural" )]
-internal class Place : AbstractPlace, INotifyPropertyChanged, IReviewable
+public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable
 {
     // СЕТТЕРИ/АКСЕССОРИ полей
 
@@ -235,7 +235,7 @@ internal class Place : AbstractPlace, INotifyPropertyChanged, IReviewable
     }
 
 
-    public override bool Equals( object obj )
+    public override bool Equals( object? obj )
     {
         return obj is Place other && this == other;
     }

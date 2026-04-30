@@ -1,6 +1,5 @@
 ﻿using OOPWPFProject.Models.Helpers;
 using OOPWPFProject.Models.PlaceRelated;
-using OOPWPFProject.ViewModels;
 
 using System.IO;
 using System.Text.Json;
@@ -14,11 +13,11 @@ internal class Saver
     public static string SaveFilePath => Path.Combine( DataDirectoryPath, "Save.json" );
     public static string CoolSaveFilePath => Path.Combine( DataDirectoryPath, "CoolSave.json" );
 
-    public static void HightlyRatedSave ( string path )
+    public static void HightlyRatedSave ( string path, IEnumerable<Place> places )
     {
         try
         {
-            string json = JsonSerializer.Serialize( MainViewModel.Places.Where(x => x.IsHighlyRated ), Logger.options );
+            string json = JsonSerializer.Serialize( places.Where(x => x.IsHighlyRated ), Logger.options );
             File.WriteAllText( path, json );
         }
         catch ( Exception e )

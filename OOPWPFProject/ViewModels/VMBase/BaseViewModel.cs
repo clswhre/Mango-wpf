@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace OOPWPFProject.ViewModels;
+namespace OOPWPFProject.ViewModels.VMBase;
 
 internal abstract class BaseViewModel : INotifyPropertyChanged
 {

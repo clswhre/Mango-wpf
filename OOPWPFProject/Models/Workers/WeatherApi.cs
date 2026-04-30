@@ -9,8 +9,12 @@ namespace OOPWPFProject.Models.Workers;
 internal class WeatherApi
 {
     private static readonly HttpClient _client = new();
-    private string _apiKey;
-    public string ApiKey { get => _apiKey; set; }
+    private string _apiKey = string.Empty;
+    public string ApiKey
+    {
+        get => _apiKey;
+        set => _apiKey = value;
+    }
 
     public class GeoLocation
     {

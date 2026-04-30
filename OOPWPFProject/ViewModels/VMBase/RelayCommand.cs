@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace OOPWPFProject.ViewModels;
+namespace OOPWPFProject.ViewModels.VMBase;
 
 public class RelayCommand : ICommand
 {
