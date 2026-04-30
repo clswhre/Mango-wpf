@@ -1,12 +1,13 @@
-﻿using System.Windows;
-using OOPWPFProject.ViewModels;
+﻿using OOPWPFProject.ViewModels;
+
 using Wpf.Ui.Appearance;
+using Wpf.Ui.Controls;
 
 namespace OOPWPFProject;
 
-public partial class MainWindow : Window
+public partial class MainWindow : FluentWindow
 {
-    public MainWindow()
+    public MainWindow ()
     {
         InitializeComponent();
         ApplicationThemeManager.Apply( this );
