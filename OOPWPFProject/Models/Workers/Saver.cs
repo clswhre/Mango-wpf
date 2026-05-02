@@ -1,6 +1,5 @@
 ﻿using OOPWPFProject.Models.Helpers;
 using OOPWPFProject.Models.PlaceRelated;
-using OOPWPFProject.ViewModels;
 
 using System.IO;
 using System.Text.Json;
@@ -14,16 +13,62 @@ internal class Saver
     public static string SaveFilePath => Path.Combine( DataDirectoryPath, "Save.json" );
     public static string CoolSaveFilePath => Path.Combine( DataDirectoryPath, "CoolSave.json" );
 
-    public static void HightlyRatedSave ( string path )
+    public static void SaveAll ( string path, IEnumerable<Place> places )
     {
         try
         {
-            string json = JsonSerializer.Serialize( MainViewModel.Places.Where(x => x.IsHighlyRated ), Logger.options );
+            if ( !Directory.Exists( DataDirectoryPath ) )
+            {
+                Directory.CreateDirectory( DataDirectoryPath );
+            }
+            string json = JsonSerializer.Serialize( places, Logger.options );
             File.WriteAllText( path, json );
         }
         catch ( Exception e )
         {
+            Logger.LogInfo( $"Помилка збереження: {e.Message}" );
+        }
+    }
+
+    public static List<Place> LoadAll ( string path )
+    {
+        try
+        {
+            if ( !File.Exists( path ) )
+            {
+                return [];
+            }
+
+            string json = File.ReadAllText( path );
+            if ( string.IsNullOrWhiteSpace( json ) )
+            {
+                return [];
+            }
+
+            List<Place>? loadedPlaces = JsonSerializer.Deserialize<List<Place>>( json, Logger.options );
+            return loadedPlaces ?? [];
+        }
+        catch ( Exception e )
+        {
             Logger.LogInfo( $"Помилка завантаження: {e.Message}" );
+            return [];
+        }
+    }
+
+    public static void HightlyRatedSave ( string path, IEnumerable<Place> places )
+    {
+        try
+        {
+            if ( !Directory.Exists( DataDirectoryPath ) )
+            {
+                Directory.CreateDirectory( DataDirectoryPath );
+            }
+            string json = JsonSerializer.Serialize( places.Where(x => x.IsHighlyRated ), Logger.options );
+            File.WriteAllText( path, json );
+        }
+        catch ( Exception e )
+        {
+            Logger.LogInfo( $"Помилка збереження: {e.Message}" );
         }
     }
 

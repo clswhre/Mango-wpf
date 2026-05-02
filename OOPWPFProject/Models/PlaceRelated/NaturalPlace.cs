@@ -2,7 +2,7 @@
 
 namespace OOPWPFProject.Models.PlaceRelated;
 
-internal class NaturalPlace : Place
+public class NaturalPlace : Place
 {
     public DateOnly? YearBuilt
     {

@@ -295,6 +295,15 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
+                    
+                    <ui:TextBlock Text="Опис *" Margin="0,0,0,4" />
+                    <ui:TextBox x:Name="DescriptionTextBox"
+                                Text="{Binding NewDescription, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="Це місто кави, місто тисячі левів,&#x0a;місто джазу, дощу,шоколаду, терас&#x0a;і пристрасного танго."
+                                TextWrapping="Wrap"
+                                AcceptsReturn="True"
+                                MinHeight="70"
+                                Margin="0,0,0,16" />
 
 
                         <!-- КРАЇНА / ОПИС / РЕЙТИНГ / ПРИМІТКИ -->
@@ -335,69 +344,57 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-
-                            <ui:TextBlock 
-                                Grid.Column="0"
-                                Text="Деталі місця" 
-                                FontSize="16" 
-                                FontWeight="Bold"
-                                VerticalAlignment="Center"
-                                Visibility="{Binding IsSelectedPlaceExists}"
-                            />
-
-                            <!-- #region "КНОПКА "Видалити запис"" -->
-                            <ui:Button 
-                                Grid.Column="1"
-                                Appearance="Danger" 
-                                Command="{Binding DeletePlaceCommand}"
-                                Visibility="{Binding IsSelectedPlaceExists}"
-                                Icon="{ui:SymbolIcon Symbol=Delete20}">
+                            <ui:TextBlock Grid.Column="0"
+                                          Text="Деталі місця"
+                                          FontSize="16"
+                                          FontWeight="Bold"
+                                          VerticalAlignment="Center"
+                                          Visibility="{Binding IsSelectedPlaceExists}" />
+                            <ui:Button Grid.Column="1"
+                                       Appearance="Danger"
+                                       Command="{Binding DeletePlaceCommand}"
+                                       Visibility="{Binding IsSelectedPlaceExists}"
+                                       Icon="{ui:SymbolIcon Symbol=Delete20}">
                                 Видалити обраний запис
                             </ui:Button>
-                            <!--#endregion-->
                         </Grid>
-                            <TextBlock 
-                            Text="{Binding SelectedPlaceDetails, Mode=OneWay}"
-                            TextWrapping="Wrap"
-                            LineHeight="1.5" 
-                                Visibility="{Binding IsSelectedPlaceExists}"/>
-                            <!-- Reviews  -->
+                        <TextBlock Text="{Binding SelectedPlaceDetails, Mode=OneWay}"
+                                   TextWrapping="Wrap"
+                                   LineHeight="1.5"
+                                   Visibility="{Binding IsSelectedPlaceExists}" />
                         <StackPanel Margin="0,12,0,0"
                                     Visibility="{Binding IsSelectedPlaceExists}">
-                            <ui:TextBlock Text="Відгуки" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,6"/>
-
+                            <ui:TextBlock Text="Відгуки" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,6" />
                             <ItemsControl ItemsSource="{Binding SelectedPlace.Reviews}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Border Padding="8" Margin="0,0,0,6" Background="{DynamicResource ControlFillColorPrimaryBrush}" CornerRadius="6">
                                             <DockPanel LastChildFill="True">
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                                                    <TextBlock Text="{Binding Value, StringFormat='{}{0:0.0}'}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding Value, StringFormat='{}{0:0.0}'}" Margin="0,0,8,0" VerticalAlignment="Center" />
                                                     <ui:Button Appearance="Danger" Content="Видалити" Padding="8,4" Margin="6,0,0,0"
-                                                                   Command="{Binding DataContext.RemoveReviewCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                                   CommandParameter="{Binding Key}"/>
+                                                               Command="{Binding DataContext.RemoveReviewCommand, RelativeSource={RelativeSource AncestorType=Grid}}"
+                                                               CommandParameter="{Binding Key}" />
                                                 </StackPanel>
-                                                <TextBlock Text="{Binding Key}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                <TextBlock Text="{Binding Key}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,10,0" />
                                             </DockPanel>
                                         </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-
-                            <!-- введення review -->
                             <StackPanel Orientation="Vertical" Margin="0,8,0,0">
-                                <ui:TextBox Text="{Binding NewReviewText, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Напишіть відгук..." AcceptsReturn="True" MinHeight="60"/>
+                                <ui:TextBox Text="{Binding NewReviewText, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Напишіть відгук..." AcceptsReturn="True" MinHeight="60" />
                                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                                    <ui:RatingControl Value="{Binding NewReviewRating, Mode=TwoWay, TargetNullValue=0}" HalfStarEnabled="False"/>
-                                    <ui:Button Content="Додати відгук" Appearance="Success" Margin="8,0,0,0" Command="{Binding AddReviewCommand}"/>
+                                    <ui:RatingControl Value="{Binding NewReviewRating, Mode=TwoWay, TargetNullValue=0}" HalfStarEnabled="False" />
+                                    <ui:Button Content="Додати відгук" Appearance="Success" Margin="8,0,0,0" Command="{Binding AddReviewCommand}" />
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
-            </Border>
-            <!--#endregion-->
-        </Grid>
-        <!--#endregion-->
+                </Border>
+                </Grid>
+            </Grid>
+           <!--#endregion--> 
         </Grid>
     </DockPanel>
 </ui:FluentWindow>

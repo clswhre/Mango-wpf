@@ -31,6 +31,11 @@ public class EntityManager<T>
         values.Add(place);
     }
 
+    public bool Remove(T place)
+    {
+        return values.Remove(place);
+    }
+
     public IEnumerable<T> GetAll()
     {
         return values;
