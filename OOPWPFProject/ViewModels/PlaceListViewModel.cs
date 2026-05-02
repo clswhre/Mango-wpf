@@ -16,7 +16,6 @@ internal class PlaceListViewModel : BaseViewModel
 
     public ObservableCollection<string> Operators { get; } = ["+", ">", "<", "==", "!="];
 
-    // Зв'язуємо UI напряму зі спільною колекцією
     public ObservableCollection<Place> Places => _store.Places;
 
     public Place? SelectedPlace
@@ -42,13 +41,15 @@ internal class PlaceListViewModel : BaseViewModel
 
     public bool IsDetailsVisible => SelectedPlace != null;
 
+    public Visibility IsAddPlaceTextVisible => _store.Places.Any() ? Visibility.Collapsed : Visibility.Visible;
+
     public Visibility IsPlaceExists => _store.Places.Any() ? Visibility.Visible : Visibility.Collapsed;
 
     public RelayCommand DeletePlaceCommand { get; }
     public RelayCommand ShowByIndexCommand { get; }
     public RelayCommand AddReviewCommand { get; }
     public RelayCommand RemoveReviewCommand { get; }
-    public RelayCommand overridedOperatorActon { get; }
+    public RelayCommand OverridedOperatorActon { get; }
     public RelayCommand HighlyRatedSaveCommand { get; }
     public RelayCommand HighlyRatedLoadCommand { get; }
 
@@ -80,7 +81,7 @@ internal class PlaceListViewModel : BaseViewModel
         {
             field = value;
             OnPropertyChanged();
-            overridedOperatorActon.RaiseCanExecuteChanged();
+            OverridedOperatorActon.RaiseCanExecuteChanged();
         }
     }
 
@@ -91,7 +92,7 @@ internal class PlaceListViewModel : BaseViewModel
         {
             field = value;
             OnPropertyChanged();
-            overridedOperatorActon.RaiseCanExecuteChanged();
+            OverridedOperatorActon.RaiseCanExecuteChanged();
         }
     }
 
@@ -102,7 +103,7 @@ internal class PlaceListViewModel : BaseViewModel
         {
             field = value;
             OnPropertyChanged();
-            overridedOperatorActon.RaiseCanExecuteChanged();
+            OverridedOperatorActon.RaiseCanExecuteChanged();
         }
     }
 
@@ -135,7 +136,7 @@ internal class PlaceListViewModel : BaseViewModel
         ShowByIndexCommand = new RelayCommand( _ => ShowByIndex() );
         AddReviewCommand = new RelayCommand( _ => AddReview(), _ => CanAddReview() );
         RemoveReviewCommand = new RelayCommand( p => RemoveReview( p as string ), p => SelectedPlace != null && p is string );
-        overridedOperatorActon = new RelayCommand(
+        OverridedOperatorActon = new RelayCommand(
             _ => ExecuteOperator(),
             _ => SelectedObject1 != null && SelectedObject2 != null && !string.IsNullOrEmpty( SelectedOperator ) );
         HighlyRatedSaveCommand = new RelayCommand( _ => SavePlacesWithHightRating(), _ => _store.Places.Any() );
@@ -144,6 +145,7 @@ internal class PlaceListViewModel : BaseViewModel
         _store.Places.CollectionChanged += ( _, _ ) =>
         {
             OnPropertyChanged( nameof( IsPlaceExists ) );
+            OnPropertyChanged( nameof( IsAddPlaceTextVisible ) );
             HighlyRatedSaveCommand.RaiseCanExecuteChanged();
         };
     }

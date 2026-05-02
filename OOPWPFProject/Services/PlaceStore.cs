@@ -7,7 +7,7 @@ namespace OOPWPFProject.ViewModels.Services;
 
 internal class PlaceStore
 {
-    public ObservableCollection<Place> Places { get; } = new();
+    public ObservableCollection<Place> Places { get; } = [];
     public EntityManager<Place> PlaceManager { get; } = new();
 
     public void AddPlace ( Place place )
@@ -21,5 +21,4 @@ internal class PlaceStore
         Places.Remove( place );
         PlaceManager.Remove( place );
     }
-
 }

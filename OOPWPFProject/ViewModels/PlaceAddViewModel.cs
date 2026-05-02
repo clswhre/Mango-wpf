@@ -10,10 +10,14 @@ namespace OOPWPFProject.ViewModels;
 
 internal class PlaceAddViewModel : BaseViewModel
 {
+    public RelayCommand AddPlaceCommand { get; }
+    public RelayCommand ClearFormCommand { get; }
+
     public PlaceAddViewModel ( PlaceStore store )
     {
         _store = store;
         AddPlaceCommand = new RelayCommand( _ => AddPlace(), _ => CanAddPlace() );
+        ClearFormCommand = new RelayCommand( _ => ClearForm() );
     }
 
     private readonly PlaceStore _store;
@@ -117,7 +121,14 @@ internal class PlaceAddViewModel : BaseViewModel
         {
             field = value;
             OnPropertyChanged();
+            OnPropertyChanged( nameof( HistoricalYearBuiltDate ) );
         }
+    }
+
+    public DateTime? HistoricalYearBuiltDate
+    {
+        get => HistoricalYearBuilt?.ToDateTime( TimeOnly.MinValue );
+        set => HistoricalYearBuilt = value.HasValue ? DateOnly.FromDateTime( value.Value ) : null;
     }
 
     public int HistoricalSignificance
@@ -137,7 +148,14 @@ internal class PlaceAddViewModel : BaseViewModel
         {
             field = value;
             OnPropertyChanged();
+            OnPropertyChanged( nameof( NaturalYearBuiltDate ) );
         }
+    }
+
+    public DateTime? NaturalYearBuiltDate
+    {
+        get => NaturalYearBuilt?.ToDateTime( TimeOnly.MinValue );
+        set => NaturalYearBuilt = value.HasValue ? DateOnly.FromDateTime( value.Value ) : null;
     }
 
     public bool NaturalProtectedStatus
@@ -149,8 +167,6 @@ internal class PlaceAddViewModel : BaseViewModel
             OnPropertyChanged();
         }
     }
-
-    public RelayCommand AddPlaceCommand { get; }
 
     private bool CanAddPlace ()
     {
@@ -229,14 +245,15 @@ internal class PlaceAddViewModel : BaseViewModel
         NewDescription = string.Empty;
         NewVisitDate = null;
         NewRating = 0;
-        NewNotes = null;
+        NewNotes = string.Empty;
+        SelectedPlaceType = PlaceType.Normal;
         ClearSpecializedFields();
     }
 
-    private void ClearSpecializedFields ()
+    private void ClearSpecializedFields()
     {
         HistoricalYearBuilt = null;
-        HistoricalSignificance = 0;
+        HistoricalSignificance = 1;
         NaturalYearBuilt = null;
         NaturalProtectedStatus = false;
     }
