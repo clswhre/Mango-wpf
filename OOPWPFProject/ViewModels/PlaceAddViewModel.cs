@@ -258,12 +258,10 @@ internal class PlaceAddViewModel : BaseViewModel
         NaturalProtectedStatus = false;
     }
 
-    private bool PlaceAlreadyExists ( Place candidate )
+    private bool PlaceAlreadyExists(Place candidate)
     {
-        return _store.Places.Any( p => p is not null
-            && p.Name == candidate.Name
-            && p.Country == candidate.Country
-            && p.Description == candidate.Description
-            && p == candidate );
+        return _store.Places.Any(p =>
+            p.Name.Equals(candidate.Name, StringComparison.OrdinalIgnoreCase) &&
+            p.Country.Equals(candidate.Country, StringComparison.OrdinalIgnoreCase));
     }
 }

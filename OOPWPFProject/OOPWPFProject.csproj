@@ -9,12 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\Mango.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
-    <PackageReference Include="WPF-UI" Version="4.2.0" />
+    <PackageReference Include="WPF-UI" Version="4.2.1" />
   </ItemGroup>
 
   <ItemGroup>

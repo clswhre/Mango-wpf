@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         xmlns:local="clr-namespace:OOPWPFProject" xmlns:viewmodels="clr-namespace:OOPWPFProject.ViewModels" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        Title="Mango" 
+                 Title="Mango" 
         Height="650" Width="1600" 
         MinHeight="650" MinWidth="1600" 
         WindowStartupLocation="CenterScreen"
@@ -18,251 +18,251 @@
     <DockPanel>
         <ui:TitleBar DockPanel.Dock="Top" Title="Mango" FontWeight="Bold"/>
         <Grid>
-        <!-- Місце для лівої панельки і списку місць -->
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+            <!-- Місце для лівої панельки і списку місць -->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-        <!-- #region "ЛІВА ПАНЕЛЬ" -->
+            <!-- #region "ЛІВА ПАНЕЛЬ" -->
 
-        <ScrollViewer 
+            <ScrollViewer 
             Grid.Column="0" 
             VerticalScrollBarVisibility="Auto" 
             HorizontalScrollBarVisibility="Disabled" 
             BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}" 
             BorderThickness="0,0,1,0">
 
-            <!-- #region "ТЕКСТБОКСИ: місто, країна, опис" -->
-            <StackPanel Margin="20" HorizontalAlignment="Stretch">
+                <!-- #region "ТЕКСТБОКСИ: місто, країна, опис" -->
+                <StackPanel Margin="20" HorizontalAlignment="Stretch">
 
-                <ui:TextBlock Text="Назва міста *" Margin="0,0,0,4" />
-                <ui:TextBox x:Name="CityTextBox" 
-                            Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged}" 
+                    <ui:TextBlock Text="Назва міста *" Margin="0,0,0,4" />
+                    <ui:TextBox x:Name="CityTextBox" 
+                            Text="{Binding PlaceAddViewModel.NewName, UpdateSourceTrigger=PropertyChanged}" 
                             PlaceholderText="Львів" 
                             Margin="0,0,0,16"/>
 
-                <ui:TextBlock Text="Країна *" Margin="0,0,0,4" />
-                <ui:TextBox x:Name="CountryTextBox" 
-                            Text="{Binding NewCountry, UpdateSourceTrigger=PropertyChanged}" 
+                    <ui:TextBlock Text="Країна *" Margin="0,0,0,4" />
+                    <ui:TextBox x:Name="CountryTextBox" 
+                            Text="{Binding PlaceAddViewModel.NewCountry, UpdateSourceTrigger=PropertyChanged}" 
                             PlaceholderText="Україна" 
                             Margin="0,0,0,16" 
                             AutomationProperties.IsRequiredForForm="True"/>
 
-                <ui:TextBlock Text="Опис *" Margin="0,0,0,4" />
-                <ui:TextBox x:Name="DescriptionTextBox" 
-                    Text="{Binding NewDescription, UpdateSourceTrigger=PropertyChanged}" 
+                    <ui:TextBlock Text="Опис *" Margin="0,0,0,4" />
+                    <ui:TextBox x:Name="DescriptionTextBox" 
+                    Text="{Binding PlaceAddViewModel.NewDescription, UpdateSourceTrigger=PropertyChanged}" 
                     PlaceholderText="Це місто кави, місто тисячі левів,&#x0a;місто джазу, дощу,шоколаду, терас&#x0a;і пристрасного танго." 
                     TextWrapping="Wrap"
                     AcceptsReturn="True"
                     MinHeight="70" 
                     Margin="0,0,0,16"/>
 
-                <ui:TextBlock Text="Примітки" Margin="0,0,0,4" />
-                <ui:TextBox x:Name="NotesTextBox" 
-                        Text="{Binding NewNotes, UpdateSourceTrigger=PropertyChanged}" 
+                    <ui:TextBlock Text="Примітки" Margin="0,0,0,4" />
+                    <ui:TextBox x:Name="NotesTextBox" 
+                        Text="{Binding PlaceAddViewModel.NewNotes, UpdateSourceTrigger=PropertyChanged}" 
                         PlaceholderText="Додаткова інформація..." 
                         Margin="0,0,0,16"/>
-                <!--#endregion-->
-                
-                <!-- #region "Колонки: Дата + Рейтинг" -->
-                <Grid Margin="0,0,0,24">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="20" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+                    <!--#endregion-->
 
-                    <!-- Дата -->
-                    <StackPanel Grid.Column="0">
-                        <ui:TextBlock Text="Дата відвідування" Margin="0,0,0,4"/>
-                        <DatePicker x:Name="DatePickerBox" SelectedDate="{Binding NewVisitDate}" HorizontalAlignment="Stretch"/>
-                    </StackPanel>
+                    <!-- #region "Колонки: Дата + Рейтинг" -->
+                    <Grid Margin="0,0,0,24">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-                    <!-- Рейтинг -->
-                    <StackPanel Grid.Column="2">
-                        <ui:TextBlock Text="Рейтинг" Margin="0,0,0,4"/>
-                        <ui:RatingControl x:Name="Rating" Value="{Binding NewRating, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HalfStarEnabled="False"/>
-                    </StackPanel>
+                        <!-- Дата -->
+                        <StackPanel Grid.Column="0">
+                            <ui:TextBlock Text="Дата відвідування" Margin="0,0,0,4"/>
+                            <DatePicker x:Name="DatePickerBox" SelectedDate="{Binding PlaceAddViewModel.NewVisitDate}" HorizontalAlignment="Stretch"/>
+                        </StackPanel>
 
-                </Grid>
-                <!--#endregion-->
+                        <!-- Рейтинг -->
+                        <StackPanel Grid.Column="2">
+                            <ui:TextBlock Text="Рейтинг" Margin="0,0,0,4"/>
+                            <ui:RatingControl x:Name="Rating" Value="{Binding PlaceAddViewModel.NewRating, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HalfStarEnabled="False"/>
+                        </StackPanel>
 
-                <!--#region "Тип місця + поля що залежать від вибору"-->
-            <StackPanel >
-                <ui:TextBlock>
-                    Тип місця
-                </ui:TextBlock>
-                <ComboBox
+                    </Grid>
+                    <!--#endregion-->
+
+                    <!--#region "Тип місця + поля що залежать від вибору"-->
+                    <StackPanel >
+                        <ui:TextBlock>
+                            Тип місця
+                        </ui:TextBlock>
+                        <ComboBox
                     Margin="0,0,0,20"
-                    ItemsSource="{Binding PlaceTypes}"
-                    SelectedItem="{Binding SelectedPlaceType, Mode=TwoWay}" 
+                    ItemsSource="{Binding PlaceAddViewModel.PlaceTypes}"
+                    SelectedItem="{Binding PlaceAddViewModel.SelectedPlaceType, Mode=TwoWay}" 
                     />
-            </StackPanel>
+                    </StackPanel>
 
-            <!-- Поля для Historical -->
-                <StackPanel Visibility="{Binding IsHistoricalSelected}" Margin="0,0,0,12">
-                <ui:TextBlock Text="Рік побудови" Margin="0,0,0,4" />
-                <DatePicker SelectedDate="{Binding HistoricalYearBuiltDate, Mode=TwoWay}" />
+                    <!-- Поля для Historical -->
+                    <StackPanel Visibility="{Binding PlaceAddViewModel.IsHistoricalSelected}" Margin="0,0,0,12">
+                        <ui:TextBlock Text="Рік побудови" Margin="0,0,0,4" />
+                        <DatePicker SelectedDate="{Binding PlaceAddViewModel.HistoricalYearBuiltDate, Mode=TwoWay}" />
 
-                <ui:TextBlock Text="Значимість (1-10)" Margin="0,8,0,4" />
+                        <ui:TextBlock Text="Значимість (1-10)" Margin="0,8,0,4" />
 
-                <Slider TickPlacement="Both"
+                        <Slider TickPlacement="Both"
                     Minimum="1" Maximum="10"
                     IsSnapToTickEnabled="True"
                     TickFrequency="1"
-                    Value="{Binding HistoricalSignificance, Mode=TwoWay}"
+                    Value="{Binding PlaceAddViewModel.HistoricalSignificance, Mode=TwoWay}"
                 />
-            </StackPanel>
+                    </StackPanel>
 
-            <!-- Поля для Natural -->
-                <StackPanel Visibility="{Binding IsNaturalSelected}" Margin="0,0,0,12">
-                <ui:TextBlock Text="Рік утворення" Margin="0,0,0,4" />
-                <DatePicker SelectedDate="{Binding NaturalYearBuiltDate, Mode=TwoWay}" />
-                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                    <ui:TextBlock Text="Під захистом" VerticalAlignment="Center" Margin="0,0,8,0" />
-                    <CheckBox IsChecked="{Binding NaturalProtectedStatus, Mode=TwoWay}" />
-                </StackPanel>
-            </StackPanel>
-            <!--#endregion-->
-                
-                <!-- #region 2 Колонки: "Додати місце" + "Очистити форму" -->
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="5*" />
-                        <ColumnDefinition Width="10" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+                    <!-- Поля для Natural -->
+                    <StackPanel Visibility="{Binding PlaceAddViewModel.IsNaturalSelected}" Margin="0,0,0,12">
+                        <ui:TextBlock Text="Рік утворення" Margin="0,0,0,4" />
+                        <DatePicker SelectedDate="{Binding PlaceAddViewModel.NaturalYearBuiltDate, Mode=TwoWay}" />
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                            <ui:TextBlock Text="Під захистом" VerticalAlignment="Center" Margin="0,0,8,0" />
+                            <CheckBox IsChecked="{Binding PlaceAddViewModel.NaturalProtectedStatus, Mode=TwoWay}" />
+                        </StackPanel>
+                    </StackPanel>
+                    <!--#endregion-->
 
-                    <!-- КНОПКА "Додати місце" -->
-                    <ui:Button 
+                    <!-- #region 2 Колонки: "Додати місце" + "Очистити форму" -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- КНОПКА "Додати місце" -->
+                        <ui:Button 
                         Grid.Column="0" 
                         HorizontalAlignment="Stretch" 
                         Appearance="Success" 
                         Icon="{ui:SymbolIcon Symbol=Add20}"
-                        Command="{Binding AddPlaceCommand}">
-                        Додати запис
-                    </ui:Button>
+                        Command="{Binding PlaceAddViewModel.AddPlaceCommand}">
+                            Додати запис
+                        </ui:Button>
 
-                    <!-- КНОПКА "Очистити форму" -->
-                    <ui:Button 
+                        <!-- КНОПКА "Очистити форму" -->
+                        <ui:Button 
                         Grid.Column="2"
                         Appearance="Secondary" 
                         HorizontalAlignment="Stretch" 
                         Icon="{ui:SymbolIcon Symbol=Broom20}"
-                        Command="{Binding ClearFormCommand}"
+                        Command="{Binding PlaceAddViewModel.ClearFormCommand}"
                     />
-                </Grid>
-                <!-- Примітка: Обов'язкові поля -->
-                <ui:TextBlock Opacity="0.6">
-                    * - обов'язкові для заповнення поля
-                </ui:TextBlock>
+                    </Grid>
+                    <!-- Примітка: Обов'язкові поля -->
+                    <ui:TextBlock Opacity="0.6">
+                        * - обов'язкові для заповнення поля
+                    </ui:TextBlock>
 
-                <Expander Header="Додаткові інструменти" IsExpanded="False" Margin="0,8,0,0">
-                    
-                    <StackPanel>
+                    <Expander Header="Додаткові інструменти" IsExpanded="False" Margin="0,8,0,0">
+
+                        <StackPanel>
                             <ui:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
                                 Високооцінені місця
                             </ui:TextBlock>
                             <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*" />
-                                <ColumnDefinition Width="5" />
-                                <ColumnDefinition Width="2*" />
-                            </Grid.ColumnDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="5" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
 
-                            <ui:Button
+                                <ui:Button
                                 Grid.Column="0" 
                                 Margin="0,8,0,0"
                                 Appearance="Primary"
                                 Icon="{ui:SymbolIcon Symbol=Save20}"
-                                Command="{Binding HighlyRatedSaveCommand}">
-                                Зберегти 
-                            </ui:Button>
+                                Command="{Binding PlaceListViewModel.HighlyRatedSaveCommand}">
+                                    Зберегти
+                                </ui:Button>
 
-                            <ui:Button
+                                <ui:Button
                                 Grid.Column="2" 
                                 Margin="0,8,0,0"
                                 Appearance="Secondary"
                                 Icon="{ui:SymbolIcon Symbol=FolderOpen20}"
-                                Command="{Binding HighlyRatedLoadCommand}">
-                                Завантажити
-                            </ui:Button>
-                        </Grid>
+                                Command="{Binding PlaceListViewModel.HighlyRatedLoadCommand}">
+                                    Завантажити
+                                </ui:Button>
+                            </Grid>
 
-                        <!-- #region "ІНДЕКСАТОР" -->
-                        <Expander Header="Пошук за індексом" IsExpanded="False" Margin="0,8,0,0">
-                            <StackPanel>
-                                <ui:TextBlock Text="Введіть індекс" Margin="0,0,0,4" />
-                                <Grid Margin="0,0,0,8">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="10" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
+                            <!-- #region "ІНДЕКСАТОР" -->
+                            <Expander Header="Пошук за індексом" IsExpanded="False" Margin="0,8,0,0">
+                                <StackPanel>
+                                    <ui:TextBlock Text="Введіть індекс" Margin="0,0,0,4" />
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="10" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
 
-                                    <ui:NumberBox 
+                                        <ui:NumberBox 
                                         Grid.Column="0"
-                                        Value="{Binding IndexToShow, UpdateSourceTrigger=PropertyChanged}"
+                                        Value="{Binding PlaceListViewModel.IndexToShow, UpdateSourceTrigger=PropertyChanged}"
                                         Minimum="0"
                                         HorizontalAlignment="Stretch" />
 
-                                    <ui:Button 
+                                        <ui:Button 
                                         Grid.Column="2"
                                         Appearance="Secondary"
                                         Icon="{ui:SymbolIcon Symbol=Search20}"
-                                        Command="{Binding ShowByIndexCommand}"
+                                        Command="{Binding PlaceListViewModel.ShowByIndexCommand}"
                                         Padding="12,8" />
-                                </Grid>
+                                    </Grid>
 
-                                <ui:TextBlock Text="Результат:" Margin="0,0,0,4" Opacity="0.7" FontSize="12" />
-                                <TextBlock 
-                                    Text="{Binding PlaceAtIndexDisplay}"
+                                    <ui:TextBlock Text="Результат:" Margin="0,0,0,4" Opacity="0.7" FontSize="12" />
+                                    <TextBlock 
+                                    Text="{Binding PlaceListViewModel.PlaceAtIndexDisplay}"
                                     TextWrapping="Wrap"
                                     MinHeight="40"
                                     Padding="8" />
-                            </StackPanel>
-                        </Expander>
-                        <!--#endregion-->
+                                </StackPanel>
+                            </Expander>
+                            <!--#endregion-->
 
-                        <Expander Header="Перевантажені оператори" IsExpanded="False" Margin="0,8,0,0">
+                            <Expander Header="Перевантажені оператори" IsExpanded="False" Margin="0,8,0,0">
                                 <StackPanel>
                                     <TextBlock> 1 об'єкт</TextBlock>
-                                <ComboBox ItemsSource="{Binding Places}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedObject1}" Margin="0,0,0,5" />
+                                    <ComboBox ItemsSource="{Binding PlaceListViewModel.Places}" DisplayMemberPath="Name" SelectedItem="{Binding PlaceListViewModel.SelectedObject1}" Margin="0,0,0,5" />
 
-                                <TextBlock> 2 об'єкт</TextBlock>
-                                <ComboBox ItemsSource="{Binding Places}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedObject2}" Margin="0,0,0,5" />
+                                    <TextBlock> 2 об'єкт</TextBlock>
+                                    <ComboBox ItemsSource="{Binding PlaceListViewModel.Places}" DisplayMemberPath="Name" SelectedItem="{Binding PlaceListViewModel.SelectedObject2}" Margin="0,0,0,5" />
 
-                                <TextBlock> Операція</TextBlock>
-                                <ComboBox ItemsSource="{Binding Operators}" SelectedItem="{Binding SelectedOperator}" Margin="0,0,0,5" />
+                                    <TextBlock> Операція</TextBlock>
+                                    <ComboBox ItemsSource="{Binding PlaceListViewModel.Operators}" SelectedItem="{Binding PlaceListViewModel.SelectedOperator}" Margin="0,0,0,5" />
 
-                                <ui:Button Appearance="Primary" Command="{Binding overridedOperatorActon}" HorizontalAlignment="Stretch" Margin="0,5,0,5">
-                                    Виконати операцію
-                                </ui:Button>
+                                    <ui:Button Appearance="Primary" Command="{Binding PlaceListViewModel.OverridedOperatorActon}" HorizontalAlignment="Stretch" Margin="0,5,0,5">
+                                        Виконати операцію
+                                    </ui:Button>
 
-                                <TextBlock Text="Результат:" Margin="0,5,0,2" Opacity="0.7" FontSize="12" />
-                                <TextBlock Text="{Binding OperatorResult}" TextWrapping="Wrap" MinHeight="40" Background="{DynamicResource ControlFillColorDefaultBrush}" Padding="8" />
-                            </StackPanel>
-                        </Expander>
-                    </StackPanel>
-                </Expander>
+                                    <TextBlock Text="Результат:" Margin="0,5,0,2" Opacity="0.7" FontSize="12" />
+                                    <TextBlock Text="{Binding PlaceListViewModel.OperatorResult}" TextWrapping="Wrap" MinHeight="40" Background="{DynamicResource ControlFillColorDefaultBrush}" Padding="8" />
+                                </StackPanel>
+                            </Expander>
+                        </StackPanel>
+                    </Expander>
                 </StackPanel>
-        </ScrollViewer>
-        <!--#endregion-->
+            </ScrollViewer>
+            <!--#endregion-->
 
-        <!-- #region "СПИСОК МІСЦЬ + деталі" -->
-        <Grid Grid.Column="1" Margin="10">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+            <!-- #region "СПИСОК МІСЦЬ + деталі" -->
+            <Grid Grid.Column="1" Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-            <!--  #region "Датагрід " -->
+                <!--  #region "Датагрід " -->
                 <ui:DataGrid x:Name="PlacesDataGrid"  
                 Grid.Row="0"
-                ItemsSource="{Binding Places}" 
-                SelectedItem="{Binding SelectedPlace}"
-                         Visibility="{Binding IsPlaceExists}"
+                ItemsSource="{Binding PlaceListViewModel.Places}" 
+                SelectedItem="{Binding PlaceListViewModel.SelectedPlace}"
+                         Visibility="{Binding PlaceListViewModel.IsPlaceExists}"
                 AutoGenerateColumns="False" 
                 IsReadOnly="True"
                 SelectionMode="Single"
@@ -277,11 +277,11 @@
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
                                         <ui:SymbolIcon x:Name="StarIcon" 
-                                           Symbol="Star20"
-                                           Filled="True"
-                                           Foreground="#FFD700" 
-                                           Margin="0,0,6,0" 
-                                           Visibility="Collapsed" />
+                                   Symbol="Star20"
+                                   Filled="True"
+                                   Foreground="#FFD700" 
+                                   Margin="0,0,6,0" 
+                                   Visibility="Collapsed" />
                                         <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
                                     </StackPanel>
 
@@ -290,23 +290,11 @@
                                             <Setter TargetName="StarIcon" Property="Visibility" Value="Visible" />
                                         </DataTrigger>
                                     </DataTemplate.Triggers>
-
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                    
-                    <ui:TextBlock Text="Опис *" Margin="0,0,0,4" />
-                    <ui:TextBox x:Name="DescriptionTextBox"
-                                Text="{Binding NewDescription, UpdateSourceTrigger=PropertyChanged}"
-                                PlaceholderText="Це місто кави, місто тисячі левів,&#x0a;місто джазу, дощу,шоколаду, терас&#x0a;і пристрасного танго."
-                                TextWrapping="Wrap"
-                                AcceptsReturn="True"
-                                MinHeight="70"
-                                Margin="0,0,0,16" />
-
-
-                        <!-- КРАЇНА / ОПИС / РЕЙТИНГ / ПРИМІТКИ -->
+                        <!-- KРАЇНА / ОПИС / РЕЙТИНГ / ПРИМІТКИ -->
                         <DataGridTextColumn Header="Країна" Binding="{Binding Country}" Width="*"/>
                         <DataGridTextColumn Header="Опис" Binding="{Binding Description, Mode=OneWay}" Width="1.5*"/>
                         <DataGridTextColumn Header="Дата" Binding="{Binding Date, Mode=OneWay, StringFormat='{}{0:dd/MM/yyyy}'}" Width="*"/>
@@ -319,26 +307,26 @@
                 <ui:TextBlock 
                     FontSize="48" FontFamily="Lucida Console" FontWeight="Light"
                     HorizontalAlignment="Center" VerticalAlignment="Center" 
-                    Visibility="{Binding IsAddPlaceTextVisible}">
+                    Visibility="{Binding PlaceListViewModel.IsAddPlaceTextVisible}">
                     Додайте місце для перегляду
                 </ui:TextBlock>
                 <!--#endregion-->
-            <!-- #region "ПАНЕЛЬ ДЕТАЛЕЙ" -->
-           
-            <!-- татишопесня 
+                <!-- #region "ПАНЕЛЬ ДЕТАЛЕЙ" -->
+
+                <!-- татишопесня 
             сюди підключить мб якусь апішку 
             + парсить картинку з вікіпедії на крусову-->
-            
-            <Border 
+
+                <Border 
                 Grid.Row="1"
                 Background="{DynamicResource ControlAltFillColorSecondaryBrush}"
                 BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
                 BorderThickness="0,1,0,0"
                 Padding="16"
                 Margin="0,8,0,0"
-                Visibility="{Binding IsSelectedPlaceExists}">
+                Visibility="{Binding PlaceListViewModel.IsSelectedPlaceExists}">
 
-                <StackPanel Visibility="{Binding IsSelectedPlaceExists}">
+                    <StackPanel Visibility="{Binding PlaceListViewModel.IsSelectedPlaceExists}">
                         <Grid Margin="0,0,0,12">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -349,31 +337,32 @@
                                           FontSize="16"
                                           FontWeight="Bold"
                                           VerticalAlignment="Center"
-                                          Visibility="{Binding IsSelectedPlaceExists}" />
+                                          Visibility="{Binding PlaceListViewModel.IsSelectedPlaceExists}" />
                             <ui:Button Grid.Column="1"
                                        Appearance="Danger"
-                                       Command="{Binding DeletePlaceCommand}"
-                                       Visibility="{Binding IsSelectedPlaceExists}"
+                                       Command="{Binding PlaceListViewModel.DeletePlaceCommand}"
+                                       Visibility="{Binding PlaceListViewModel.IsSelectedPlaceExists}"
                                        Icon="{ui:SymbolIcon Symbol=Delete20}">
                                 Видалити обраний запис
                             </ui:Button>
                         </Grid>
-                        <TextBlock Text="{Binding SelectedPlaceDetails, Mode=OneWay}"
+                        <TextBlock Text="{Binding PlaceListViewModel.SelectedPlaceDetails, Mode=OneWay}"
                                    TextWrapping="Wrap"
                                    LineHeight="1.5"
-                                   Visibility="{Binding IsSelectedPlaceExists}" />
+                                   Visibility="{Binding PlaceListViewModel.IsSelectedPlaceExists}" />
                         <StackPanel Margin="0,12,0,0"
-                                    Visibility="{Binding IsSelectedPlaceExists}">
+                                    Visibility="{Binding PlaceListViewModel.IsSelectedPlaceExists}">
                             <ui:TextBlock Text="Відгуки" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,6" />
-                            <ItemsControl ItemsSource="{Binding SelectedPlace.Reviews}">
+                            <ItemsControl ItemsSource="{Binding PlaceListViewModel.SelectedPlace.Reviews}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Padding="8" Margin="0,0,0,6" Background="{DynamicResource ControlFillColorPrimaryBrush}" CornerRadius="6">
+                                        <Border Padding="8" Margin="0,0,0,6" Background="{DynamicResource ControlFillColorSecondaryBrush}" CornerRadius="6">
                                             <DockPanel LastChildFill="True">
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                                                    <TextBlock Text="{Binding Value, StringFormat='{}{0:0.0}'}" Margin="0,0,8,0" VerticalAlignment="Center" />
-                                                    <ui:Button Appearance="Danger" Content="Видалити" Padding="8,4" Margin="6,0,0,0"
-                                                               Command="{Binding DataContext.RemoveReviewCommand, RelativeSource={RelativeSource AncestorType=Grid}}"
+                                                    <TextBlock Text="{Binding Value, StringFormat='{}{0:0.0}'}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                                    <ui:Button Appearance="Danger" Content="Видалити" 
+                                                               Padding="8,4" Margin="6,0,0,0" 
+                                                               Command="{Binding DataContext.PlaceListViewModel.RemoveReviewCommand}" 
                                                                CommandParameter="{Binding Key}" />
                                                 </StackPanel>
                                                 <TextBlock Text="{Binding Key}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,10,0" />
@@ -383,18 +372,17 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                             <StackPanel Orientation="Vertical" Margin="0,8,0,0">
-                                <ui:TextBox Text="{Binding NewReviewText, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Напишіть відгук..." AcceptsReturn="True" MinHeight="60" />
+                                <ui:TextBox Text="{Binding  PlaceListViewModel.NewReviewText, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Напишіть відгук..." AcceptsReturn="True" MinHeight="60" />
                                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                                    <ui:RatingControl Value="{Binding NewReviewRating, Mode=TwoWay, TargetNullValue=0}" HalfStarEnabled="False" />
-                                    <ui:Button Content="Додати відгук" Appearance="Success" Margin="8,0,0,0" Command="{Binding AddReviewCommand}" />
+                                    <ui:RatingControl Value="{Binding  PlaceListViewModel.NewReviewRating, Mode=TwoWay, TargetNullValue=0}" HalfStarEnabled="False" />
+                                    <ui:Button Content="Додати відгук" Appearance="Success" Margin="8,0,0,0" Command="{Binding PlaceListViewModel.AddReviewCommand}" />
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
                 </Border>
-                </Grid>
             </Grid>
-           <!--#endregion--> 
         </Grid>
+        <!--#endregion-->
     </DockPanel>
 </ui:FluentWindow>
