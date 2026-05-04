@@ -1,60 +1,92 @@
 ﻿using OOPWPFProject.Models.Helpers;
-
 using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-namespace OOPWPFProject.Models.Workers;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
-internal class WeatherApi
+
+namespace OOPWPFProject.Models.Workers
 {
-    private static readonly HttpClient _client = new();
-    private string _apiKey = string.Empty;
-    public string ApiKey
+    internal class WeatherApi
     {
-        get => _apiKey;
-        set => _apiKey = value;
-    }
 
-    public class GeoLocation
-    {
-        [JsonPropertyName( "lat" )]
-        public double Lat { get; set; }
+        private static readonly HttpClient _client = new();
+        private string _apiKey = string.Empty;
+        public string ApiKey
+        {
+            get => _apiKey;
+            set => _apiKey = value;
+        }
 
-        [JsonPropertyName( "lon" )]
-        public double Lon { get; set; }
-    }
+        public class GeoLocation
+        {
+            [JsonPropertyName("lat")]
+            public double Lat { get; set; }
 
-    public async Task<string> GetCoordinates ( string city )
-    {
-        string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Models/Workers/apiKey.txt");
-        ApiKey = File.ReadAllText( filePath ).Trim();
-        var requestUri = $"https://api.openweathermap.org/geo/1.0/direct?q={city}&limit=1&appid={ApiKey}";
+            [JsonPropertyName("lon")]
+            public double Lon { get; set; }
+        }
 
-        var response = await _client.GetAsync(requestUri);
-        response.EnsureSuccessStatusCode();
+        public class WeatherCondition
+        {
+            [JsonPropertyName("id")]
+            public int Id { get; set; }
 
-        var body = await response.Content.ReadAsStringAsync();
-        List<GeoLocation> locations = JsonSerializer.Deserialize<List<GeoLocation>>(body);
+            [JsonPropertyName("main")]
+            public string Main { get; set; }
+        }
 
-        if ( locations == null || locations.Count == 0 )
-            throw new Exception( "Місто не знайдене" );
+        public class WeatherResponse
+        {
+            [JsonPropertyName("weather")]
+            public List<WeatherCondition> Weather { get; set; }
+        }
 
-        await GetWeather( locations[0].Lat, locations[0].Lon );
+        public async Task<string> GetCoordinates(string city)
+        {
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Models/Workers/apiKey.txt");
+            ApiKey = File.ReadAllText(filePath).Trim();
+            var requestUri = $"https://api.openweathermap.org/geo/1.0/direct?q={city}&limit=1&appid={ApiKey}";
 
-        return $"{locations[0].Lat},{locations[0].Lon}";
-    }
+            var response = await _client.GetAsync(requestUri);
+            response.EnsureSuccessStatusCode();
 
-    public async Task<string> GetWeather ( double lat, double lon )
-    {
-        var requestUri = $"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={ApiKey}";
+            var body = await response.Content.ReadAsStringAsync();
 
-        var response = await _client.GetAsync(requestUri);
-        response.EnsureSuccessStatusCode();
+            List<GeoLocation> locations = JsonSerializer.Deserialize<List<GeoLocation>>(body);
 
-        var body = await response.Content.ReadAsStringAsync();
-        Logger.LogInfo( $"Дані погоди для координат ({lat}, {lon}): {body}" );
+            if (locations == null || locations.Count == 0)
+                throw new Exception("Місто не знайдене.");
 
-        return body;
+            return $"{locations[0].Lat},{locations[0].Lon}";
+        }
+
+        public async Task<string> GetWeather(double lat, double lon)
+        {
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Models/Workers/apiKey.txt");
+            ApiKey = File.ReadAllText(filePath).Trim();
+
+            var requestUri = $"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&lang=ua&appid={ApiKey}";
+
+            var response = await _client.GetAsync(requestUri);
+            response.EnsureSuccessStatusCode();
+
+            var body = await response.Content.ReadAsStringAsync();
+
+            WeatherResponse weatherData = JsonSerializer.Deserialize<WeatherResponse>(body);
+
+            if (weatherData?.Weather != null && weatherData.Weather.Count > 0)
+            {
+                int id = weatherData.Weather[0].Id;
+                string main = weatherData.Weather[0].Main;
+            }
+            else
+            {
+                throw new Exception("Помилка api / пуста відповідь");
+            }
+
+            return body;
+        }
     }
 }
