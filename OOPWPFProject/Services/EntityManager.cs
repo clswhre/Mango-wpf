@@ -1,4 +1,4 @@
-﻿namespace OOPWPFProject.Models.Helpers;
+﻿namespace OOPWPFProject.Services;
 
 public class EntityManager<T>
 {
@@ -6,7 +6,8 @@ public class EntityManager<T>
 
     public T this[int idx]
     {
-        get {
+        get
+        {
             if (idx < 0 || idx >= values.Count)
             {
                 throw new ArgumentOutOfRangeException();
@@ -26,24 +27,15 @@ public class EntityManager<T>
         }
     }
 
-    public void Add(T place)
-    {
-        values.Add(place);
-    }
+    public void Add(T place) => values.Add(place);
 
-    public bool Remove(T place)
-    {
-        return values.Remove(place);
-    }
+    public bool Remove(T place) => values.Remove(place);
 
-    public IEnumerable<T> GetAll()
-    {
-        return values;
-    }
+    public IEnumerable<T> GetAll() => values;
 
     public void DisplayAll()
     {
-        foreach (var place in values)
+        foreach (T? place in values)
         {
             Console.WriteLine(place.ToString());
         }
