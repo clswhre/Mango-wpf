@@ -12,7 +12,7 @@ internal class WeatherApi
 
     public WeatherApi()
     {
-        var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Models/Workers/apiKey.txt");
+        var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Services/apiKey.txt");
         if (!File.Exists(filePath))
         {
             throw new FileNotFoundException("Файл з API ключем не знайдено");

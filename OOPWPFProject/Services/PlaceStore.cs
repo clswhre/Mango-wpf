@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 
-using OOPWPFProject.Models.PlaceRelated;
+using OOPWPFProject.Models;
 using OOPWPFProject.Services;
 
 namespace OOPWPFProject.ViewModels.Services;

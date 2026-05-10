@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Text.Json;
 
-using OOPWPFProject.Models.PlaceRelated;
+using OOPWPFProject.Models;
 
 namespace OOPWPFProject.Services;
 
