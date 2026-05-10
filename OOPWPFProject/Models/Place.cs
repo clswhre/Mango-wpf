@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace OOPWPFProject.Models.PlaceRelated;
+namespace OOPWPFProject.Models;
 
 [JsonPolymorphic( TypeDiscriminatorPropertyName = "$type" )]
 [JsonDerivedType( typeof( Place ), "place" )]

@@ -1,4 +1,4 @@
-﻿namespace OOPWPFProject.Models.PlaceRelated;
+﻿namespace OOPWPFProject.Models;
 
 public abstract class AbstractPlace
 {

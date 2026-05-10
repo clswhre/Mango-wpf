@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace OOPWPFProject.Models.PlaceRelated;
+namespace OOPWPFProject.Models;
 
 public class HistoricalPlace : Place
 {
