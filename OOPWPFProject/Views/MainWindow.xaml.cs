@@ -5,9 +5,9 @@ namespace OOPWPFProject;
 
 public partial class MainWindow : FluentWindow
 {
-    public MainWindow ()
+    public MainWindow()
     {
         InitializeComponent();
-        ApplicationThemeManager.Apply( this );
+        ApplicationThemeManager.Apply(this);
     }
 }

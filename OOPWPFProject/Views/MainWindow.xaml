@@ -314,8 +314,8 @@
                 <!-- #region "ПАНЕЛЬ ДЕТАЛЕЙ" -->
 
                 <!-- татишопесня 
-            сюди підключить мб якусь апішку 
-            + парсить картинку з вікіпедії на крусову-->
+                    сюди підключить мб якусь апішку 
+                    + парсить картинку з вікіпедії на крусову-->
 
                 <Border 
                 Grid.Row="1"
@@ -346,10 +346,32 @@
                                 Видалити обраний запис
                             </ui:Button>
                         </Grid>
-                        <TextBlock Text="{Binding PlaceListViewModel.SelectedPlaceDetails, Mode=OneWay}"
-                                   TextWrapping="Wrap"
-                                   LineHeight="1.5"
-                                   Visibility="{Binding PlaceListViewModel.IsSelectedPlaceExists}" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="2" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="0.5*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding PlaceListViewModel.SelectedPlaceDetails, Mode=OneWay}"
+                                           TextWrapping="Wrap"
+                                           LineHeight="1.5"
+                                           Visibility="{Binding PlaceListViewModel.IsSelectedPlaceExists}" />
+
+                            <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding PlaceListViewModel.WeatherSummary}" Margin="0,0,8,0" VerticalAlignment="Center" />
+                                    <Image Source="{Binding PlaceListViewModel.WeatherIconPath}" Width="40" Height="40" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+
                         <StackPanel Margin="0,12,0,0"
                                     Visibility="{Binding PlaceListViewModel.IsSelectedPlaceExists}">
                             <ui:TextBlock Text="Відгуки" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,6" />
