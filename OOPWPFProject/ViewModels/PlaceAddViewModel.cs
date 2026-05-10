@@ -1,10 +1,9 @@
-﻿using OOPWPFProject.Models.Helpers;
-using OOPWPFProject.Models.PlaceRelated;
-using OOPWPFProject.ViewModels.Services;
-using OOPWPFProject.ViewModels.VMBase;
-
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
+
+using OOPWPFProject.Models;
+using OOPWPFProject.Services;
+using OOPWPFProject.ViewModels.Services;
 
 namespace OOPWPFProject.ViewModels;
 
@@ -13,11 +12,11 @@ internal class PlaceAddViewModel : BaseViewModel
     public RelayCommand AddPlaceCommand { get; }
     public RelayCommand ClearFormCommand { get; }
 
-    public PlaceAddViewModel ( PlaceStore store )
+    public PlaceAddViewModel(PlaceStore store)
     {
         _store = store;
-        AddPlaceCommand = new RelayCommand( _ => AddPlace(), _ => CanAddPlace() );
-        ClearFormCommand = new RelayCommand( _ => ClearForm() );
+        AddPlaceCommand = new RelayCommand(_ => AddPlace(), _ => CanAddPlace());
+        ClearFormCommand = new RelayCommand(_ => ClearForm());
     }
 
     private readonly PlaceStore _store;
@@ -34,10 +33,10 @@ internal class PlaceAddViewModel : BaseViewModel
         get;
         set
         {
-            if ( SetProperty( ref field, value ) )
+            if (SetProperty(ref field, value))
             {
-                OnPropertyChanged( nameof( IsNaturalSelected ) );
-                OnPropertyChanged( nameof( IsHistoricalSelected ) );
+                OnPropertyChanged(nameof(IsNaturalSelected));
+                OnPropertyChanged(nameof(IsHistoricalSelected));
                 ClearSpecializedFields();
             }
         }
@@ -121,14 +120,14 @@ internal class PlaceAddViewModel : BaseViewModel
         {
             field = value;
             OnPropertyChanged();
-            OnPropertyChanged( nameof( HistoricalYearBuiltDate ) );
+            OnPropertyChanged(nameof(HistoricalYearBuiltDate));
         }
     }
 
     public DateTime? HistoricalYearBuiltDate
     {
-        get => HistoricalYearBuilt?.ToDateTime( TimeOnly.MinValue );
-        set => HistoricalYearBuilt = value.HasValue ? DateOnly.FromDateTime( value.Value ) : null;
+        get => HistoricalYearBuilt?.ToDateTime(TimeOnly.MinValue);
+        set => HistoricalYearBuilt = value.HasValue ? DateOnly.FromDateTime(value.Value) : null;
     }
 
     public int HistoricalSignificance
@@ -148,14 +147,14 @@ internal class PlaceAddViewModel : BaseViewModel
         {
             field = value;
             OnPropertyChanged();
-            OnPropertyChanged( nameof( NaturalYearBuiltDate ) );
+            OnPropertyChanged(nameof(NaturalYearBuiltDate));
         }
     }
 
     public DateTime? NaturalYearBuiltDate
     {
-        get => NaturalYearBuilt?.ToDateTime( TimeOnly.MinValue );
-        set => NaturalYearBuilt = value.HasValue ? DateOnly.FromDateTime( value.Value ) : null;
+        get => NaturalYearBuilt?.ToDateTime(TimeOnly.MinValue);
+        set => NaturalYearBuilt = value.HasValue ? DateOnly.FromDateTime(value.Value) : null;
     }
 
     public bool NaturalProtectedStatus
@@ -168,22 +167,19 @@ internal class PlaceAddViewModel : BaseViewModel
         }
     }
 
-    private bool CanAddPlace ()
-    {
-        return !string.IsNullOrWhiteSpace( NewName ) &&
-               !string.IsNullOrWhiteSpace( NewCountry ) &&
-               !string.IsNullOrWhiteSpace( NewDescription );
-    }
+    private bool CanAddPlace() => !string.IsNullOrWhiteSpace(NewName) &&
+               !string.IsNullOrWhiteSpace(NewCountry) &&
+               !string.IsNullOrWhiteSpace(NewDescription);
 
-    private void AddPlace ()
+    private void AddPlace()
     {
         DateOnly? checkedVisitDate = NewVisitDate.HasValue ? DateOnly.FromDateTime(NewVisitDate.Value) : null;
         double? checkedRating = NewRating > 0 ? NewRating : null;
-        string? checkedNotes = string.IsNullOrEmpty(NewNotes) ? null : NewNotes;
+        var checkedNotes = string.IsNullOrEmpty(NewNotes) ? null : NewNotes;
 
         Place? newPlace = null;
 
-        switch ( SelectedPlaceType )
+        switch (SelectedPlaceType)
         {
             case PlaceType.Normal:
                 newPlace = new Place()
@@ -225,20 +221,20 @@ internal class PlaceAddViewModel : BaseViewModel
         }
         ;
 
-        if ( newPlace is not null && !PlaceAlreadyExists( newPlace ) )
+        if (newPlace is not null && !PlaceAlreadyExists(newPlace))
         {
-            _store.AddPlace( newPlace );
-            Logger.LogInfo( $"Дія (Додано): Додано місце '{newPlace.Name}', країна '{newPlace.Country}'" );
+            _store.AddPlace(newPlace);
+            Logger.LogInfo($"Дія (Додано): Додано місце '{newPlace.Name}', країна '{newPlace.Country}'");
         }
-        else if ( newPlace is not null )
+        else if (newPlace is not null)
         {
-            Logger.LogInfo( $"Дія (Змінено): Спроба додати дубль місця '{newPlace.Name}' відхилена" );
+            Logger.LogInfo($"Дія (Змінено): Спроба додати дублікат місця '{newPlace.Name}'");
         }
 
         ClearForm();
     }
 
-    private void ClearForm ()
+    private void ClearForm()
     {
         NewName = string.Empty;
         NewCountry = string.Empty;
@@ -258,10 +254,7 @@ internal class PlaceAddViewModel : BaseViewModel
         NaturalProtectedStatus = false;
     }
 
-    private bool PlaceAlreadyExists(Place candidate)
-    {
-        return _store.Places.Any(p =>
-            p.Name.Equals(candidate.Name, StringComparison.OrdinalIgnoreCase) &&
-            p.Country.Equals(candidate.Country, StringComparison.OrdinalIgnoreCase));
-    }
+    private bool PlaceAlreadyExists(Place candidate) => _store.Places.Any(p =>
+                                                                 p.Name.Equals(candidate.Name, StringComparison.OrdinalIgnoreCase) &&
+                                                                 p.Country.Equals(candidate.Country, StringComparison.OrdinalIgnoreCase));
 }

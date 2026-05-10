@@ -1,7 +1,7 @@
-﻿using OOPWPFProject.Models.PlaceRelated;
+﻿using System.Collections.ObjectModel;
+
+using OOPWPFProject.Models;
 using OOPWPFProject.ViewModels.Services;
-using OOPWPFProject.ViewModels.VMBase;
-using System.Collections.ObjectModel;
 
 namespace OOPWPFProject.ViewModels;
 
@@ -12,11 +12,11 @@ internal class MainViewModel : BaseViewModel
     public PlaceAddViewModel PlaceAddViewModel { get; }
     public PlaceListViewModel PlaceListViewModel { get; }
     public ObservableCollection<Place> Places => _sharedStore.Places;
-    public MainViewModel ( PlaceStore store )
+    public MainViewModel(PlaceStore store)
     {
         _sharedStore = store;
 
-        PlaceAddViewModel = new PlaceAddViewModel( _sharedStore );
-        PlaceListViewModel = new PlaceListViewModel( _sharedStore );
+        PlaceAddViewModel = new PlaceAddViewModel(_sharedStore);
+        PlaceListViewModel = new PlaceListViewModel(_sharedStore);
     }
 }
