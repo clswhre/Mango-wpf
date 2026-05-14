@@ -10,7 +10,7 @@ namespace OOPWPFProject.Models;
 [JsonDerivedType( typeof( Place ), "place" )]
 [JsonDerivedType( typeof( HistoricalPlace ), "historical" )]
 [JsonDerivedType( typeof( NaturalPlace ), "natural" )]
-public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable
+public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeather
 {
     // СЕТТЕРИ/АКСЕССОРИ полей
 
@@ -94,6 +94,45 @@ public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable
     } = string.Empty;
 
     public string? Notes
+    {
+        get => field;
+        set
+        {
+            if ( field != value )
+            {
+                field = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public string? IconId
+    {
+        get => field;
+        set
+        {
+            if ( field != value )
+            {
+                field = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public string? WeatherSummary
+    {
+        get => field;
+        set
+        {
+            if ( field != value )
+            {
+                field = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public string? WeatherIconPath
     {
         get => field;
         set

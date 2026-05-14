@@ -8,3 +8,10 @@ public abstract class AbstractPlace
 
     public abstract string GetDetails ();
 }
+
+public interface IWeather
+{
+    string? IconId { get; set; }
+    string? WeatherSummary { get; set; }
+    string? WeatherIconPath { get; set; }
+}

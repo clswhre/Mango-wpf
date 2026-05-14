@@ -2,24 +2,33 @@
 
 namespace OOPWPFProject.Models;
 
-public class NaturalPlace : Place
+public class NaturalPlace(DateOnly? date, bool? protectedStatus) : Place(string.Empty, string.Empty, string.Empty)
 {
-    public DateOnly? YearBuilt
+
+    public DateOnly? YearFormed
     {
         get; set;
-    }
+    } = date;
     public bool? ProtectedStatus
     {
         get; set;
+    } = protectedStatus;
+
+    public NaturalPlace(string name, string country, string description, DateOnly? date, bool? protectedStatus)
+        : this(date, protectedStatus)
+    {
+        Name = name;
+        Country = country;
+        Description = description;
     }
 
     public override string GetDetails()
     {
         StringBuilder messageBuilder = new (base.GetDetails());
 
-        if ( YearBuilt.HasValue )
+        if ( YearFormed.HasValue )
         {
-            messageBuilder.AppendLine( $"Рік утворення: {YearBuilt.Value.Year}" );
+            messageBuilder.AppendLine( $"Рік утворення: {YearFormed.Value.Year}" );
         }
         else
         {
