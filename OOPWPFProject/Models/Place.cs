@@ -12,8 +12,6 @@ namespace OOPWPFProject.Models;
 [JsonDerivedType( typeof( NaturalPlace ), "natural" )]
 public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeather
 {
-    // СЕТТЕРИ/АКСЕССОРИ полей
-
     public override string Name
     {
         get => field;
@@ -157,8 +155,6 @@ public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeathe
     }
 
     public bool IsHighlyRated => Rating >= 4;
-
-
 
     public ObservableCollection<KeyValuePair<string, double?>> Reviews { get; } = [];
 

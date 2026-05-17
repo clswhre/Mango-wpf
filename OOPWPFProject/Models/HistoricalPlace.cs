@@ -4,11 +4,8 @@ namespace OOPWPFProject.Models;
 
 public class HistoricalPlace : Place
 {
-
-    public HistoricalPlace(DateOnly? date, int? significance) : base(string.Empty, string.Empty, string.Empty)
+    public HistoricalPlace()
     {
-        YearBuilt = date;
-        Significance = significance;
     }
 
     public HistoricalPlace(string name, string country, string description, DateOnly? date, int? significance)

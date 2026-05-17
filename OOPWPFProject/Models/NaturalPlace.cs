@@ -2,24 +2,28 @@
 
 namespace OOPWPFProject.Models;
 
-public class NaturalPlace(DateOnly? date, bool? protectedStatus) : Place(string.Empty, string.Empty, string.Empty)
+public class NaturalPlace : Place
 {
 
     public DateOnly? YearFormed
     {
         get; set;
-    } = date;
+    } 
     public bool? ProtectedStatus
     {
         get; set;
-    } = protectedStatus;
+    }
 
     public NaturalPlace(string name, string country, string description, DateOnly? date, bool? protectedStatus)
-        : this(date, protectedStatus)
+        : base( name, country, description)
     {
         Name = name;
         Country = country;
         Description = description;
+    }
+
+    public NaturalPlace()
+    {
     }
 
     public override string GetDetails()

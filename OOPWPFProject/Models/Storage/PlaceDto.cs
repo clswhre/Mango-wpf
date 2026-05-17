@@ -1,15 +1,19 @@
-﻿using System.Text.RegularExpressions;
-namespace OOPWPFProject.Models.Storage;
+﻿using Microsoft.Data.Sqlite;
 
+namespace OOPWPFProject.Models.Storage;
 
 public class PlaceDto
 {
     public PlaceType Type { get; set; }
 
-    public string Name {  get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
     public string Country { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-
+    public int? Rating { get; set; } = null;
+    public DateOnly? Date { get; set; } = null;
+    public string? Review { get; set; } = string.Empty;
+    public string? Notes { get; set; } = string.Empty;
+    public string? ReviewsJson { get; set; } = string.Empty;
 
     // Historical
     public DateOnly? YearBuilt { get; set; }
@@ -17,55 +21,72 @@ public class PlaceDto
 
     // Natural
     public DateOnly? YearFormed { get; set; }
-    public bool? ProtectedStatus {  get; set; }
+    public bool? ProtectedStatus { get; set; }
 
-    public static PlaceDto FromPlace(Place p) => p switch
+    public static PlaceDto FromPlace(Place p)
     {
-        HistoricalPlace historical => new PlaceDto
+        var dto = new PlaceDto
         {
-            Type = PlaceType.Historical,
-            Name = historical.Name,
-            Country = historical.Country,
-            YearBuilt = historical.YearBuilt,
-            Significance = historical.Significance
-        },
-        NaturalPlace natural => new PlaceDto
-        {
-            Type = PlaceType.Natural,
-            Name = natural.Name,
-            Country = natural.Country,
-            YearFormed = natural.YearFormed,
-            ProtectedStatus = natural.ProtectedStatus
-        },
-        Place place => new PlaceDto
-        {
-            Type = PlaceType.Normal,
-            Name = place.Name,
-            Country = place.Country
-        },
-        _ => throw new InvalidOperationException(
-                 $"Невідомий тип Place для серіалізації: {p.GetType().Name}")
-    };
+            Name = p.Name,
+            Country = p.Country,
+            Description = p.Description,
+            Rating = p.Rating.HasValue ? (int)p.Rating.Value : null,
+            Date = p.Date,
+            Review = p.Review,
+            Notes = p.Notes,
+            ReviewsJson = p.Reviews != null ? System.Text.Json.JsonSerializer.Serialize(p.Reviews) : null
+        };
 
-    /// <summary>Зворотне перетворення: DTO → доменний об'єкт.</summary>
-    public Place ToPlace() => Type switch
+        switch (p)
+        {
+            case HistoricalPlace h:
+                dto.Type = PlaceType.Historical;
+                dto.YearBuilt = h.YearBuilt;
+                dto.Significance = h.Significance;
+                break;
+            case NaturalPlace n:
+                dto.Type = PlaceType.Natural;
+                dto.YearFormed = n.YearFormed;
+                dto.ProtectedStatus = n.ProtectedStatus;
+                break;
+            default:
+                dto.Type = PlaceType.Normal;
+                break;
+        }
+        return dto;
+    }
+
+    public Place ToPlace()
     {
-        PlaceType.Historical => new HistoricalPlace(
-            Name, Country, Description,
-            YearBuilt ?? null,
-            Significance ?? null),
+        Place place = Type switch
+        {
+            PlaceType.Historical => new HistoricalPlace { YearBuilt = YearBuilt, Significance = Significance ?? 0 },
+            PlaceType.Natural => new NaturalPlace { YearFormed = YearFormed, ProtectedStatus = ProtectedStatus },
+            _ => new Place()
+        };
 
-        PlaceType.Natural => new NaturalPlace(
-            Name, Country, Description,
-            YearFormed ?? null,
-            ProtectedStatus ?? null),
+        place.Name = Name;
+        place.Country = Country;
+        place.Description = Description;
+        place.Rating = Rating;
+        place.Date = Date;
+        place.Review = Review;
+        place.Notes = Notes;
 
-        PlaceType.Normal => new Place(
-            Name, Country, Description),
+        if (!string.IsNullOrWhiteSpace(ReviewsJson))
+        {
+            List<KeyValuePair<string, double?>>? reviews = System.Text.Json.JsonSerializer.Deserialize<List<KeyValuePair<string, double?>>>(ReviewsJson);
+            if (reviews is not null)
+            {
+                place.Reviews.Clear();
+                foreach (KeyValuePair<string, double?> review in reviews)
+                {
+                    place.Reviews.Add(review);
+                }
+            }
+        }
 
-        _ => throw new InvalidOperationException(
-                 $"Невідоме значення Type: {Type}")
-    };
-
+        return place;
+    }
 
 }

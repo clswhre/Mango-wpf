@@ -21,7 +21,7 @@ public static class Logger
         {
             var logEntry = $"[{DateTime.Now:HH:mm:ss dd/MM}] -> {message}{Environment.NewLine}";
 
-            File.AppendAllText(Saver.LogFilePath, logEntry);
+            File.AppendAllTextAsync(Saver.LogFilePath, logEntry);
         }
         catch (Exception ex)
         {
@@ -41,7 +41,7 @@ public static class Logger
         try
         {
             var json = JsonSerializer.Serialize(places, options);
-            File.WriteAllText(path, json);
+            File.WriteAllTextAsync(path, json);
         }
         catch (Exception e)
         {

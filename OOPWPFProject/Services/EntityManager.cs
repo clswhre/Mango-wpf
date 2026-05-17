@@ -27,18 +27,10 @@ public class EntityManager<T>
         }
     }
 
-    public void Add(T place) => values.Add(place);
+    public void Add(T item) => values.Add(item);
 
-    public bool Remove(T place) => values.Remove(place);
+    public bool Remove(T item) => values.Remove(item);
 
     public IEnumerable<T> GetAll() => values;
-
-    public void DisplayAll()
-    {
-        foreach (T? place in values)
-        {
-            Console.WriteLine(place.ToString());
-        }
-    }
 
 }
