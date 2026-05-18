@@ -4,7 +4,7 @@
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         xmlns:local="clr-namespace:OOPWPFProject" xmlns:viewmodels="clr-namespace:OOPWPFProject.ViewModels" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         Title="Mango" 
-        Height="650" Width="1600" 
+        Height="700" Width="1600" 
         MinHeight="650" MinWidth="1600" 
         WindowStartupLocation="CenterScreen"
         FontFamily="Cascadia Code" 
@@ -367,7 +367,7 @@
                             <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                                     <TextBlock Text="{Binding PlaceListViewModel.WeatherSummary}" Margin="0,0,8,0" VerticalAlignment="Center" />
-                                    <Image Source="{Binding PlaceListViewModel.WeatherIconPath}" Width="40" Height="40" />
+                                    <Image Source="{Binding PlaceDetailsViewModel.SelectedPlace.WeatherIconPath}"  Width="40" Height="40" />
                                 </StackPanel>
                             </StackPanel>
                         </Grid>

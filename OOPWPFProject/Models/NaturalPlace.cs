@@ -14,14 +14,6 @@ public class NaturalPlace : Place
         get; set;
     }
 
-    public NaturalPlace(string name, string country, string description, DateOnly? date, bool? protectedStatus)
-        : base( name, country, description)
-    {
-        Name = name;
-        Country = country;
-        Description = description;
-    }
-
     public NaturalPlace()
     {
     }

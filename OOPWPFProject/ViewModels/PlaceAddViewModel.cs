@@ -120,11 +120,11 @@ internal class PlaceAddViewModel : BaseViewModel
         {
             field = value;
             OnPropertyChanged();
-            OnPropertyChanged(nameof(HistoricalYearBuiltDate));
+            OnPropertyChanged(nameof(HistoricalYearFormedDate));
         }
     }
 
-    public DateTime? HistoricalYearBuiltDate
+    public DateTime? HistoricalYearFormedDate
     {
         get => HistoricalYearBuilt?.ToDateTime(TimeOnly.MinValue);
         set => HistoricalYearBuilt = value.HasValue ? DateOnly.FromDateTime(value.Value) : null;
@@ -140,7 +140,7 @@ internal class PlaceAddViewModel : BaseViewModel
         }
     }
 
-    public DateOnly? NaturalYearBuilt
+    public DateOnly? NaturalYearFormed
     {
         get;
         set
@@ -153,8 +153,8 @@ internal class PlaceAddViewModel : BaseViewModel
 
     public DateTime? NaturalYearBuiltDate
     {
-        get => NaturalYearBuilt?.ToDateTime(TimeOnly.MinValue);
-        set => NaturalYearBuilt = value.HasValue ? DateOnly.FromDateTime(value.Value) : null;
+        get => NaturalYearFormed?.ToDateTime(TimeOnly.MinValue);
+        set => NaturalYearFormed = value.HasValue ? DateOnly.FromDateTime(value.Value) : null;
     }
 
     public bool NaturalProtectedStatus
@@ -214,7 +214,7 @@ internal class PlaceAddViewModel : BaseViewModel
                     Date = checkedVisitDate,
                     Rating = checkedRating,
                     Review = checkedNotes,
-                    YearBuilt = NaturalYearBuilt,
+                    YearFormed = NaturalYearFormed,
                     ProtectedStatus = NaturalProtectedStatus
                 };
                 break;
@@ -224,11 +224,11 @@ internal class PlaceAddViewModel : BaseViewModel
         if (newPlace is not null && !PlaceAlreadyExists(newPlace))
         {
             _store.AddPlace(newPlace);
-            Logger.LogInfo($"Дія (Додано): Додано місце '{newPlace.Name}', країна '{newPlace.Country}'");
+            Logger.Log(LogLevel.Info, $"Дія (Додано): Додано місце '{newPlace.Name}', країна '{newPlace.Country}'");
         }
         else if (newPlace is not null)
         {
-            Logger.LogInfo($"Дія (Змінено): Спроба додати дублікат місця '{newPlace.Name}'");
+            Logger.Log(LogLevel.Info, $"Дія (Змінено): Спроба додати дублікат місця '{newPlace.Name}'");
         }
 
         ClearForm();
@@ -250,11 +250,12 @@ internal class PlaceAddViewModel : BaseViewModel
     {
         HistoricalYearBuilt = null;
         HistoricalSignificance = 1;
-        NaturalYearBuilt = null;
+        NaturalYearFormed = null;
         NaturalProtectedStatus = false;
     }
 
     private bool PlaceAlreadyExists(Place candidate) => _store.Places.Any(p =>
                                                                  p.Name.Equals(candidate.Name, StringComparison.OrdinalIgnoreCase) &&
                                                                  p.Country.Equals(candidate.Country, StringComparison.OrdinalIgnoreCase));
+
 }

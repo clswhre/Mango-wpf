@@ -202,7 +202,6 @@ public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeathe
 
     public void AddReview( string reviewText, double? rating )
     {
-        string review = $"{rating} || {reviewText} ";
         Reviews.Add( new KeyValuePair<string, double?>( $"{reviewText}", rating ) );
 
         OnPropertyChanged( nameof( Rating ) );

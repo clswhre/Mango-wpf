@@ -198,42 +198,42 @@ internal class PlaceListViewModel : BaseViewModel
         RemoveReviewCommand.RaiseCanExecuteChanged();
     }
 
-    private void SavePlacesWithHightRating()
-    {
-        try
-        {
-            Saver.HightlyRatedSave(Saver.CoolSaveFilePath, _store.Places);
-            Logger.LogInfo("Дія (Збережено): Збережено високооцінені місця у файл CoolSave.json");
-        }
-        catch (Exception e)
-        {
-            Logger.LogInfo($"Помилка збереження: {e.Message}");
-        }
-    }
+    //private void SavePlacesWithHightRating()
+    //{
+    //    try
+    //    {
+    //        Saver.HightlyRatedSave(Saver.CoolSaveFilePath, _store.Places);
+    //        Logger.LogInfo("Дія (Збережено): Збережено високооцінені місця у файл CoolSave.json");
+    //    }
+    //    catch (Exception e)
+    //    {
+    //        Logger.LogInfo($"Помилка збереження: {e.Message}");
+    //    }
+    //}
 
-    private void LoadHighlyRatedPlaces()
-    {
-        try
-        {
-            List<Place> loadedPlaces = Saver.LoadHightlyRated(Saver.CoolSaveFilePath);
+    //private void LoadHighlyRatedPlaces()
+    //{
+    //    try
+    //    {
+    //        List<Place> loadedPlaces = Saver.LoadHightlyRated(Saver.CoolSaveFilePath);
 
-            foreach (Place place in loadedPlaces)
-            {
-                if (!PlaceAlreadyExists(place))
-                {
-                    _store.AddPlace(place);
-                    Logger.LogInfo($"Дія (Додано): Завантажено місце '{place.Name}' із CoolSave.json");
-                }
-            }
+    //        foreach (Place place in loadedPlaces)
+    //        {
+    //            if (!PlaceAlreadyExists(place))
+    //            {
+    //                _store.AddPlace(place);
+    //                Logger.LogInfo($"Дія (Додано): Завантажено місце '{place.Name}' із CoolSave.json");
+    //            }
+    //        }
 
-            Logger.LogInfo($"Завантажено високооцінені місця: {loadedPlaces.Count}");
-            HighlyRatedSaveCommand.RaiseCanExecuteChanged();
-        }
-        catch (Exception e)
-        {
-            Logger.LogInfo($"Помилка завантаження high-rated: {e.Message}");
-        }
-    }
+    //        Logger.LogInfo($"Завантажено високооцінені місця: {loadedPlaces.Count}");
+    //        HighlyRatedSaveCommand.RaiseCanExecuteChanged();
+    //    }
+    //    catch (Exception e)
+    //    {
+    //        Logger.LogInfo($"Помилка завантаження high-rated: {e.Message}");
+    //    }
+    //}
 
     private void RemoveReview(string? reviewText)
     {
@@ -243,7 +243,7 @@ internal class PlaceListViewModel : BaseViewModel
         }
 
         SelectedPlace.RemoveReview(reviewText);
-        Logger.LogInfo($"Дія (Змінено): Видалено відгук для місця '{SelectedPlace.Name}'");
+        Logger.Log(LogLevel.Info, $"Дія (Змінено): Видалено відгук для місця '{SelectedPlace.Name}'");
         OnPropertyChanged(nameof(SelectedPlaceDetails));
         DeletePlaceCommand.RaiseCanExecuteChanged();
         AddReviewCommand.RaiseCanExecuteChanged();

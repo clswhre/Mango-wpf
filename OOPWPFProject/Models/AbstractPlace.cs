@@ -2,6 +2,7 @@
 
 public abstract class AbstractPlace
 {
+    public int Id { get; set; }
     public virtual string Name { get; set; }
     public virtual string Country { get; set; }
     public virtual string Description { get; set; }

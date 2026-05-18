@@ -1,15 +1,13 @@
-﻿using Microsoft.Data.Sqlite;
-
-namespace OOPWPFProject.Models.Storage;
+﻿namespace OOPWPFProject.Models.Storage;
 
 public class PlaceDto
 {
+    public int Id { get; set; }
     public PlaceType Type { get; set; }
-
     public string Name { get; set; } = string.Empty;
     public string Country { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public int? Rating { get; set; } = null;
+    public double? Rating { get; set; } = null;
     public DateOnly? Date { get; set; } = null;
     public string? Review { get; set; } = string.Empty;
     public string? Notes { get; set; } = string.Empty;
@@ -23,31 +21,41 @@ public class PlaceDto
     public DateOnly? YearFormed { get; set; }
     public bool? ProtectedStatus { get; set; }
 
-    public static PlaceDto FromPlace(Place p)
+    public string? IconId { get; set; }
+    public string? WeatherSummary { get; set; }
+    public string? WeatherIconPath { get; set; }
+
+    public static PlaceDto FromPlace(Place place)
     {
+        ArgumentNullException.ThrowIfNull(place);
+
         var dto = new PlaceDto
         {
-            Name = p.Name,
-            Country = p.Country,
-            Description = p.Description,
-            Rating = p.Rating.HasValue ? (int)p.Rating.Value : null,
-            Date = p.Date,
-            Review = p.Review,
-            Notes = p.Notes,
-            ReviewsJson = p.Reviews != null ? System.Text.Json.JsonSerializer.Serialize(p.Reviews) : null
+            Id = place.Id,
+            Name = place.Name,
+            Country = place.Country,
+            Description = place.Description,
+            Rating = place.Rating,
+            Date = place.Date,
+            Review = place.Review,
+            Notes = place.Notes,
+            ReviewsJson = System.Text.Json.JsonSerializer.Serialize(place.Reviews),
+            IconId = place.IconId,
+            WeatherSummary = place.WeatherSummary,
+            WeatherIconPath = place.WeatherIconPath
         };
 
-        switch (p)
+        switch (place)
         {
-            case HistoricalPlace h:
+            case HistoricalPlace historical:
                 dto.Type = PlaceType.Historical;
-                dto.YearBuilt = h.YearBuilt;
-                dto.Significance = h.Significance;
+                dto.YearBuilt = historical.YearBuilt;
+                dto.Significance = historical.Significance;
                 break;
-            case NaturalPlace n:
+            case NaturalPlace natural:
                 dto.Type = PlaceType.Natural;
-                dto.YearFormed = n.YearFormed;
-                dto.ProtectedStatus = n.ProtectedStatus;
+                dto.YearFormed = natural.YearFormed;
+                dto.ProtectedStatus = natural.ProtectedStatus;
                 break;
             default:
                 dto.Type = PlaceType.Normal;
@@ -65,6 +73,9 @@ public class PlaceDto
             _ => new Place()
         };
 
+        place.Id = Id;
+
+        place.Id = Id;
         place.Name = Name;
         place.Country = Country;
         place.Description = Description;
@@ -72,6 +83,9 @@ public class PlaceDto
         place.Date = Date;
         place.Review = Review;
         place.Notes = Notes;
+        place.IconId = IconId;
+        place.WeatherSummary = WeatherSummary;
+        place.WeatherIconPath = WeatherIconPath;
 
         if (!string.IsNullOrWhiteSpace(ReviewsJson))
         {

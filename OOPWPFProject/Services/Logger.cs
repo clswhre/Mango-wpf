@@ -1,77 +1,102 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Text.Json;
-
-using OOPWPFProject.Models;
+using System.Text;
 
 namespace OOPWPFProject.Services;
 
-public static class Logger
+public enum LogLevel
 {
+    Debug,
+    Info,
+    Error
+}
 
-    public static readonly JsonSerializerOptions options = new()
-    {
-        WriteIndented = true
-    };
+public sealed class Logger : IDisposable
+{
+    private static Logger? _instance;
+    private static readonly object _initLock = new();
 
-    public static void LogInfo(string message)
+    private readonly StreamWriter _writer;
+    private readonly object _lock = new();
+    private bool _disposed;
+
+    public string LogFilePath { get; }
+
+    private Logger(string logFilePath)
     {
-        try
+        LogFilePath = logFilePath;
+
+        FileStream fs = new FileStream(
+            logFilePath,
+            FileMode.Append,
+            FileAccess.Write,
+            FileShare.Read);
+
+        _writer = new StreamWriter(fs, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false))
         {
-            var logEntry = $"[{DateTime.Now:HH:mm:ss dd/MM}] -> {message}{Environment.NewLine}";
+            AutoFlush = true
+        };
+    }
 
-            File.AppendAllTextAsync(Saver.LogFilePath, logEntry);
+    public static void Initialize(string logFilePath)
+    {
+        if (_instance == null)
+        {
+            lock (_initLock)
+            {
+                _instance ??= new Logger(logFilePath);
+            }
         }
-        catch (Exception ex)
+    }
+
+    public static void Log(LogLevel level, string message, Exception? exception = null)
+    {
+        _instance?.Write(level, message, exception);
+    }
+
+    private void Write(LogLevel level, string message, Exception? exception)
+    {
+        if (message is null)
         {
-            Debug.WriteLine($" @{DateTime.Now:HH:mm:ss} Помилка запису: {ex.Message}");
+            return;
+        }
+
+        lock (_lock)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+            
+            _writer.WriteLine($"[{DateTime.Now:HH:mm:ss}] | {level.ToString().ToUpperInvariant(),-5} | {message}");
+
+            if (exception is not null)
+            {
+                _writer.WriteLine(exception);
+            }
         }
     }
 
     public static string WorkingTime()
     {
-        DateTime EndTime = DateTime.Now;
-        var workingTime = (EndTime - App.StartTime).ToString(@"hh\:mm\:ss", CultureInfo.CurrentCulture);
+        var workingTime = (DateTime.Now - App.StartTime).ToString(@"hh\:mm\:ss", CultureInfo.CurrentCulture);
         return workingTime;
     }
 
-    public static void SaveData(string path, IEnumerable<Place> places)
+    public static void Close()
     {
-        try
-        {
-            var json = JsonSerializer.Serialize(places, options);
-            File.WriteAllTextAsync(path, json);
-        }
-        catch (Exception e)
-        {
-            LogInfo($"Помилка збереження: {e.Message}");
-        }
+        _instance?.Dispose();
     }
 
-    public static List<Place> LoadData(string path)
+    public void Dispose()
     {
-        try
+        lock (_lock)
         {
-            if (!File.Exists(path))
-            {
-                return [];
-            }
-
-            var json = File.ReadAllText(path);
-            if (string.IsNullOrWhiteSpace(json))
-            {
-                return [];
-            }
-
-            List<Place>? loadedPlaces = JsonSerializer.Deserialize<List<Place>>(json, options);
-            return loadedPlaces ?? [];
-        }
-        catch (Exception e)
-        {
-            LogInfo($"Помилка завантаження: {e.Message}");
-            return [];
+            if (_disposed) return;
+            _disposed = true;
+            _writer.Dispose();
         }
     }
-
 }
