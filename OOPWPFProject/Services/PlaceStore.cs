@@ -51,6 +51,7 @@ internal class PlaceStore
 
     public void RemovePlace(Place place)
     {
+        _sqliteStorage.Delete(place.Id);
         Places.Remove(place);
         PlaceManager.Remove(place);
     }

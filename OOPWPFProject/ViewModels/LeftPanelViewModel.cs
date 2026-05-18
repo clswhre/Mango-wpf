@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Text;
 using System.Windows;
 
 using OOPWPFProject.Models;
@@ -7,12 +8,12 @@ using OOPWPFProject.ViewModels.Services;
 
 namespace OOPWPFProject.ViewModels;
 
-internal class PlaceAddViewModel : BaseViewModel
+internal class LeftPanelViewModel : BaseViewModel
 {
     public RelayCommand AddPlaceCommand { get; }
     public RelayCommand ClearFormCommand { get; }
 
-    public PlaceAddViewModel(PlaceStore store)
+    public LeftPanelViewModel(PlaceStore store)
     {
         _store = store;
         AddPlaceCommand = new RelayCommand(_ => AddPlace(), _ => CanAddPlace());
@@ -103,16 +104,6 @@ internal class PlaceAddViewModel : BaseViewModel
         }
     }
 
-    public string? NewNotes
-    {
-        get;
-        set
-        {
-            field = value;
-            OnPropertyChanged();
-        }
-    }
-
     public DateOnly? HistoricalYearBuilt
     {
         get;
@@ -175,7 +166,6 @@ internal class PlaceAddViewModel : BaseViewModel
     {
         DateOnly? checkedVisitDate = NewVisitDate.HasValue ? DateOnly.FromDateTime(NewVisitDate.Value) : null;
         double? checkedRating = NewRating > 0 ? NewRating : null;
-        var checkedNotes = string.IsNullOrEmpty(NewNotes) ? null : NewNotes;
 
         Place? newPlace = null;
 
@@ -189,7 +179,6 @@ internal class PlaceAddViewModel : BaseViewModel
                     Description = NewDescription,
                     Date = checkedVisitDate,
                     Rating = checkedRating,
-                    Review = checkedNotes,
                 };
                 break;
             case PlaceType.Historical:
@@ -200,7 +189,6 @@ internal class PlaceAddViewModel : BaseViewModel
                     Description = NewDescription,
                     Date = checkedVisitDate,
                     Rating = checkedRating,
-                    Review = checkedNotes,
                     YearBuilt = HistoricalYearBuilt,
                     Significance = HistoricalSignificance
                 };
@@ -213,7 +201,6 @@ internal class PlaceAddViewModel : BaseViewModel
                     Description = NewDescription,
                     Date = checkedVisitDate,
                     Rating = checkedRating,
-                    Review = checkedNotes,
                     YearFormed = NaturalYearFormed,
                     ProtectedStatus = NaturalProtectedStatus
                 };
@@ -228,10 +215,21 @@ internal class PlaceAddViewModel : BaseViewModel
         }
         else if (newPlace is not null)
         {
+            MessageBox.Show(MessageBoxTextForDuplicate(_store.Places.First(p =>
+                p.Name.Equals(newPlace.Name, StringComparison.OrdinalIgnoreCase) &&
+                p.Country.Equals(newPlace.Country, StringComparison.OrdinalIgnoreCase))), "Дублікат місця", MessageBoxButton.OK, MessageBoxImage.Warning);
             Logger.Log(LogLevel.Info, $"Дія (Змінено): Спроба додати дублікат місця '{newPlace.Name}'");
         }
 
         ClearForm();
+    }
+
+    private string MessageBoxTextForDuplicate(Place duplicate)
+    {
+        var stringBuilder = new StringBuilder();
+        stringBuilder.AppendLine($"Місце '{duplicate.Name}' у країні '{duplicate.Country}' вже існує.");
+        stringBuilder.AppendLine("Будь ласка, змініть назву або країну, щоб додати це місце.");
+        return stringBuilder.ToString();
     }
 
     private void ClearForm()
@@ -241,7 +239,6 @@ internal class PlaceAddViewModel : BaseViewModel
         NewDescription = string.Empty;
         NewVisitDate = null;
         NewRating = 0;
-        NewNotes = string.Empty;
         SelectedPlaceType = PlaceType.Normal;
         ClearSpecializedFields();
     }
@@ -257,5 +254,6 @@ internal class PlaceAddViewModel : BaseViewModel
     private bool PlaceAlreadyExists(Place candidate) => _store.Places.Any(p =>
                                                                  p.Name.Equals(candidate.Name, StringComparison.OrdinalIgnoreCase) &&
                                                                  p.Country.Equals(candidate.Country, StringComparison.OrdinalIgnoreCase));
+
 
 }

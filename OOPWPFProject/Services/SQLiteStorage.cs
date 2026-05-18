@@ -30,8 +30,6 @@ public class SQLiteStorage
             Description TEXT NOT NULL,
             Rating REAL,
             Date TEXT,
-            Review TEXT,
-            Notes TEXT,
             ReviewsJson TEXT,
             YearBuilt TEXT,
             Significance INTEGER,
@@ -55,14 +53,14 @@ public class SQLiteStorage
         string insertQuery = @"
         INSERT INTO Places (
                 Type, Name, Country, Description,
-                Rating, Date, Review, Notes, ReviewsJson,
+                Rating, Date, ReviewsJson,
                 YearBuilt, Significance,
                 YearFormed, ProtectedStatus,
                 IconId, WeatherSummary, WeatherIconPath)
 
         VALUES (
                 @Type, @Name, @Country, @Description,
-                @Rating, @Date, @Review, @Notes, @ReviewsJson,
+                @Rating, @Date, @ReviewsJson,
                 @YearBuilt, @Significance,
                 @YearFormed, @ProtectedStatus,
                 @IconId, @WeatherSummary, @WeatherIconPath);
@@ -189,8 +187,6 @@ public class SQLiteStorage
 
         cmd.Parameters.AddWithValue("@Date", dto.Date.HasValue ? dto.Date.Value.ToString("O") : DBNull.Value);
 
-        cmd.Parameters.AddWithValue("@Review", (object?)dto.Review ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("@Notes", (object?)dto.Notes ?? DBNull.Value);
         cmd.Parameters.AddWithValue("@ReviewsJson", (object?)dto.ReviewsJson ?? DBNull.Value);
 
         cmd.Parameters.AddWithValue("@YearBuilt", dto.YearBuilt.HasValue ? dto.YearBuilt.Value.ToString("O") : DBNull.Value);

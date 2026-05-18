@@ -150,8 +150,8 @@ internal class PlaceListViewModel : BaseViewModel
         OverridedOperatorActon = new RelayCommand(
             _ => ExecuteOperator(),
             _ => SelectedObject1 != null && SelectedObject2 != null && !string.IsNullOrEmpty(SelectedOperator));
-        HighlyRatedSaveCommand = new RelayCommand(_ => SavePlacesWithHightRating(), _ => _store.Places.Any());
-        HighlyRatedLoadCommand = new RelayCommand(_ => LoadHighlyRatedPlaces());
+        // HighlyRatedSaveCommand = new RelayCommand(_ => SavePlacesWithHightRating(), _ => _store.Places.Any());
+        // HighlyRatedLoadCommand = new RelayCommand(_ => LoadHighlyRatedPlaces());
         LoadWeatherCommand = new RelayCommand(async _ => await LoadWeatherForSelectedPlaceAsync());
         DownloadIconCommand = new RelayCommand(async _ => await DownloadIconAsync(SelectedPlace.IconId), _ => SelectedPlace != null);
 
@@ -160,7 +160,7 @@ internal class PlaceListViewModel : BaseViewModel
         {
             OnPropertyChanged(nameof(IsPlaceExists));
             OnPropertyChanged(nameof(IsAddPlaceTextVisible));
-            HighlyRatedSaveCommand.RaiseCanExecuteChanged();
+            //HighlyRatedSaveCommand.RaiseCanExecuteChanged();
         };
     }
 
@@ -173,8 +173,8 @@ internal class PlaceListViewModel : BaseViewModel
             _store.RemovePlace(SelectedPlace);
             SelectedPlace = null;
             PlaceAtIndexDisplay = string.Empty;
-            Logger.LogInfo($"Дія (Видалено): Видалено місце '{removedPlaceName}', країна '{removedPlaceCountry}'");
-            HighlyRatedSaveCommand.RaiseCanExecuteChanged();
+            Logger.Log(LogLevel.Info,$"Дія (Видалено): Видалено місце '{removedPlaceName}', країна '{removedPlaceCountry}'");
+            // HighlyRatedSaveCommand.RaiseCanExecuteChanged();
         }
     }
 
@@ -188,7 +188,7 @@ internal class PlaceListViewModel : BaseViewModel
         }
 
         SelectedPlace.AddReview(NewReviewText, NewReviewRating);
-        Logger.LogInfo($"Дія (Змінено): Додано відгук для місця '{SelectedPlace.Name}'");
+        Logger.Log(LogLevel.Info, $"Дія (Змінено): Додано відгук для місця '{SelectedPlace.Name}'");
         NewReviewText = string.Empty;
         NewReviewRating = null;
 
@@ -202,12 +202,12 @@ internal class PlaceListViewModel : BaseViewModel
     //{
     //    try
     //    {
-    //        Saver.HightlyRatedSave(Saver.CoolSaveFilePath, _store.Places);
-    //        Logger.LogInfo("Дія (Збережено): Збережено високооцінені місця у файл CoolSave.json");
+    //        .HightlyRatedSave(Saver.CoolSaveFilePath, _store.Places);
+    //        Logger.Log("Дія (Збережено): Збережено високооцінені місця у файл CoolSave.json");
     //    }
     //    catch (Exception e)
     //    {
-    //        Logger.LogInfo($"Помилка збереження: {e.Message}");
+    //        Logger.Log($"Помилка збереження: {e.Message}");
     //    }
     //}
 
@@ -222,16 +222,16 @@ internal class PlaceListViewModel : BaseViewModel
     //            if (!PlaceAlreadyExists(place))
     //            {
     //                _store.AddPlace(place);
-    //                Logger.LogInfo($"Дія (Додано): Завантажено місце '{place.Name}' із CoolSave.json");
+    //                Logger.Log($"Дія (Додано): Завантажено місце '{place.Name}' із CoolSave.json");
     //            }
     //        }
 
-    //        Logger.LogInfo($"Завантажено високооцінені місця: {loadedPlaces.Count}");
+    //        Logger.Log($"Завантажено високооцінені місця: {loadedPlaces.Count}");
     //        HighlyRatedSaveCommand.RaiseCanExecuteChanged();
     //    }
     //    catch (Exception e)
     //    {
-    //        Logger.LogInfo($"Помилка завантаження high-rated: {e.Message}");
+    //        Logger.Log($"Помилка завантаження high-rated: {e.Message}");
     //    }
     //}
 
@@ -321,13 +321,6 @@ internal class PlaceListViewModel : BaseViewModel
         }
     }
 
-    private bool PlaceAlreadyExists(Place candidate) => _store.Places.Any(p => p is not null
-                                                                 && p.Name == candidate.Name
-                                                                 && p.Country == candidate.Country
-                                                                 && p.Description == candidate.Description
-                                                                 && p == candidate);
-
-
     public string? WeatherIconPath
     {
         get;
@@ -369,7 +362,7 @@ internal class PlaceListViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            Logger.LogInfo($"Помилка завантаження погоди: {ex.Message}");
+            Logger.Log(LogLevel.Info, $"Помилка завантаження погоди: {ex.Message}");
             WeatherSummary = "Не вдалося завантажити погоду";
         }
     }
@@ -386,25 +379,23 @@ internal class PlaceListViewModel : BaseViewModel
 
         try
         {
-            Logger.LogInfo("Відправлено async запит");
+            Logger.Log(LogLevel.Info, "Відправлено async запит");
 
             var requestUri = $"https://openweathermap.org/img/wn/{iconID}@2x.png";
             var iconBytes = await _client.GetByteArrayAsync(requestUri);
 
-            Logger.LogInfo("Отримано async запит");
+            Logger.Log(LogLevel.Info, "Отримано async запит");
 
             var localFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"icon_{iconID}.png");
             await File.WriteAllBytesAsync(localFilePath, iconBytes);
 
-            Logger.LogInfo($"Завантажено іконку погоди | ID: {iconID}");
+            Logger.Log(LogLevel.Info, $"Завантажено іконку погоди | ID: {iconID}");
 
             WeatherIconPath = localFilePath;
         }
         catch (Exception ex)
         {
-            Logger.LogInfo($"Помилка завантаження: {ex.Message}");
+            Logger.Log(LogLevel.Info, $"Помилка завантаження: {ex.Message}");
         }
     }
-
-    // додать завантаження іконки погоди для вибраного місця в xaml
 }

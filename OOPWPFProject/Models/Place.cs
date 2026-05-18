@@ -6,18 +6,18 @@ using System.Text.Json.Serialization;
 
 namespace OOPWPFProject.Models;
 
-[JsonPolymorphic( TypeDiscriminatorPropertyName = "$type" )]
-[JsonDerivedType( typeof( Place ), "place" )]
-[JsonDerivedType( typeof( HistoricalPlace ), "historical" )]
-[JsonDerivedType( typeof( NaturalPlace ), "natural" )]
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]
+[JsonDerivedType(typeof(Place), "place")]
+[JsonDerivedType(typeof(HistoricalPlace), "historical")]
+[JsonDerivedType(typeof(NaturalPlace), "natural")]
 public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeather
 {
     public override string Name
     {
-        get => field;
+        get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
                 field = value;
                 OnPropertyChanged();
@@ -27,10 +27,10 @@ public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeathe
 
     public override string Country
     {
-        get => field;
+        get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
                 field = value;
                 OnPropertyChanged();
@@ -40,10 +40,10 @@ public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeathe
 
     public override string Description
     {
-        get => field;
+        get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
                 field = value;
                 OnPropertyChanged();
@@ -53,24 +53,24 @@ public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeathe
 
     public double? Rating
     {
-        get => field;
+        get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
                 field = value;
                 OnPropertyChanged();
-                OnPropertyChanged( nameof( IsHighlyRated ) );
+                OnPropertyChanged(nameof(IsHighlyRated));
             }
         }
     }
 
     public DateOnly? Date
     {
-        get => field;
+        get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
                 field = value;
                 OnPropertyChanged();
@@ -80,10 +80,10 @@ public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeathe
 
     public string? Review
     {
-        get => field;
+        get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
                 field = value;
                 OnPropertyChanged();
@@ -93,10 +93,10 @@ public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeathe
 
     public string? Notes
     {
-        get => field;
+        get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
                 field = value;
                 OnPropertyChanged();
@@ -106,10 +106,10 @@ public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeathe
 
     public string? IconId
     {
-        get => field;
+        get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
                 field = value;
                 OnPropertyChanged();
@@ -119,10 +119,10 @@ public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeathe
 
     public string? WeatherSummary
     {
-        get => field;
+        get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
                 field = value;
                 OnPropertyChanged();
@@ -132,10 +132,10 @@ public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeathe
 
     public string? WeatherIconPath
     {
-        get => field;
+        get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
                 field = value;
                 OnPropertyChanged();
@@ -147,7 +147,7 @@ public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeathe
     {
         get
         {
-            string dateDisplay = Date.HasValue
+            var dateDisplay = Date.HasValue
                 ? Date.Value.ToString("dd/MM/yyyy")
                 : "Без дати";
             return $"{Name} - {dateDisplay}";
@@ -162,7 +162,7 @@ public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeathe
     {
     }
 
-    public Place( string name, string country, string description )
+    public Place(string name, string country, string description)
     {
         Name = name;
         Country = country;
@@ -172,22 +172,22 @@ public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeathe
     public override string GetDetails()
     {
         StringBuilder messageBuilder = new();
-        messageBuilder.AppendLine( $"Місто: {Name}" );
-        messageBuilder.AppendLine( $"Країна: {Country}" );
-        messageBuilder.AppendLine( $"Опис: {Description}" );
-        if ( Date.HasValue )
+        messageBuilder.AppendLine($"Місто: {Name}");
+        messageBuilder.AppendLine($"Країна: {Country}");
+        messageBuilder.AppendLine($"Опис: {Description}");
+        if (Date.HasValue)
         {
-            messageBuilder.AppendLine( $"Дата: {Date.Value:dd.MM.yyyy}" );
+            messageBuilder.AppendLine($"Дата: {Date.Value:dd.MM.yyyy}");
         }
 
-        if ( Rating.HasValue )
+        if (Rating.HasValue)
         {
-            messageBuilder.AppendLine( $"Рейтинг: {Rating.Value}" );
+            messageBuilder.AppendLine($"Рейтинг: {Rating.Value}");
         }
 
-        if ( Reviews.Any() )
+        if (Reviews.Any())
         {
-            messageBuilder.AppendLine( $"Середній рейтинг відгуків: {GetAverageRating():F1}" );
+            messageBuilder.AppendLine($"Середній рейтинг відгуків: {GetAverageRating():F1}");
         }
 
         return messageBuilder.ToString();
@@ -195,87 +195,78 @@ public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeathe
 
 
     public event PropertyChangedEventHandler? PropertyChanged;
-    protected void OnPropertyChanged( [CallerMemberName] string? propertyName = null )
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+    public void AddReview(string reviewText, double? rating)
     {
-        PropertyChanged?.Invoke( this, new PropertyChangedEventArgs( propertyName ) );
+        Reviews.Add(new KeyValuePair<string, double?>($"{reviewText}", rating));
+
+        OnPropertyChanged(nameof(Rating));
+        OnPropertyChanged(nameof(IsHighlyRated));
     }
 
-    public void AddReview( string reviewText, double? rating )
+    public void AddReview(string review)
     {
-        Reviews.Add( new KeyValuePair<string, double?>( $"{reviewText}", rating ) );
-
-        OnPropertyChanged( nameof( Rating ) );
-        OnPropertyChanged( nameof( IsHighlyRated ) );
+        Reviews.Add(new KeyValuePair<string, double?>(review, null));
+        OnPropertyChanged(nameof(Rating));
+        OnPropertyChanged(nameof(IsHighlyRated));
     }
 
-    public void AddReview( string review )
+    public void RemoveReview(string review)
     {
-        Reviews.Add( new KeyValuePair<string, double?>( review, null ) );
-        OnPropertyChanged( nameof( Rating ) );
-        OnPropertyChanged( nameof( IsHighlyRated ) );
-    }
-
-    public void RemoveReview( string review )
-    {
-        if ( string.IsNullOrEmpty( review ) )
+        if (string.IsNullOrEmpty(review))
         {
             return;
         }
 
-        KeyValuePair<string, double?> item = Reviews.FirstOrDefault( r => r.Key == review );
-        if ( item.Key != null )
+        KeyValuePair<string, double?> item = Reviews.FirstOrDefault(r => r.Key == review);
+        if (item.Key != null)
         {
-            Reviews.Remove( item );
-            OnPropertyChanged( nameof( Reviews ) );
-            OnPropertyChanged( nameof( Rating ) );
-            OnPropertyChanged( nameof( IsHighlyRated ) );
+            Reviews.Remove(item);
+            OnPropertyChanged(nameof(Reviews));
+            OnPropertyChanged(nameof(Rating));
+            OnPropertyChanged(nameof(IsHighlyRated));
         }
     }
 
     public double GetAverageRating()
     {
-        IEnumerable<double> validRatings = Reviews.Where( r => r.Value.HasValue ).Select( r => r.Value.Value );
+        IEnumerable<double> validRatings = Reviews.Where(r => r.Value.HasValue).Select(r => r.Value.Value);
         return validRatings.Any() ? validRatings.Average() : 0.0;
     }
 
 
-    public static Place? operator +( Place? p1, Place? p2 )
+    public static Place? operator +(Place? p1, Place? p2)
     {
-        if ( p1 is null || p2 is null )
+        if (p1 is null || p2 is null)
         {
             return null;
         }
 
-        string newName = p1.Name + " " + p2.Name.TrimEnd();
-        string newCountry = p1.Country;
-        string newDescription = p1.Description + " " +  p2.Description.TrimEnd();
-        return new Place( newName, newCountry, newDescription );
+        var newName = p1.Name + " " + p2.Name.TrimEnd();
+        var newCountry = p1.Country;
+        var newDescription = p1.Description + " " + p2.Description.TrimEnd();
+        return new Place(newName, newCountry, newDescription);
     }
-    public static bool operator >( Place? p1, Place? p2 )
+    public static bool operator >(Place? p1, Place? p2)
     {
         return p1 is not null && p2 is not null && p1.Rating > p2.Rating;
     }
-    public static bool operator <( Place? p1, Place? p2 )
+    public static bool operator <(Place? p1, Place? p2)
     {
         return p1 is not null && p2 is not null && p1.Rating < p2.Rating;
     }
-    public static bool operator ==( Place? p1, Place? p2 )
+    public static bool operator ==(Place? p1, Place? p2)
     {
-        return ReferenceEquals( p1, p2 ) || ( p1 is not null && p2 is not null && p1.Rating == p2.Rating );
+        return ReferenceEquals(p1, p2) || (p1 is not null && p2 is not null && p1.Rating == p2.Rating);
     }
-    public static bool operator !=( Place? p1, Place? p2 )
+    public static bool operator !=(Place? p1, Place? p2)
     {
-        return !( p1 == p2 );
-    }
-
-
-    public override bool Equals( object? obj )
-    {
-        return obj is Place other && this == other;
+        return !(p1 == p2);
     }
 
-    public override int GetHashCode()
-    {
-        return Name.GetHashCode();
-    }
+
+    public override bool Equals(object? obj) => obj is Place other && this == other;
+
+    public override int GetHashCode() => Name.GetHashCode();
 }

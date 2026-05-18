@@ -74,8 +74,6 @@ public class PlaceDto
         };
 
         place.Id = Id;
-
-        place.Id = Id;
         place.Name = Name;
         place.Country = Country;
         place.Description = Description;

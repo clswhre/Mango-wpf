@@ -7,7 +7,7 @@ public static class AppPaths
 {
     private const string AppFolderName = "MangoApp";
     private const string LogsFolderName = "Logs";
-    private const string SaveFileName = "CoolSave.json";
+    private const string SaveFileName = "CoolSave.sqlite";
     private const string DatabaseFileName = "MangoDB.sqlite";
 
     private static readonly string _appDataDir;

@@ -109,7 +109,7 @@
                                 <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                                         <TextBlock Text="{Binding PlaceListViewModel.WeatherSummary}" Margin="0,0,8,0" VerticalAlignment="Center" />
-                                        <Image Source="{Binding PlaceDetailsViewModel.SelectedPlace.WeatherIconPath}" Width="40" Height="40" />
+                                        <Image Source="{Binding PlaceListViewModel.WeatherIconPath, TargetNullValue={x:Null}}" Width="40" Height="40" />
                                     </StackPanel>
                                 </StackPanel>
                             </Grid>
@@ -250,7 +250,7 @@
                                 <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                                         <TextBlock Text="{Binding PlaceListViewModel.WeatherSummary}" Margin="0,0,8,0" VerticalAlignment="Center" />
-                                        <Image Source="{Binding PlaceDetailsViewModel.SelectedPlace.WeatherIconPath}" Width="40" Height="40" />
+                                        <Image Source="{Binding PlaceListViewModel.WeatherIconPath, TargetNullValue={x:Null}}" Width="40" Height="40" />
                                     </StackPanel>
                                 </StackPanel>
                             </Grid>
