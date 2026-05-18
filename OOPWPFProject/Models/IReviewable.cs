@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace OOPWPFProject.Models.PlaceRelated;
+namespace OOPWPFProject.Models;
 
 public interface IReviewable
 {

@@ -1,14 +1,18 @@
 ﻿using System.Text;
 
-namespace OOPWPFProject.Models.PlaceRelated;
+namespace OOPWPFProject.Models;
 
 public class HistoricalPlace : Place
 {
+    public HistoricalPlace()
+    {
+    }
+
     public DateOnly? YearBuilt
     {
         get; set;
     }
-    public int Significance
+    public int? Significance
     {
         get; set;
     }
