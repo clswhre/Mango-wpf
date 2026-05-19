@@ -8,14 +8,12 @@ namespace OOPWPFProject.ViewModels;
 internal class DetailsTabViewModel : BaseViewModel
 {
 	private readonly PlaceStore _store;
-	private readonly Action<Place?> _setSelectedPlace;
 	private Place? _selectedPlace;
 
-	public DetailsTabViewModel(PlaceStore store, Action<Place?> setSelectedPlace)
+	public DetailsTabViewModel(PlaceStore store)
 	{
 		_store = store;
-		_setSelectedPlace = setSelectedPlace;
-
+		store.SelectedPlaceChanged += SetSelectedPlace;
 		DeletePlaceCommand = new RelayCommand(_ => DeletePlace(), _ => _selectedPlace != null);
 		SaveEditCommand = new RelayCommand(_ => SaveEdit(), _ => CanSaveEdit());
 		CancelEditCommand = new RelayCommand(_ => CancelEdit(), _ => _selectedPlace != null);
@@ -180,7 +178,7 @@ internal class DetailsTabViewModel : BaseViewModel
 		}
 	}
 
-	public void SetSelectedPlace(Place? place)
+	private void SetSelectedPlace(Place? place)
 	{
 		_selectedPlace = place;
 		OnPropertyChanged(nameof(IsEditHistoricalVisible));
@@ -210,7 +208,6 @@ internal class DetailsTabViewModel : BaseViewModel
 		var removedPlaceName = _selectedPlace.Name;
 		var removedPlaceCountry = _selectedPlace.Country;
 		_store.RemovePlaceAsync(_selectedPlace);
-		_setSelectedPlace(null);
 		Logger.Log(
 			LogLevel.Info,
 			$"Дія (Видалено): Видалено місце '{removedPlaceName}', країна '{removedPlaceCountry}'"

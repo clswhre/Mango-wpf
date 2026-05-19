@@ -2,6 +2,7 @@ using System.IO;
 using System.Net.Http;
 using OOPWPFProject.Models;
 using OOPWPFProject.Services;
+using OOPWPFProject.ViewModels.Services;
 
 namespace OOPWPFProject.ViewModels;
 
@@ -9,6 +10,14 @@ internal class WeatherTabViewModel : BaseViewModel
 {
 	private readonly WeatherApi _weatherApi = new();
 	private Place? _selectedPlace;
+	private readonly PlaceStore _store;
+
+	public WeatherTabViewModel(PlaceStore store, WeatherApi weatherApi)
+	{
+		_store = store;
+		_weatherApi = weatherApi;
+		_store.SelectedPlaceChanged += SetSelectedPlace;
+	}
 
 	public string? WeatherIconPath
 	{
@@ -20,7 +29,7 @@ internal class WeatherTabViewModel : BaseViewModel
 		}
 	}
 
-	public string? WeatherSummary
+	public string? WeatherMain
 	{
 		get;
 		set
@@ -30,14 +39,70 @@ internal class WeatherTabViewModel : BaseViewModel
 		}
 	}
 
-	public void SetSelectedPlace(Place? place)
+	public string? WeatherDescription
+	{
+		get;
+		set
+		{
+			field = value;
+			OnPropertyChanged();
+		}
+	}
+
+	public string? PlaceTemperature
+	{
+		get;
+		set
+		{
+			field = value;
+			OnPropertyChanged();
+		}
+	}
+
+	public double? Humidity
+	{
+		get;
+		set
+		{
+			field = value;
+			OnPropertyChanged();
+		}
+	}
+
+	public string? WeatherWindSpeed
+	{
+		get;
+		set
+		{
+			field = value;
+			OnPropertyChanged();
+		}
+	}
+
+	public string? WeatherWindDirection
+	{
+		get;
+		set
+		{
+			field = value;
+			OnPropertyChanged();
+		}
+	}
+
+	public string SelectedPlaceTitle =>
+		_selectedPlace == null
+			? "Місто не обрано"
+			: $"Погода в {_selectedPlace.Name} ({_selectedPlace.Country}) зараз";
+
+	private void SetSelectedPlace(Place? place)
 	{
 		_selectedPlace = place;
+
+		OnPropertyChanged(nameof(SelectedPlaceTitle));
 
 		if (_selectedPlace == null)
 		{
 			WeatherIconPath = null;
-			WeatherSummary = null;
 			return;
 		}
 
@@ -46,26 +111,36 @@ internal class WeatherTabViewModel : BaseViewModel
 
 	private async Task LoadWeatherForSelectedPlaceAsync()
 	{
-		if (_selectedPlace == null || string.IsNullOrWhiteSpace(_selectedPlace.Name))
+		if (string.IsNullOrWhiteSpace(_selectedPlace?.Name))
 		{
 			return;
 		}
 
 		try
 		{
-			(var lat, var lon) = await _weatherApi.GetCoordinatesAsync(_selectedPlace.Name);
-			(var iconId, var weather, var temperature, var humidity) =
-				await _weatherApi.GetWeatherAsync(lat, lon);
+			if (await _weatherApi.GetCoordinatesAsync(_selectedPlace.Name) is not { } coords)
+			{
+				Logger.Log(LogLevel.Info, $"Помилка завантаження погоди");
+				_ = "Не вдалося завантажити погоду";
+				return;
+			}
 
-			_selectedPlace.IconId = iconId;
-			WeatherSummary = $"{weather}, {temperature:0.#}°C, {humidity:0.#}%";
+			var weather = await _weatherApi.GetWeatherAsync(coords.Lat, coords.Lon);
 
-			await DownloadIconAsync(iconId);
+			_selectedPlace.IconId = weather.Icon;
+			WeatherMain = weather.Description;
+			WeatherDescription = weather.Description;
+			PlaceTemperature = $"{weather.Temperature:0.#}°C";
+			Humidity = weather.Humidity;
+			WeatherWindSpeed = $"{weather.WindSpeed} м/с";
+			WeatherWindDirection = weather.WindDirection;
+
+			WeatherIconPath = await _weatherApi.DownloadAndCacheIconAsync(weather.Icon);
 		}
 		catch (Exception ex)
 		{
 			Logger.Log(LogLevel.Info, $"Помилка завантаження погоди: {ex.Message}");
-			WeatherSummary = "Не вдалося завантажити погоду";
+			_ = "Не вдалося завантажити погоду";
 		}
 	}
 

@@ -9,16 +9,23 @@ namespace OOPWPFProject.ViewModels;
 internal class StatisticTabViewModel : BaseViewModel
 {
 	private readonly PlaceStore _store;
+	private Place? _selectedPlace;
 
 	public StatisticTabViewModel(PlaceStore store)
 	{
 		_store = store;
+		_store.SelectedPlaceChanged += SetSelectedPlace;
 		_store.Places.CollectionChanged += OnPlacesChanged;
 
 		foreach (var place in _store.Places)
 		{
 			place.PropertyChanged += OnPlacePropertyChanged;
 		}
+	}
+
+	private void SetSelectedPlace(Place? place)
+	{
+		_selectedPlace = place;
 	}
 
 	public ObservableCollection<Place> Places => _store.Places;

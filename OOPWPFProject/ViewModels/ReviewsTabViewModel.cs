@@ -14,6 +14,7 @@ internal class ReviewsTabViewModel : BaseViewModel
 	public ReviewsTabViewModel(PlaceStore store)
 	{
 		_store = store;
+		_store.SelectedPlaceChanged += SetSelectedPlace;
 		AddReviewCommand = new RelayCommand(_ => AddReview(), _ => CanAddReview());
 		RemoveReviewCommand = new RelayCommand(
 			p => RemoveReview(p as string),
@@ -53,7 +54,7 @@ internal class ReviewsTabViewModel : BaseViewModel
 		}
 	}
 
-	public void SetSelectedPlace(Place? place)
+	private void SetSelectedPlace(Place? place)
 	{
 		_selectedPlace = place;
 		OnPropertyChanged(nameof(Reviews));

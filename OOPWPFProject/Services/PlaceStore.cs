@@ -18,6 +18,18 @@ internal class PlaceStore
 		_ = LoadPlacesAsync();
 	}
 
+	public event Action<Place?>? SelectedPlaceChanged;
+
+	public Place? SelectedPlace
+	{
+		get;
+		set
+		{
+			field = value;
+			SelectedPlaceChanged?.Invoke(field);
+		}
+	}
+
 	private async Task LoadPlacesAsync()
 	{
 		try

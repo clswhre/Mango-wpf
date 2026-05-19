@@ -304,32 +304,125 @@
 								</Grid>
 							</TabItem>
 
-							<TabItem>
+							<TabItem DataContext="{Binding WeatherTabViewModel}">
 								<TabItem.Header>
 									<StackPanel Orientation="Horizontal">
 										<ui:SymbolIcon Symbol="WeatherHaze20" Margin="0,0,6,0" />
 										<TextBlock Text="Погода" VerticalAlignment="Center" />
 									</StackPanel>
 								</TabItem.Header>
-								<StackPanel
-									Orientation="Horizontal"
-									HorizontalAlignment="Left"
-									VerticalAlignment="Center"
-									Margin="0,8,0,0"
-									DataContext="{Binding PlaceListViewModel.WeatherTab}"
-								>
-									<TextBlock
-										Text="{Binding WeatherSummary}"
-										Margin="0,0,8,0"
-										VerticalAlignment="Center"
-									/>
-									<Image
-										Source="{Binding WeatherIconPath, TargetNullValue={x:Null}}"
-										Width="40"
-										Height="40"
-									/>
-								</StackPanel>
+
+								<ScrollViewer>
+									<StackPanel Orientation="Vertical" Margin="16">
+										<ui:TextBlock
+											Text="{Binding SelectedPlaceTitle}"
+											FontSize="32"
+											HorizontalAlignment="Center"
+										/>
+
+										<Grid Margin="16">
+											<Grid.Resources>
+												<Style TargetType="TextBlock" x:Key="LabelText">
+													<Setter Property="FontSize" Value="14" />
+													<Setter Property="Foreground" Value="Gray" />
+													<Setter Property="Margin" Value="0,0,16,12" />
+													<Setter
+														Property="VerticalAlignment"
+														Value="Center"
+													/>
+												</Style>
+
+												<Style TargetType="TextBlock" x:Key="ValueText">
+													<Setter Property="FontSize" Value="16" />
+													<Setter Property="FontWeight" Value="Bold" />
+													<Setter Property="Margin" Value="0,0,0,12" />
+													<Setter
+														Property="VerticalAlignment"
+														Value="Center"
+													/>
+												</Style>
+											</Grid.Resources>
+
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="Auto" />
+												<ColumnDefinition Width="*" />
+											</Grid.ColumnDefinitions>
+
+											<Grid.RowDefinitions>
+												<RowDefinition Height="Auto" />
+												<RowDefinition Height="Auto" />
+												<RowDefinition Height="Auto" />
+												<RowDefinition Height="Auto" />
+											</Grid.RowDefinitions>
+
+											<TextBlock
+												Grid.Row="0"
+												Grid.Column="0"
+												Text="Погода:"
+												Style="{StaticResource LabelText}"
+											/>
+											<StackPanel
+												Grid.Row="0"
+												Grid.Column="1"
+												Orientation="Horizontal"
+												Margin="0,0,0,12"
+											>
+												<Image
+													Source="{Binding WeatherIconPath, TargetNullValue={x:Null}}"
+													Width="32"
+													Height="32"
+													Margin="0,0,8,0"
+												/>
+												<TextBlock
+													Text="{Binding WeatherMain}"
+													Style="{StaticResource ValueText}"
+													Margin="0"
+												/>
+											</StackPanel>
+
+											<TextBlock
+												Grid.Row="1"
+												Grid.Column="0"
+												Text="Опис:"
+												Style="{StaticResource LabelText}"
+											/>
+											<TextBlock
+												Grid.Row="1"
+												Grid.Column="1"
+												Text="{Binding WeatherDescription}"
+												Style="{StaticResource ValueText}"
+											/>
+
+											<TextBlock
+												Grid.Row="2"
+												Grid.Column="0"
+												Text="Температура:"
+												Style="{StaticResource LabelText}"
+											/>
+											<TextBlock
+												Grid.Row="2"
+												Grid.Column="1"
+												Text="{Binding PlaceTemperature}"
+												Style="{StaticResource ValueText}"
+											/>
+
+											<TextBlock
+												Grid.Row="3"
+												Grid.Column="0"
+												Text="Вітер:"
+												Style="{StaticResource LabelText}"
+											/>
+											<TextBlock
+												Grid.Row="3"
+												Grid.Column="1"
+												Text="{Binding WeatherWindSpeed}"
+												Style="{StaticResource ValueText}"
+											/>
+										</Grid>
+									</StackPanel>
+								</ScrollViewer>
 							</TabItem>
+
 							<TabItem>
 								<TabItem.Header>
 									<StackPanel Orientation="Horizontal">

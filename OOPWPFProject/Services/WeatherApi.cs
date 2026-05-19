@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -21,95 +22,107 @@ internal class WeatherApi
 		_apiKey = File.ReadAllText(filePath).Trim();
 	}
 
-	public async Task<(double Lat, double Lon)> GetCoordinatesAsync(string city)
+	public async Task<(double Lat, double Lon)?> GetCoordinatesAsync(string city)
 	{
 		var requestUri =
 			$"https://api.openweathermap.org/geo/1.0/direct?q={city}&limit=1&appid={_apiKey}";
 
 		try
 		{
-			Logger.Log(LogLevel.Debug, "WeatherApi -> GetCoordinatesAsync запит");
-			using HttpResponseMessage response = await _client.GetAsync(requestUri);
-			Logger.Log(
-				LogLevel.Debug,
-				$"WeatherApi -> GetCoordinatesAsync відповідь : {(int)response.StatusCode}"
-			);
+			using var response = await _client.GetAsync(requestUri);
 			response.EnsureSuccessStatusCode();
 
-			using Stream json = await response.Content.ReadAsStreamAsync();
-			List<GeoLocation>? locations = await JsonSerializer.DeserializeAsync<List<GeoLocation>>(
-				json
-			);
+			var locations = await response.Content.ReadFromJsonAsync<List<GeoLocation>>();
 
-			if (locations == null || locations.Count == 0)
+			if (locations is null || locations.Count == 0)
 			{
-				return (0, 0);
+				return null;
 			}
 
 			return (locations[0].Latitude, locations[0].Longtitude);
 		}
-		catch (HttpRequestException ex)
+		catch (HttpRequestException)
 		{
-			Logger.Log(LogLevel.Error, ex.Message);
-			return (0, 0);
+			Logger.Log(LogLevel.Error, $"Помилка при отриманні координат для '{city}'");
+			return null;
 		}
 	}
 
-	public async Task<(
-		string Icon,
-		string Weather,
-		double Temperature,
-		double Humidity
-	)> GetWeatherAsync(double lat, double lon)
+	public async Task<WeatherResult> GetWeatherAsync(double lat, double lon)
 	{
-		if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+		var requestUri =
+			$"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&lang=ua&appid={_apiKey}";
+
+		using var response = await _client.GetAsync(requestUri);
+
+		if (!response.IsSuccessStatusCode)
 		{
-			Logger.Log(LogLevel.Error, "Відсутнє з'єднання з мережею");
-			return ("", "", 0.0, 0.0);
+			var content = await response.Content.ReadAsStringAsync();
+			throw new HttpRequestException($"Помилка API {response.StatusCode}: {content}");
+		}
+
+		var weatherData = await response.Content.ReadFromJsonAsync<WeatherResponse>();
+
+		if (
+			weatherData?.Weather?.FirstOrDefault() is not { } condition
+			|| weatherData.Main is not { } main
+			|| weatherData.Wind is not { } wind
+		)
+		{
+			throw new InvalidDataException("API повернуло неповну відповідь");
+		}
+
+		return new WeatherResult(
+			condition.Icon,
+			condition.MainWeather,
+			condition.Description,
+			main.Temperature,
+			main.Humidity,
+			wind.Speed,
+			wind.Direction
+		);
+	}
+
+	public async Task<string?> DownloadAndCacheIconAsync(string? iconId)
+	{
+		if (string.IsNullOrWhiteSpace(iconId))
+		{
+			return null;
+		}
+
+		var localFilePath = Path.Combine(
+			AppDomain.CurrentDomain.BaseDirectory,
+			$"icon_{iconId}.png"
+		);
+
+		if (File.Exists(localFilePath))
+		{
+			return localFilePath;
 		}
 
 		try
 		{
-			var requestUri =
-				$"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&lang=ua&appid={_apiKey}";
-
-			Logger.Log(LogLevel.Debug, "WeatherApi -> GetWeatherAsync запит");
-			using HttpResponseMessage response = await _client.GetAsync(requestUri);
-			Logger.Log(
-				LogLevel.Debug,
-				$"WeatherApi -> GetWeatherAsync відповідь : {(int)response.StatusCode}"
-			);
-			response.EnsureSuccessStatusCode();
-
-			using Stream json = await response.Content.ReadAsStreamAsync();
-			WeatherResponse? weatherData = await JsonSerializer.DeserializeAsync<WeatherResponse>(
-				json
-			);
-
-			if (
-				weatherData?.Weather == null
-				|| weatherData.Weather.Count == 0
-				|| weatherData.Main == null
-			)
-			{
-				Logger.Log(LogLevel.Error, "Помилка API або пуста відповідь");
-				throw new Exception("Помилка API або пуста відповідь");
-			}
-
-			WeatherCondition condition = weatherData.Weather[0];
-			MainData mainData = weatherData.Main;
-
-			//Logger.LogInfo($" main = {condition.MainWeather}, icon = {condition.Icon}, temp = {mainData.Temperature}, humidity =  {mainData.Humidity}");
-
-			return (condition.Icon, condition.MainWeather, mainData.Temperature, mainData.Humidity);
+			var requestUri = $"https://openweathermap.org/img/wn/{iconId}@2x.png";
+			var iconBytes = await _client.GetByteArrayAsync(requestUri);
+			await File.WriteAllBytesAsync(localFilePath, iconBytes);
+			return localFilePath;
 		}
-		catch (HttpRequestException ex)
+		catch (HttpRequestException)
 		{
-			Logger.Log(LogLevel.Error, ex.Message);
-			return ("", "", 0.0, 0.0);
+			return null;
 		}
 	}
 }
+
+public record WeatherResult(
+	string Icon,
+	string MainWeather,
+	string Description,
+	double Temperature,
+	double Humidity,
+	double WindSpeed,
+	string WindDirection
+);
 
 public class GeoLocation
 {
@@ -127,15 +140,9 @@ public class WeatherCondition
 
 	[JsonPropertyName("main")]
 	public string MainWeather { get; set; }
-}
 
-public class WeatherResponse
-{
-	[JsonPropertyName("weather")]
-	public List<WeatherCondition> Weather { get; set; }
-
-	[JsonPropertyName("main")]
-	public MainData Main { get; set; }
+	[JsonPropertyName("description")]
+	public string Description { get; set; }
 }
 
 public class MainData
@@ -145,4 +152,35 @@ public class MainData
 
 	[JsonPropertyName("humidity")]
 	public double Humidity { get; set; }
+}
+
+public class WindData
+{
+	[JsonPropertyName("speed")]
+	public double Speed { get; set; }
+
+	[JsonPropertyName("deg")]
+	public double Degree { get; set; }
+
+	public string Direction
+	{
+		get
+		{
+			string[] directions = { "Пн", "Пн-Сх", "Сх", "Пд-Сх", "Пд", "Пд-Зх", "Зх", "Пн-Зх" };
+			int index = (int)(((Degree % 360 + 360) % 360 + 22.5) / 45) % 8;
+			return directions[index];
+		}
+	}
+}
+
+public class WeatherResponse
+{
+	[JsonPropertyName("weather")]
+	public List<WeatherCondition> Weather { get; set; }
+
+	[JsonPropertyName("main")]
+	public MainData Main { get; set; }
+
+	[JsonPropertyName("wind")]
+	public WindData Wind { get; set; }
 }

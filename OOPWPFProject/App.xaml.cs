@@ -10,6 +10,7 @@ namespace OOPWPFProject;
 public partial class App : Application
 {
 	private PlaceStore? _store;
+	private WeatherApi? _weatherApi;
 
 	public static DateTime StartTime { get; private set; }
 
@@ -26,8 +27,8 @@ public partial class App : Application
 		Logger.Log(LogLevel.Info, " ==========  Програма почала роботу  ========== ");
 
 		_store = new PlaceStore();
-
-		var mainWindow = new MainWindow { DataContext = new MainViewModel(_store) };
+		_weatherApi = new WeatherApi();
+		var mainWindow = new MainWindow { DataContext = new MainViewModel(_store, _weatherApi) };
 		mainWindow.Show();
 	}
 

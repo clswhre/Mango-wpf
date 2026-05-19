@@ -1,7 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Text;
 using System.Windows;
 using OOPWPFProject.Models;
 using OOPWPFProject.ViewModels.Services;
@@ -12,19 +11,10 @@ internal class PlaceListViewModel : BaseViewModel
 {
 	private readonly PlaceStore _store;
 
-	public DetailsTabViewModel DetailsTab { get; }
-	public WeatherTabViewModel WeatherTab { get; }
-	public ReviewsTabViewModel ReviewsTab { get; }
-	public StatisticTabViewModel StatisticTab { get; }
-
 	public PlaceListViewModel(PlaceStore store)
 	{
 		_store = store;
 		Places = _store.Places;
-		DetailsTab = new DetailsTabViewModel(_store, place => SelectedPlace = place);
-		WeatherTab = new WeatherTabViewModel();
-		ReviewsTab = new ReviewsTabViewModel(_store);
-		StatisticTab = new StatisticTabViewModel(_store);
 
 		_store.Places.CollectionChanged += OnPlacesChanged;
 
@@ -34,27 +24,28 @@ internal class PlaceListViewModel : BaseViewModel
 		}
 	}
 
-	public ObservableCollection<Place> Places { get; set; }
+	public ObservableCollection<Place> Places { get; }
 	public ObservableCollection<Place> VisitedPlaces { get; } = [];
 	public ObservableCollection<Place> PlannedPlaces { get; } = [];
 
 	public Place? SelectedPlace
 	{
-		get;
+		get => _store.SelectedPlace;
 		set
 		{
-			field = value;
-			OnPropertyChanged();
-			OnPropertyChanged(nameof(IsSelectedPlaceExists));
-			OnPropertyChanged(nameof(IsDetailsVisible));
-			DetailsTab.SetSelectedPlace(field);
-			WeatherTab.SetSelectedPlace(field);
-			ReviewsTab.SetSelectedPlace(field);
+			if (_store.SelectedPlace != value)
+			{
+				_store.SelectedPlace = value;
+				OnPropertyChanged();
+				OnPropertyChanged(nameof(IsSelectedPlaceExists));
+				OnPropertyChanged(nameof(IsDetailsVisible));
+			}
 		}
 	}
 
 	public Visibility IsAnyPlaces =>
 		_store.Places.Any() ? Visibility.Visible : Visibility.Collapsed;
+
 	public Visibility IsSelectedPlaceExists =>
 		SelectedPlace is not null ? Visibility.Visible : Visibility.Collapsed;
 
@@ -62,11 +53,13 @@ internal class PlaceListViewModel : BaseViewModel
 
 	public Visibility IsVisitedAddPlaceTextVisible =>
 		VisitedPlaces.Any() ? Visibility.Collapsed : Visibility.Visible;
+
 	public Visibility IsPlannedAddPlaceTextVisible =>
 		PlannedPlaces.Any() ? Visibility.Collapsed : Visibility.Visible;
 
 	public Visibility IsVisitedPlaceExists =>
 		VisitedPlaces.Any() ? Visibility.Visible : Visibility.Collapsed;
+
 	public Visibility IsPlannedPlaceExists =>
 		PlannedPlaces.Any() ? Visibility.Visible : Visibility.Collapsed;
 
@@ -90,12 +83,14 @@ internal class PlaceListViewModel : BaseViewModel
 
 		if (e.Action == NotifyCollectionChangedAction.Reset)
 		{
-			foreach (Place? place in VisitedPlaces.ToList())
+			var visitedCopy = VisitedPlaces.ToList();
+			foreach (Place? place in visitedCopy)
 			{
 				UntrackPlace(place);
 			}
 
-			foreach (Place? place in PlannedPlaces.ToList())
+			var plannedCopy = PlannedPlaces.ToList();
+			foreach (Place? place in plannedCopy)
 			{
 				UntrackPlace(place);
 			}
@@ -139,7 +134,6 @@ internal class PlaceListViewModel : BaseViewModel
 			{
 				VisitedPlaces.Add(place);
 			}
-
 			PlannedPlaces.Remove(place);
 		}
 		else
@@ -148,7 +142,6 @@ internal class PlaceListViewModel : BaseViewModel
 			{
 				PlannedPlaces.Add(place);
 			}
-
 			VisitedPlaces.Remove(place);
 		}
 
