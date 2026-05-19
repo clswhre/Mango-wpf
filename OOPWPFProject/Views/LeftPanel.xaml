@@ -119,33 +119,6 @@
             <Expander Header="Додаткові інструменти" IsExpanded="False" Margin="0,8,0,0">
 
                 <StackPanel>
-                    <ui:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                        Високооцінені місця
-                    </ui:TextBlock>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="5" />
-                            <ColumnDefinition Width="2*" />
-                        </Grid.ColumnDefinitions>
-
-                        <ui:Button Grid.Column="0"
-                                   Margin="0,8,0,0"
-                                   Appearance="Primary"
-                                   Icon="{ui:SymbolIcon Symbol=Save20}"
-                                   Command="{Binding PlaceListViewModel.HighlyRatedSaveCommand}">
-                            Зберегти
-                        </ui:Button>
-
-                        <ui:Button Grid.Column="2"
-                                   Margin="0,8,0,0"
-                                   Appearance="Secondary"
-                                   Icon="{ui:SymbolIcon Symbol=FolderOpen20}"
-                                   Command="{Binding PlaceListViewModel.HighlyRatedLoadCommand}">
-                            Завантажити
-                        </ui:Button>
-                    </Grid>
-
                     <Expander Header="Пошук за індексом" IsExpanded="False" Margin="0,8,0,0">
                         <StackPanel>
                             <ui:TextBlock Text="Введіть індекс" Margin="0,0,0,4" />

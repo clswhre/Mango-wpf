@@ -305,6 +305,7 @@ internal class PlaceListViewModel : BaseViewModel
         }
     }
 
+
     public string EditName
     {
         get;

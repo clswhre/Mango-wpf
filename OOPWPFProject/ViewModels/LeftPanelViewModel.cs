@@ -13,6 +13,15 @@ internal class LeftPanelViewModel : BaseViewModel
 {
     public RelayCommand AddPlaceCommand { get; }
     public RelayCommand ClearFormCommand { get; }
+
+    public string AddPlaceButtonText { get; } = "Додати місце";
+
+    public ObservableCollection<PlaceType> PlaceTypes { get; } =
+    [
+        PlaceType.Normal,
+        PlaceType.Historical,
+        PlaceType.Natural
+    ];
     public LeftPanelViewModel(PlaceStore store)
     {
         _store = store;

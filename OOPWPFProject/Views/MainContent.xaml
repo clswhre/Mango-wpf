@@ -83,7 +83,7 @@
                             Padding="16"
                             Margin="0,8,0,0"
                             Visibility="{Binding PlaceListViewModel.IsSelectedPlaceExists}">
-                        <TabControl MinHeight="420">
+                        <TabControl MinHeight="420" MaxHeight="420">
                             <TabItem>
                                 <TabItem.Header>
                                     <StackPanel Orientation="Horizontal">
@@ -205,26 +205,29 @@
                                     </StackPanel>
                                 </TabItem.Header>
                                 <StackPanel Margin="0,12,0,0">
-                                    <ItemsControl ItemsSource="{Binding PlaceListViewModel.SelectedPlace.Reviews}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border Padding="8" Margin="0,0,0,6" Background="#1AFFFFFF" CornerRadius="6">
-                                                    <DockPanel LastChildFill="True">
-                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                                                            <TextBlock Text="{Binding Value, StringFormat='{}{0:0.0}'}" Margin="0,0,8,0" VerticalAlignment="Center" />
-                                                            <ui:Button Appearance="Danger"
-                                                                       Padding="8,4" Margin="6,0,0,0"
-                                                                       Command="{Binding DataContext.PlaceListViewModel.RemoveReviewCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                                       CommandParameter="{Binding Key}">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="200">
+                                        <ItemsControl ItemsSource="{Binding PlaceListViewModel.SelectedPlace.Reviews}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Padding="8" Margin="0,0,0,6" Background="#1AFFFFFF" CornerRadius="6">
+                                                        <DockPanel LastChildFill="True">
+                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right">
+                                                                <TextBlock Text="{Binding Value, StringFormat='{}{0:0.0}'}" Margin="0,0,8,0" VerticalAlignment="Center" />
+                                                            <Button Padding="8,4" Margin="6,0,0,0"
+                                                                    
+                                                                    Command="{Binding DataContext.PlaceListViewModel.RemoveReviewCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                    CommandParameter="{Binding Key}">
                                                                 Видалити
-                                                            </ui:Button>
-                                                        </StackPanel>
-                                                        <TextBlock Text="{Binding Key}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,10,0" />
-                                                    </DockPanel>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
+                                                            </Button>
+                                                            </StackPanel>
+                                                            <TextBlock Text="{Binding Key}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                                        </DockPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+
                                     <StackPanel Orientation="Vertical" Margin="0,8,0,0">
                                         <ui:TextBox Text="{Binding PlaceListViewModel.NewReviewText, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Напишіть відгук..." AcceptsReturn="True" MinHeight="60" />
                                         <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
@@ -436,8 +439,9 @@
                                                             <TextBlock Text="{Binding Value, StringFormat='{}{0:0.0}'}" Margin="0,0,8,0" VerticalAlignment="Center" />
                                                             <ui:Button Appearance="Danger"
                                                                        Padding="8,4" Margin="6,0,0,0"
+                                                                       DataContext="{Binding RelativeSource={RelativeSource Self}}"
                                                                        Command="{Binding DataContext.PlaceListViewModel.RemoveReviewCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                                       CommandParameter="{Binding Key}">
+                                                                       CommandParameter="{Binding DataContext.Key, RelativeSource={RelativeSource AncestorType=ContentPresenter}}">
                                                                 Видалити
                                                             </ui:Button>
                                                         </StackPanel>
