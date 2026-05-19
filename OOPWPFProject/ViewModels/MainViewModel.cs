@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-
 using OOPWPFProject.Models;
 using OOPWPFProject.ViewModels.Services;
 
@@ -7,18 +6,19 @@ namespace OOPWPFProject.ViewModels;
 
 internal class MainViewModel : BaseViewModel
 {
-    private readonly PlaceStore _sharedStore;
+	private readonly PlaceStore _sharedStore;
 
-    public LeftPanelViewModel LeftPanelViewModel { get; }
-    public PlaceListViewModel PlaceListViewModel { get; }
-    public StatisticTabViewModel StatisticViewModel { get; }
-    public ObservableCollection<Place> Places => _sharedStore.Places;
-    public MainViewModel(PlaceStore store)
-    {
-        _sharedStore = store;
+	public LeftPanelViewModel LeftPanelViewModel { get; }
+	public PlaceListViewModel PlaceListViewModel { get; }
+	public StatisticTabViewModel StatisticViewModel { get; }
+	public ObservableCollection<Place> Places => _sharedStore.Places;
 
-        LeftPanelViewModel = new LeftPanelViewModel(_sharedStore);
-        PlaceListViewModel = new PlaceListViewModel(_sharedStore);
-        StatisticViewModel = new StatisticTabViewModel(_sharedStore);
-    }
+	public MainViewModel(PlaceStore store)
+	{
+		_sharedStore = store;
+
+		LeftPanelViewModel = new LeftPanelViewModel(_sharedStore);
+		PlaceListViewModel = new PlaceListViewModel(_sharedStore);
+		StatisticViewModel = new StatisticTabViewModel(_sharedStore);
+	}
 }
