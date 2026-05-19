@@ -12,6 +12,7 @@ public class PlaceDto
     public string? Review { get; set; } = string.Empty;
     public string? Notes { get; set; } = string.Empty;
     public string? ReviewsJson { get; set; } = string.Empty;
+    public bool IsVisited { get; set; }
 
     // Historical
     public DateOnly? YearBuilt { get; set; }
@@ -37,9 +38,8 @@ public class PlaceDto
             Description = place.Description,
             Rating = place.Rating,
             Date = place.Date,
-            Review = place.Review,
-            Notes = place.Notes,
             ReviewsJson = System.Text.Json.JsonSerializer.Serialize(place.Reviews),
+            IsVisited = place.IsVisited,
             IconId = place.IconId,
             WeatherSummary = place.WeatherSummary,
             WeatherIconPath = place.WeatherIconPath
@@ -79,8 +79,7 @@ public class PlaceDto
         place.Description = Description;
         place.Rating = Rating;
         place.Date = Date;
-        place.Review = Review;
-        place.Notes = Notes;
+        place.IsVisited = IsVisited;
         place.IconId = IconId;
         place.WeatherSummary = WeatherSummary;
         place.WeatherIconPath = WeatherIconPath;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Text;
 using System.Windows;
 
@@ -12,22 +13,15 @@ internal class LeftPanelViewModel : BaseViewModel
 {
     public RelayCommand AddPlaceCommand { get; }
     public RelayCommand ClearFormCommand { get; }
-
     public LeftPanelViewModel(PlaceStore store)
     {
         _store = store;
+        _store.Places.CollectionChanged += OnPlacesChanged;
         AddPlaceCommand = new RelayCommand(_ => AddPlace(), _ => CanAddPlace());
         ClearFormCommand = new RelayCommand(_ => ClearForm());
     }
 
     private readonly PlaceStore _store;
-
-    public ObservableCollection<PlaceType> PlaceTypes
-    { get; } = [
-        PlaceType.Normal,
-        PlaceType.Historical,
-        PlaceType.Natural
-    ];
 
     public PlaceType SelectedPlaceType
     {
@@ -49,6 +43,11 @@ internal class LeftPanelViewModel : BaseViewModel
         SelectedPlaceType == PlaceType.Historical ? Visibility.Visible : Visibility.Collapsed;
 
     public Visibility IsPlaceExists => _store.Places.Any() ? Visibility.Visible : Visibility.Collapsed;
+
+    private void OnPlacesChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        OnPropertyChanged(nameof(IsPlaceExists));
+    }
 
     public string NewName
     {
@@ -157,6 +156,16 @@ internal class LeftPanelViewModel : BaseViewModel
             OnPropertyChanged();
         }
     }
+    
+    public bool IsNewPlaceVisited
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+        }
+    }
 
     private bool CanAddPlace() => !string.IsNullOrWhiteSpace(NewName) &&
                !string.IsNullOrWhiteSpace(NewCountry) &&
@@ -179,6 +188,7 @@ internal class LeftPanelViewModel : BaseViewModel
                     Description = NewDescription,
                     Date = checkedVisitDate,
                     Rating = checkedRating,
+                    IsVisited = IsNewPlaceVisited
                 };
                 break;
             case PlaceType.Historical:
@@ -190,7 +200,8 @@ internal class LeftPanelViewModel : BaseViewModel
                     Date = checkedVisitDate,
                     Rating = checkedRating,
                     YearBuilt = HistoricalYearBuilt,
-                    Significance = HistoricalSignificance
+                    Significance = HistoricalSignificance,
+                    IsVisited = IsNewPlaceVisited
                 };
                 break;
             case PlaceType.Natural:
@@ -202,7 +213,8 @@ internal class LeftPanelViewModel : BaseViewModel
                     Date = checkedVisitDate,
                     Rating = checkedRating,
                     YearFormed = NaturalYearFormed,
-                    ProtectedStatus = NaturalProtectedStatus
+                    ProtectedStatus = NaturalProtectedStatus,
+                    IsVisited = IsNewPlaceVisited
                 };
                 break;
         }
@@ -211,6 +223,7 @@ internal class LeftPanelViewModel : BaseViewModel
         if (newPlace is not null && !PlaceAlreadyExists(newPlace))
         {
             _store.AddPlace(newPlace);
+            MessageBox.Show($"Місце '{newPlace.Name}' у країні '{newPlace.Country}' успішно додано!", "Успіх", MessageBoxButton.OK, MessageBoxImage.Information);
             Logger.Log(LogLevel.Info, $"Дія (Додано): Додано місце '{newPlace.Name}', країна '{newPlace.Country}'");
         }
         else if (newPlace is not null)

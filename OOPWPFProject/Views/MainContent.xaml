@@ -3,6 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
 
+    <UserControl.Resources>
+    </UserControl.Resources>
+
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -10,7 +13,7 @@
         </Grid.RowDefinitions>
 
         <TabControl>
-            <TabItem>
+            <TabItem Visibility="{Binding PlaceListViewModel.IsVisitedPlaceExists}">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <ui:SymbolIcon Symbol="Location20" Margin="0,0,6,0"/>
@@ -25,15 +28,19 @@
                     </Grid.RowDefinitions>
 
                     <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="23*"/>
+                            <ColumnDefinition Width="48*"/>
+                        </Grid.ColumnDefinitions>
                         <ui:DataGrid x:Name="PlacesDataGrid"
-                                     ItemsSource="{Binding PlaceListViewModel.Places}"
+                                     ItemsSource="{Binding PlaceListViewModel.VisitedPlaces}"
                                      SelectedItem="{Binding PlaceListViewModel.SelectedPlace}"
-                                     Visibility="{Binding PlaceListViewModel.IsPlaceExists}"
+                                     Visibility="{Binding PlaceListViewModel.IsVisitedPlaceExists}"
                                      AutoGenerateColumns="False"
                                      IsReadOnly="True"
                                      SelectionMode="Single"
                                      HeadersVisibility="Column"
-                                     Margin="0,0,0,16">
+                                     Margin="0,0,0,16" Grid.ColumnSpan="2">
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn Header="Місто" Width="*" SortMemberPath="NameOfPlace">
                                     <DataGridTemplateColumn.CellTemplate>
@@ -65,9 +72,9 @@
                         <ui:TextBlock FontSize="48"
                                       FontFamily="Lucida Console"
                                       FontWeight="Light"
-                                      HorizontalAlignment="Center"
+                                      HorizontalAlignment="Left"
                                       VerticalAlignment="Center"
-                                      Visibility="{Binding PlaceListViewModel.IsAddPlaceTextVisible}">
+                                      Visibility="{Binding PlaceListViewModel.IsVisitedAddPlaceTextVisible}" Grid.ColumnSpan="2">
                             Додайте місце для перегляду
                         </ui:TextBlock>
                     </Grid>
@@ -76,82 +83,167 @@
                             Padding="16"
                             Margin="0,8,0,0"
                             Visibility="{Binding PlaceListViewModel.IsSelectedPlaceExists}">
-                        <StackPanel>
-                            <Grid Margin="0,0,0,12">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <ui:TextBlock Grid.Column="0"
-                                              Text="Деталі місця"
-                                              FontSize="16"
-                                              FontWeight="Bold"
-                                              VerticalAlignment="Center" />
-                                <ui:Button Grid.Column="1"
-                                           Appearance="Danger"
-                                           Command="{Binding PlaceListViewModel.DeletePlaceCommand}"
-                                           Icon="{ui:SymbolIcon Symbol=Delete20}">
-                                    Видалити обраний запис
-                                </ui:Button>
-                            </Grid>
-
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="2" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <TextBlock Grid.Column="0" Text="{Binding PlaceListViewModel.SelectedPlaceDetails, Mode=OneWay}"
-                                           TextWrapping="Wrap"
-                                           LineHeight="1.5" />
-
-                                <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0">
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding PlaceListViewModel.WeatherSummary}" Margin="0,0,8,0" VerticalAlignment="Center" />
-                                        <Image Source="{Binding PlaceListViewModel.WeatherIconPath, TargetNullValue={x:Null}}" Width="40" Height="40" />
+                        <TabControl MinHeight="420">
+                            <TabItem>
+                                <TabItem.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <ui:SymbolIcon Symbol="Info20" Margin="0,0,6,0" />
+                                        <TextBlock Text="Деталі" VerticalAlignment="Center" />
                                     </StackPanel>
-                                </StackPanel>
-                            </Grid>
-
-                            <StackPanel Margin="0,12,0,0">
-                                <ui:TextBlock Text="Відгуки" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,6" />
-                                <ItemsControl ItemsSource="{Binding PlaceListViewModel.SelectedPlace.Reviews}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Padding="8" Margin="0,0,0,6" Background="#1AFFFFFF" CornerRadius="6">
-                                                <DockPanel LastChildFill="True">
-                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                                                        <TextBlock Text="{Binding Value, StringFormat='{}{0:0.0}'}" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                                        <ui:Button Appearance="Danger"
-                                                                   Padding="8,4" Margin="6,0,0,0"
-                                                                   Command="{Binding DataContext.PlaceListViewModel.RemoveReviewCommand}"
-                                                                   CommandParameter="{Binding Key}">
-                                                            Видалити
-                                                        </ui:Button>
-                                                    </StackPanel>
-                                                    <TextBlock Text="{Binding Key}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,10,0" />
-                                                </DockPanel>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                                <StackPanel Orientation="Vertical" Margin="0,8,0,0">
-                                    <ui:TextBox Text="{Binding PlaceListViewModel.NewReviewText, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Напишіть відгук..." AcceptsReturn="True" MinHeight="60" />
-                                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                                        <ui:RatingControl Value="{Binding PlaceListViewModel.NewReviewRating, Mode=TwoWay, TargetNullValue=0}" HalfStarEnabled="False" />
-                                        <ui:Button Appearance="Success" Margin="8,0,0,0" Command="{Binding PlaceListViewModel.AddReviewCommand}">
-                                            Додати відгук
+                                </TabItem.Header>
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="8" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <ui:TextBlock Grid.Column="0"
+                                                      Text="Деталі місця"
+                                                      FontSize="16"
+                                                      FontWeight="Bold"
+                                                      VerticalAlignment="Center" />
+                                        <ui:Button Grid.Column="1"
+                                                   Appearance="Caution"
+                                                   Icon="{ui:SymbolIcon Symbol=Edit20}"
+                                                   Command="{Binding PlaceListViewModel.ToggleEditCommand}">
+                                            Редагувати
                                         </ui:Button>
+                                        <ui:Button Grid.Column="3"
+                                                   Appearance="Danger"
+                                                   Command="{Binding PlaceListViewModel.DeletePlaceCommand}"
+                                                   Icon="{ui:SymbolIcon Symbol=Delete20}">
+                                            Видалити обраний запис
+                                        </ui:Button>
+                                    </Grid>
+
+                                    <StackPanel Margin="0,0,12,0" IsEnabled="{Binding PlaceListViewModel.IsEditing}">
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="12" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <StackPanel Grid.Column="0">
+                                            <ui:TextBlock Text="Назва *" Margin="0,0,0,4" />
+                                            <ui:TextBox Text="{Binding PlaceListViewModel.EditName, UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+                                        
+                                        <StackPanel Grid.Column="2">
+                                            <ui:TextBlock Text="Країна *" Margin="0,0,0,4" />
+                                            <ui:TextBox Text="{Binding PlaceListViewModel.EditCountry, UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+                                        
+                                    </Grid>
+
+                                        <ui:TextBlock Text="Опис *" Margin="0,0,0,4" />
+                                        <ui:TextBox Text="{Binding PlaceListViewModel.EditDescription, UpdateSourceTrigger=PropertyChanged}" 
+                                                    AcceptsReturn="True" 
+                                                    TextWrapping="Wrap" 
+                                                    MinHeight="60" 
+                                                    Margin="0,0,0,8" />
+
+                                        <ui:TextBlock Text="Дата відвідування" Margin="0,0,0,4" />
+                                        <DatePicker SelectedDate="{Binding PlaceListViewModel.EditVisitDate}" Margin="0,0,0,8" />
+
+                                        <ui:TextBlock Text="Рейтинг" Margin="0,0,0,4" />
+                                        <ui:RatingControl Value="{Binding PlaceListViewModel.EditRating, Mode=TwoWay, TargetNullValue=0}" HalfStarEnabled="False" Margin="0,0,0,8" />
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                            <CheckBox IsChecked="{Binding PlaceListViewModel.EditIsVisited}" />
+                                            <TextBlock Text="Місто відвідане" VerticalAlignment="Center" Margin="8,0,0,0" />
+                                        </StackPanel>
+
+                                        <StackPanel Visibility="{Binding PlaceListViewModel.IsEditHistoricalVisible}" Margin="0,0,0,8">
+                                            <ui:TextBlock Text="Рік побудови" Margin="0,0,0,4" />
+                                            <DatePicker SelectedDate="{Binding PlaceListViewModel.EditHistoricalYearBuiltDate, Mode=TwoWay}" />
+
+                                            <ui:TextBlock Text="Значимість (1-10)" Margin="0,8,0,4" />
+                                            <Slider TickPlacement="Both" Minimum="1" Maximum="10" IsSnapToTickEnabled="True" TickFrequency="1" Value="{Binding PlaceListViewModel.EditHistoricalSignificance, Mode=TwoWay}" />
+                                        </StackPanel>
+
+                                        <StackPanel Visibility="{Binding PlaceListViewModel.IsEditNaturalVisible}" Margin="0,0,0,8">
+                                            <ui:TextBlock Text="Рік утворення" Margin="0,0,0,4" />
+                                            <DatePicker SelectedDate="{Binding PlaceListViewModel.EditNaturalYearFormedDate, Mode=TwoWay}" />
+                                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                                <ui:TextBlock Text="Під захистом" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                                <CheckBox IsChecked="{Binding PlaceListViewModel.EditNaturalProtectedStatus, Mode=TwoWay}" />
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0" IsEnabled="{Binding PlaceListViewModel.IsEditing}">
+                                            <ui:Button Appearance="Primary" Command="{Binding PlaceListViewModel.SaveEditCommand}">
+                                                Зберегти
+                                            </ui:Button>
+                                            <ui:Button Appearance="Secondary" Command="{Binding PlaceListViewModel.CancelEditCommand}" Margin="8,0,0,0">
+                                                Скасувати
+                                            </ui:Button>
+                                        </StackPanel>
                                     </StackPanel>
                                 </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
+                            </TabItem>
+                            
+                            <TabItem>
+                                <TabItem.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <ui:SymbolIcon Symbol="WeatherMoon20" Margin="0,0,6,0" />
+                                        <TextBlock Text="Погода" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </TabItem.Header>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,8,0,0">
+                                    <TextBlock Text="{Binding PlaceListViewModel.WeatherSummary}" Margin="0,0,8,0" VerticalAlignment="Center" />
+                                    <Image Source="{Binding PlaceListViewModel.WeatherIconPath, TargetNullValue={x:Null}}" Width="40" Height="40" />
+                                </StackPanel>
+                            </TabItem>
+                            <TabItem>
+                                <TabItem.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <ui:SymbolIcon Symbol="Chat20" Margin="0,0,6,0" />
+                                        <TextBlock Text="Відгуки" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </TabItem.Header>
+                                <StackPanel Margin="0,12,0,0">
+                                    <ItemsControl ItemsSource="{Binding PlaceListViewModel.SelectedPlace.Reviews}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Padding="8" Margin="0,0,0,6" Background="#1AFFFFFF" CornerRadius="6">
+                                                    <DockPanel LastChildFill="True">
+                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right">
+                                                            <TextBlock Text="{Binding Value, StringFormat='{}{0:0.0}'}" Margin="0,0,8,0" VerticalAlignment="Center" />
+                                                            <ui:Button Appearance="Danger"
+                                                                       Padding="8,4" Margin="6,0,0,0"
+                                                                       Command="{Binding DataContext.PlaceListViewModel.RemoveReviewCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                       CommandParameter="{Binding Key}">
+                                                                Видалити
+                                                            </ui:Button>
+                                                        </StackPanel>
+                                                        <TextBlock Text="{Binding Key}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                                    </DockPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <StackPanel Orientation="Vertical" Margin="0,8,0,0">
+                                        <ui:TextBox Text="{Binding PlaceListViewModel.NewReviewText, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Напишіть відгук..." AcceptsReturn="True" MinHeight="60" />
+                                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                            <ui:RatingControl Value="{Binding PlaceListViewModel.NewReviewRating, Mode=TwoWay, TargetNullValue=0}" HalfStarEnabled="False" />
+                                            <ui:Button Appearance="Success" Margin="8,0,0,0" Command="{Binding PlaceListViewModel.AddReviewCommand}">
+                                                Додати відгук
+                                            </ui:Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
+                            </TabItem>
+                        </TabControl>
                     </Border>
                 </Grid>
+
             </TabItem>
 
-            <TabItem>
+            <TabItem
+                Visibility="{Binding PlaceListViewModel.IsPlannedPlaceExists}">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <ui:SymbolIcon Symbol="Info20" Margin="0,0,6,0"/>
@@ -166,15 +258,19 @@
                     </Grid.RowDefinitions>
 
                     <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="778*"/>
+                        </Grid.ColumnDefinitions>
                         <ui:DataGrid x:Name="PlannedPlacesDataGrid"
-                                     ItemsSource="{Binding PlaceListViewModel.Places}"
+                                     ItemsSource="{Binding PlaceListViewModel.PlannedPlaces}"
                                      SelectedItem="{Binding PlaceListViewModel.SelectedPlace}"
-                                     Visibility="{Binding PlaceListViewModel.IsPlaceExists}"
+                                     Visibility="{Binding PlaceListViewModel.IsPlannedPlaceExists}"
                                      AutoGenerateColumns="False"
                                      IsReadOnly="True"
                                      SelectionMode="Single"
                                      HeadersVisibility="Column"
-                                     Margin="0,0,0,16">
+                                     Margin="0,0,0,16" Grid.ColumnSpan="2">
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn Header="Місто" Width="*" SortMemberPath="NameOfPlace">
                                     <DataGridTemplateColumn.CellTemplate>
@@ -206,9 +302,9 @@
                         <ui:TextBlock FontSize="48"
                                       FontFamily="Lucida Console"
                                       FontWeight="Light"
-                                      HorizontalAlignment="Center"
+                                      HorizontalAlignment="Left"
                                       VerticalAlignment="Center"
-                                      Visibility="{Binding PlaceListViewModel.IsAddPlaceTextVisible}">
+                                      Visibility="{Binding PlaceListViewModel.IsPlannedAddPlaceTextVisible}" Grid.ColumnSpan="2">
                             Додайте місце для перегляду
                         </ui:TextBlock>
                     </Grid>
@@ -217,80 +313,156 @@
                             Padding="16"
                             Margin="0,8,0,0"
                             Visibility="{Binding PlaceListViewModel.IsSelectedPlaceExists}">
-                        <StackPanel>
-                            <Grid Margin="0,0,0,12">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <ui:TextBlock Grid.Column="0"
-                                              Text="Деталі місця"
-                                              FontSize="16"
-                                              FontWeight="Bold"
-                                              VerticalAlignment="Center" />
-                                <ui:Button Grid.Column="1"
-                                           Appearance="Danger"
-                                           Command="{Binding PlaceListViewModel.DeletePlaceCommand}"
-                                           Icon="{ui:SymbolIcon Symbol=Delete20}">
-                                    Видалити обраний запис
-                                </ui:Button>
-                            </Grid>
-
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="2" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <TextBlock Grid.Column="0" Text="{Binding PlaceListViewModel.SelectedPlaceDetails, Mode=OneWay}"
-                                           TextWrapping="Wrap"
-                                           LineHeight="1.5" />
-
-                                <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0">
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding PlaceListViewModel.WeatherSummary}" Margin="0,0,8,0" VerticalAlignment="Center" />
-                                        <Image Source="{Binding PlaceListViewModel.WeatherIconPath, TargetNullValue={x:Null}}" Width="40" Height="40" />
+                        <TabControl MinHeight="420">
+                            <TabItem>
+                                <TabItem.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <ui:SymbolIcon Symbol="Info20" Margin="0,0,6,0" />
+                                        <TextBlock Text="Деталі" VerticalAlignment="Center" />
                                     </StackPanel>
-                                </StackPanel>
-                            </Grid>
-
-                            <StackPanel Margin="0,12,0,0">
-                                <ui:TextBlock Text="Відгуки" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,6" />
-                                <ItemsControl ItemsSource="{Binding PlaceListViewModel.SelectedPlace.Reviews}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Padding="8" Margin="0,0,0,6" Background="#1AFFFFFF" CornerRadius="6">
-                                                <DockPanel LastChildFill="True">
-                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                                                        <TextBlock Text="{Binding Value, StringFormat='{}{0:0.0}'}" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                                        <ui:Button Appearance="Danger"
-                                                                   Padding="8,4" Margin="6,0,0,0"
-                                                                   Command="{Binding DataContext.PlaceListViewModel.RemoveReviewCommand}"
-                                                                   CommandParameter="{Binding Key}">
-                                                            Видалити
-                                                        </ui:Button>
-                                                    </StackPanel>
-                                                    <TextBlock Text="{Binding Key}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,10,0" />
-                                                </DockPanel>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                                <StackPanel Orientation="Vertical" Margin="0,8,0,0">
-                                    <ui:TextBox Text="{Binding PlaceListViewModel.NewReviewText, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Напишіть відгук..." AcceptsReturn="True" MinHeight="60" />
-                                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                                        <ui:RatingControl Value="{Binding PlaceListViewModel.NewReviewRating, Mode=TwoWay, TargetNullValue=0}" HalfStarEnabled="False" />
-                                        <ui:Button Appearance="Success" Margin="8,0,0,0" Command="{Binding PlaceListViewModel.AddReviewCommand}">
-                                            Додати відгук
+                                </TabItem.Header>
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="8" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <ui:TextBlock Grid.Column="0"
+                                                      Text="Деталі місця"
+                                                      FontSize="16"
+                                                      FontWeight="Bold"
+                                                      VerticalAlignment="Center" />
+                                        <ui:Button Grid.Column="1"
+                                                   Appearance="Secondary"
+                                                   Icon="Edit20"
+                                                   Command="{Binding PlaceListViewModel.ToggleEditCommand}">
+                                            Редагувати
                                         </ui:Button>
+                                        <ui:Button Grid.Column="3"
+                                                   Appearance="Danger"
+                                                   Command="{Binding PlaceListViewModel.DeletePlaceCommand}"
+                                                   Icon="{ui:SymbolIcon Symbol=Delete20}">
+                                            Видалити обраний запис
+                                        </ui:Button>
+                                    </Grid>
+
+                                    <StackPanel Margin="0,0,12,0" IsEnabled="{Binding PlaceListViewModel.IsEditing}">
+
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="3*" />
+                                                <ColumnDefinition Width="10" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="3*" />
+                                            </Grid.ColumnDefinitions>
+                                            <ui:TextBlock Text="Назва *" Margin="0,0,0,4" Grid.Column="0" />
+                                            <ui:TextBox Text="{Binding PlaceListViewModel.EditName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,8" Grid.Column="1"/>
+
+                                            <ui:TextBlock Text="Країна *" Margin="0,0,0,4" Grid.Column="3"/>
+                                            <ui:TextBox Text="{Binding PlaceListViewModel.EditCountry, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,8" Grid.Column="4" />
+                                        </Grid>
+                                        
+                                        <ui:TextBlock Text="Опис *" Margin="0,0,0,4" />
+                                        <ui:TextBox Text="{Binding PlaceListViewModel.EditDescription, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="60" Margin="0,0,0,8" />
+
+                                        <ui:TextBlock Text="Дата відвідування" Margin="0,0,0,4" />
+                                        <DatePicker SelectedDate="{Binding PlaceListViewModel.EditVisitDate}" Margin="0,0,0,8" />
+
+                                        <ui:TextBlock Text="Рейтинг" Margin="0,0,0,4" />
+                                        <ui:RatingControl Value="{Binding PlaceListViewModel.EditRating, Mode=TwoWay, TargetNullValue=0}" HalfStarEnabled="False" Margin="0,0,0,8" />
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                            <CheckBox IsChecked="{Binding PlaceListViewModel.EditIsVisited}" />
+                                            <TextBlock Text="Місто відвідане" VerticalAlignment="Center" Margin="8,0,0,0" />
+                                        </StackPanel>
+
+                                        <StackPanel Visibility="{Binding PlaceListViewModel.IsEditHistoricalVisible}" Margin="0,0,0,8">
+                                            <ui:TextBlock Text="Рік побудови" Margin="0,0,0,4" />
+                                            <DatePicker SelectedDate="{Binding PlaceListViewModel.EditHistoricalYearBuiltDate, Mode=TwoWay}" />
+
+                                            <ui:TextBlock Text="Значимість (1-10)" Margin="0,8,0,4" />
+                                            <Slider TickPlacement="Both" Minimum="1" Maximum="10" IsSnapToTickEnabled="True" TickFrequency="1" Value="{Binding PlaceListViewModel.EditHistoricalSignificance, Mode=TwoWay}" />
+                                        </StackPanel>
+
+                                        <StackPanel Visibility="{Binding PlaceListViewModel.IsEditNaturalVisible}" Margin="0,0,0,8">
+                                            <ui:TextBlock Text="Рік утворення" Margin="0,0,0,4" />
+                                            <DatePicker SelectedDate="{Binding PlaceListViewModel.EditNaturalYearFormedDate, Mode=TwoWay}" />
+                                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                                <ui:TextBlock Text="Під захистом" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                                <CheckBox IsChecked="{Binding PlaceListViewModel.EditNaturalProtectedStatus, Mode=TwoWay}" />
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0" IsEnabled="{Binding PlaceListViewModel.IsEditing}">
+                                            <ui:Button Appearance="Primary" Command="{Binding PlaceListViewModel.SaveEditCommand}">
+                                                Зберегти
+                                            </ui:Button>
+                                            <ui:Button Appearance="Secondary" Command="{Binding PlaceListViewModel.CancelEditCommand}" Margin="8,0,0,0">
+                                                Скасувати
+                                            </ui:Button>
+                                        </StackPanel>
                                     </StackPanel>
                                 </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
+                            </TabItem>
+                            <TabItem>
+                                <TabItem.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <ui:SymbolIcon Symbol="WeatherMoon20" Margin="0,0,6,0" />
+                                        <TextBlock Text="Погода" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </TabItem.Header>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,8,0,0">
+                                    <TextBlock Text="{Binding PlaceListViewModel.WeatherSummary}" Margin="0,0,8,0" VerticalAlignment="Center" />
+                                    <Image Source="{Binding PlaceListViewModel.WeatherIconPath, TargetNullValue={x:Null}}" Width="40" Height="40" />
+                                </StackPanel>
+                            </TabItem>
+                            <TabItem>
+                                <TabItem.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <ui:SymbolIcon Symbol="Chat20" Margin="0,0,6,0" />
+                                        <TextBlock Text="Відгуки" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </TabItem.Header>
+                                <StackPanel Margin="0,12,0,0">
+                                    <ItemsControl ItemsSource="{Binding PlaceListViewModel.SelectedPlace.Reviews}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Padding="8" Margin="0,0,0,6" Background="#1AFFFFFF" CornerRadius="6">
+                                                    <DockPanel LastChildFill="True">
+                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right">
+                                                            <TextBlock Text="{Binding Value, StringFormat='{}{0:0.0}'}" Margin="0,0,8,0" VerticalAlignment="Center" />
+                                                            <ui:Button Appearance="Danger"
+                                                                       Padding="8,4" Margin="6,0,0,0"
+                                                                       Command="{Binding DataContext.PlaceListViewModel.RemoveReviewCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                       CommandParameter="{Binding Key}">
+                                                                Видалити
+                                                            </ui:Button>
+                                                        </StackPanel>
+                                                        <TextBlock Text="{Binding Key}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                                    </DockPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <StackPanel Orientation="Vertical" Margin="0,8,0,0">
+                                        <ui:TextBox Text="{Binding PlaceListViewModel.NewReviewText, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Напишіть відгук..." AcceptsReturn="True" MinHeight="60" />
+                                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                            <ui:RatingControl Value="{Binding PlaceListViewModel.NewReviewRating, Mode=TwoWay, TargetNullValue=0}" HalfStarEnabled="False" />
+                                            <ui:Button Appearance="Success" Margin="8,0,0,0" Command="{Binding PlaceListViewModel.AddReviewCommand}">
+                                                Додати відгук
+                                            </ui:Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
+                            </TabItem>
+                        </TabControl>
                     </Border>
                 </Grid>
             </TabItem>
         </TabControl>
+        
     </Grid>
 </UserControl>

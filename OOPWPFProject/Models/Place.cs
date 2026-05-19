@@ -2,14 +2,9 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Text.Json.Serialization;
 
 namespace OOPWPFProject.Models;
 
-[JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]
-[JsonDerivedType(typeof(Place), "place")]
-[JsonDerivedType(typeof(HistoricalPlace), "historical")]
-[JsonDerivedType(typeof(NaturalPlace), "natural")]
 public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeather
 {
     public override string Name
@@ -78,31 +73,6 @@ public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeathe
         }
     }
 
-    public string? Review
-    {
-        get;
-        set
-        {
-            if (field != value)
-            {
-                field = value;
-                OnPropertyChanged();
-            }
-        }
-    } = string.Empty;
-
-    public string? Notes
-    {
-        get;
-        set
-        {
-            if (field != value)
-            {
-                field = value;
-                OnPropertyChanged();
-            }
-        }
-    }
 
     public string? IconId
     {
@@ -143,18 +113,21 @@ public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeathe
         }
     }
 
-    public string TravelSummary
+    public bool IsVisited
     {
-        get
+        get;
+        set
         {
-            var dateDisplay = Date.HasValue
-                ? Date.Value.ToString("dd/MM/yyyy")
-                : "Без дати";
-            return $"{Name} - {dateDisplay}";
+            if (field != value)
+            {
+                field = value;
+                OnPropertyChanged();
+            }
         }
     }
 
     public bool IsHighlyRated => Rating >= 4;
+    
 
     public ObservableCollection<KeyValuePair<string, double?>> Reviews { get; } = [];
 

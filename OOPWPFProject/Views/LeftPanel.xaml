@@ -85,7 +85,7 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
-                <CheckBox IsChecked="False" />
+                <CheckBox IsChecked="{Binding LeftPanelViewModel.IsNewPlaceVisited}" />
                 <TextBlock Text="Місто відвідане" VerticalAlignment="Center"  />
             </StackPanel>
 

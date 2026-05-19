@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
+using System;
 
 using OOPWPFProject.Models;
 using OOPWPFProject.Models.Storage;
@@ -31,6 +32,7 @@ public class SQLiteStorage
             Rating REAL,
             Date TEXT,
             ReviewsJson TEXT,
+            IsVisited INTEGER NOT NULL DEFAULT 0,
             YearBuilt TEXT,
             Significance INTEGER,
             YearFormed TEXT,
@@ -53,14 +55,14 @@ public class SQLiteStorage
         string insertQuery = @"
         INSERT INTO Places (
                 Type, Name, Country, Description,
-                Rating, Date, ReviewsJson,
+                Rating, Date, ReviewsJson, IsVisited,
                 YearBuilt, Significance,
                 YearFormed, ProtectedStatus,
                 IconId, WeatherSummary, WeatherIconPath)
 
         VALUES (
                 @Type, @Name, @Country, @Description,
-                @Rating, @Date, @ReviewsJson,
+                @Rating, @Date, @ReviewsJson, @IsVisited,
                 @YearBuilt, @Significance,
                 @YearFormed, @ProtectedStatus,
                 @IconId, @WeatherSummary, @WeatherIconPath);
@@ -87,7 +89,7 @@ public class SQLiteStorage
         SELECT  Id,Type,
                 Name, Country, Description,
                 Rating, Date,
-                Review, Notes, ReviewsJson,
+                ReviewsJson, IsVisited,
                 YearBuilt, Significance,
                 YearFormed, ProtectedStatus,
                 IconId, WeatherSummary, WeatherIconPath
@@ -109,19 +111,18 @@ public class SQLiteStorage
 
                 Rating = reader.IsDBNull(5) ? null : reader.GetDouble(5),
                 Date = reader.IsDBNull(6) ? null : DateOnly.Parse(reader.GetString(6)),
-                Review = reader.IsDBNull(7) ? null : reader.GetString(7),
-                Notes = reader.IsDBNull(8) ? null : reader.GetString(8),
-                ReviewsJson = reader.IsDBNull(9) ? "[]" : reader.GetString(9),
+                ReviewsJson = reader.IsDBNull(7) ? "[]" : reader.GetString(7),
+                IsVisited = !reader.IsDBNull(8) && reader.GetInt32(8) == 1,
 
-                YearBuilt = reader.IsDBNull(10) ? null : DateOnly.Parse(reader.GetString(10)),
-                Significance = reader.IsDBNull(11) ? null : reader.GetInt32(11),
+                YearBuilt = reader.IsDBNull(9) ? null : DateOnly.Parse(reader.GetString(9)),
+                Significance = reader.IsDBNull(10) ? null : reader.GetInt32(10),
 
-                YearFormed = reader.IsDBNull(12) ? null : DateOnly.Parse(reader.GetString(12)),
-                ProtectedStatus = reader.IsDBNull(13) ? null : reader.GetInt32(13) == 1,
+                YearFormed = reader.IsDBNull(11) ? null : DateOnly.Parse(reader.GetString(11)),
+                ProtectedStatus = reader.IsDBNull(12) ? null : reader.GetInt32(12) == 1,
 
-                IconId = reader.IsDBNull(14) ? null : reader.GetString(14),
-                WeatherSummary = reader.IsDBNull(15) ? null : reader.GetString(15),
-                WeatherIconPath = reader.IsDBNull(16) ? null : reader.GetString(16)
+                IconId = reader.IsDBNull(13) ? null : reader.GetString(13),
+                WeatherSummary = reader.IsDBNull(14) ? null : reader.GetString(14),
+                WeatherIconPath = reader.IsDBNull(15) ? null : reader.GetString(15)
             });
         }
 
@@ -143,9 +144,8 @@ public class SQLiteStorage
                    Description = @Description,
                    Rating = @Rating,
                    Date = @Date,
-                   Review = @Review,
-                   Notes = @Notes,
                    ReviewsJson = @ReviewsJson,
+                   IsVisited = @IsVisited,
                    YearBuilt = @YearBuilt,
                    Significance = @Significance,
                    YearFormed = @YearFormed,
@@ -188,6 +188,7 @@ public class SQLiteStorage
         cmd.Parameters.AddWithValue("@Date", dto.Date.HasValue ? dto.Date.Value.ToString("O") : DBNull.Value);
 
         cmd.Parameters.AddWithValue("@ReviewsJson", (object?)dto.ReviewsJson ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@IsVisited", dto.IsVisited ? 1 : 0);
 
         cmd.Parameters.AddWithValue("@YearBuilt", dto.YearBuilt.HasValue ? dto.YearBuilt.Value.ToString("O") : DBNull.Value);
         cmd.Parameters.AddWithValue("@Significance", dto.Significance.HasValue ? dto.Significance : DBNull.Value);

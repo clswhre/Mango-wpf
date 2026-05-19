@@ -46,7 +46,6 @@ internal class PlaceStore
         place.Id = _sqliteStorage.Insert(place);
         Places.Add(place);
         PlaceManager.Add(place);
-        
     }
 
     public void RemovePlace(Place place)
