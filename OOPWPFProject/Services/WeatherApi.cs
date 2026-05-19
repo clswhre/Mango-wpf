@@ -7,121 +7,142 @@ namespace OOPWPFProject.Services;
 
 internal class WeatherApi
 {
-    private static readonly HttpClient _client = new();
-    private readonly string _apiKey;
+	private static readonly HttpClient _client = new();
+	private readonly string _apiKey;
 
-    public WeatherApi()
-    {
-        var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Services/apiKey.txt");
-        if (!File.Exists(filePath))
-        {
-            throw new FileNotFoundException("Файл з API ключем не знайдено");
-        }
+	public WeatherApi()
+	{
+		var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Services/apiKey.txt");
+		if (!File.Exists(filePath))
+		{
+			throw new FileNotFoundException("Файл з API ключем не знайдено");
+		}
 
-        _apiKey = File.ReadAllText(filePath).Trim();
-    }
+		_apiKey = File.ReadAllText(filePath).Trim();
+	}
 
-    public async Task<(double Lat, double Lon)> GetCoordinatesAsync(string city)
-    {
-        var requestUri = $"https://api.openweathermap.org/geo/1.0/direct?q={city}&limit=1&appid={_apiKey}";
+	public async Task<(double Lat, double Lon)> GetCoordinatesAsync(string city)
+	{
+		var requestUri =
+			$"https://api.openweathermap.org/geo/1.0/direct?q={city}&limit=1&appid={_apiKey}";
 
-        try
-        {
-            Logger.Log(LogLevel.Debug, "WeatherApi -> GetCoordinatesAsync запит");
-            using HttpResponseMessage response = await _client.GetAsync(requestUri);
-            Logger.Log(LogLevel.Debug, $"WeatherApi -> GetCoordinatesAsync відповідь : {(int)response.StatusCode}");
-            response.EnsureSuccessStatusCode();
-        
+		try
+		{
+			Logger.Log(LogLevel.Debug, "WeatherApi -> GetCoordinatesAsync запит");
+			using HttpResponseMessage response = await _client.GetAsync(requestUri);
+			Logger.Log(
+				LogLevel.Debug,
+				$"WeatherApi -> GetCoordinatesAsync відповідь : {(int)response.StatusCode}"
+			);
+			response.EnsureSuccessStatusCode();
 
-            using Stream json = await response.Content.ReadAsStreamAsync();
-            List<GeoLocation>? locations = await JsonSerializer.DeserializeAsync<List<GeoLocation>>(json);
+			using Stream json = await response.Content.ReadAsStreamAsync();
+			List<GeoLocation>? locations = await JsonSerializer.DeserializeAsync<List<GeoLocation>>(
+				json
+			);
 
-            if (locations == null || locations.Count == 0)
-            {
-                return (0, 0);
-            }
+			if (locations == null || locations.Count == 0)
+			{
+				return (0, 0);
+			}
 
-            return (locations[0].Latitude, locations[0].Longtitude);
-        }
-        catch (HttpRequestException ex)
-        {
-            Logger.Log(LogLevel.Error, ex.Message);
-            return (0, 0);
-        }
-    }
+			return (locations[0].Latitude, locations[0].Longtitude);
+		}
+		catch (HttpRequestException ex)
+		{
+			Logger.Log(LogLevel.Error, ex.Message);
+			return (0, 0);
+		}
+	}
 
-    public async Task<(string Icon, string Weather, double Temperature, double Humidity)> GetWeatherAsync(double lat, double lon)
-    {
-        if ( !System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
-        {
-            Logger.Log(LogLevel.Error, "Відсутнє з'єднання з мережею");
-            return ("", "", 0.0, 0.0);
-        }
+	public async Task<(
+		string Icon,
+		string Weather,
+		double Temperature,
+		double Humidity
+	)> GetWeatherAsync(double lat, double lon)
+	{
+		if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+		{
+			Logger.Log(LogLevel.Error, "Відсутнє з'єднання з мережею");
+			return ("", "", 0.0, 0.0);
+		}
 
-        try
-        {
-            var requestUri = $"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&lang=ua&appid={_apiKey}";
+		try
+		{
+			var requestUri =
+				$"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&lang=ua&appid={_apiKey}";
 
-            Logger.Log(LogLevel.Debug, "WeatherApi -> GetWeatherAsync запит");
-            using HttpResponseMessage response = await _client.GetAsync(requestUri);
-            Logger.Log(LogLevel.Debug, $"WeatherApi -> GetWeatherAsync відповідь : {(int)response.StatusCode}");
-            response.EnsureSuccessStatusCode();
+			Logger.Log(LogLevel.Debug, "WeatherApi -> GetWeatherAsync запит");
+			using HttpResponseMessage response = await _client.GetAsync(requestUri);
+			Logger.Log(
+				LogLevel.Debug,
+				$"WeatherApi -> GetWeatherAsync відповідь : {(int)response.StatusCode}"
+			);
+			response.EnsureSuccessStatusCode();
 
-            using Stream json = await response.Content.ReadAsStreamAsync();
-            WeatherResponse? weatherData = await JsonSerializer.DeserializeAsync<WeatherResponse>(json);
+			using Stream json = await response.Content.ReadAsStreamAsync();
+			WeatherResponse? weatherData = await JsonSerializer.DeserializeAsync<WeatherResponse>(
+				json
+			);
 
-            if (weatherData?.Weather == null || weatherData.Weather.Count == 0 || weatherData.Main == null)
-            {
-                Logger.Log(LogLevel.Error, "Помилка API або пуста відповідь");
-                throw new Exception("Помилка API або пуста відповідь");
-            }
+			if (
+				weatherData?.Weather == null
+				|| weatherData.Weather.Count == 0
+				|| weatherData.Main == null
+			)
+			{
+				Logger.Log(LogLevel.Error, "Помилка API або пуста відповідь");
+				throw new Exception("Помилка API або пуста відповідь");
+			}
 
-            WeatherCondition condition = weatherData.Weather[0];
-            MainData mainData = weatherData.Main;
+			WeatherCondition condition = weatherData.Weather[0];
+			MainData mainData = weatherData.Main;
 
-            //Logger.LogInfo($" main = {condition.MainWeather}, icon = {condition.Icon}, temp = {mainData.Temperature}, humidity =  {mainData.Humidity}");
+			//Logger.LogInfo($" main = {condition.MainWeather}, icon = {condition.Icon}, temp = {mainData.Temperature}, humidity =  {mainData.Humidity}");
 
-            return (condition.Icon, condition.MainWeather, mainData.Temperature, mainData.Humidity);
-        }
-        catch (HttpRequestException ex) { 
-            Logger.Log(LogLevel.Error, ex.Message);
-            return ("","",0.0,0.0);
-        }
-    }
+			return (condition.Icon, condition.MainWeather, mainData.Temperature, mainData.Humidity);
+		}
+		catch (HttpRequestException ex)
+		{
+			Logger.Log(LogLevel.Error, ex.Message);
+			return ("", "", 0.0, 0.0);
+		}
+	}
 }
 
 public class GeoLocation
 {
-    [JsonPropertyName("lat")]
-    public double Latitude { get; set; }
+	[JsonPropertyName("lat")]
+	public double Latitude { get; set; }
 
-    [JsonPropertyName("lon")]
-    public double Longtitude { get; set; }
+	[JsonPropertyName("lon")]
+	public double Longtitude { get; set; }
 }
 
 public class WeatherCondition
 {
-    [JsonPropertyName("icon")]
-    public string Icon { get; set; }
+	[JsonPropertyName("icon")]
+	public string Icon { get; set; }
 
-    [JsonPropertyName("main")]
-    public string MainWeather { get; set; }
+	[JsonPropertyName("main")]
+	public string MainWeather { get; set; }
 }
 
 public class WeatherResponse
 {
-    [JsonPropertyName("weather")]
-    public List<WeatherCondition> Weather { get; set; }
+	[JsonPropertyName("weather")]
+	public List<WeatherCondition> Weather { get; set; }
 
-    [JsonPropertyName("main")]
-    public MainData Main { get; set; }
+	[JsonPropertyName("main")]
+	public MainData Main { get; set; }
 }
 
 public class MainData
 {
-    [JsonPropertyName("temp")]
-    public double Temperature { get; set; }
+	[JsonPropertyName("temp")]
+	public double Temperature { get; set; }
 
-    [JsonPropertyName("humidity")]
-    public double Humidity { get; set; }
+	[JsonPropertyName("humidity")]
+	public double Humidity { get; set; }
 }
