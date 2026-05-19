@@ -11,6 +11,7 @@ internal class MainViewModel : BaseViewModel
 
     public LeftPanelViewModel LeftPanelViewModel { get; }
     public PlaceListViewModel PlaceListViewModel { get; }
+    public StatisticTabViewModel StatisticViewModel { get; }
     public ObservableCollection<Place> Places => _sharedStore.Places;
     public MainViewModel(PlaceStore store)
     {
@@ -18,5 +19,6 @@ internal class MainViewModel : BaseViewModel
 
         LeftPanelViewModel = new LeftPanelViewModel(_sharedStore);
         PlaceListViewModel = new PlaceListViewModel(_sharedStore);
+        StatisticViewModel = new StatisticTabViewModel(_sharedStore);
     }
 }

@@ -5,7 +5,7 @@ namespace OOPWPFProject.Models;
 public class NaturalPlace : Place
 {
 
-    public DateOnly? YearFormed
+    public int? YearFormed
     {
         get; set;
     } 
@@ -24,7 +24,7 @@ public class NaturalPlace : Place
 
         if ( YearFormed.HasValue )
         {
-            messageBuilder.AppendLine( $"Рік утворення: {YearFormed.Value.Year}" );
+            messageBuilder.AppendLine( $"Рік утворення: {YearFormed}" );
         }
         else
         {

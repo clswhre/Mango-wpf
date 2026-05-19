@@ -231,15 +231,25 @@ public class Place : AbstractPlace, INotifyPropertyChanged, IReviewable, IWeathe
     }
     public static bool operator ==(Place? p1, Place? p2)
     {
-        return ReferenceEquals(p1, p2) || (p1 is not null && p2 is not null && p1.Rating == p2.Rating);
+        if (ReferenceEquals(p1, p2)) return true;
+        if (p1 is null || p2 is null) return false;
+        return p1.Id != 0 && p1.Id == p2.Id;
     }
+
     public static bool operator !=(Place? p1, Place? p2)
     {
         return !(p1 == p2);
     }
 
+    public override bool Equals(object? obj)
+    {
+        if (obj is not Place other) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return Id != 0 && Id == other.Id;
+    }
 
-    public override bool Equals(object? obj) => obj is Place other && this == other;
-
-    public override int GetHashCode() => Name.GetHashCode();
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();
+    }
 }

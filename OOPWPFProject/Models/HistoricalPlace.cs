@@ -8,7 +8,7 @@ public class HistoricalPlace : Place
     {
     }
 
-    public DateOnly? YearBuilt
+    public int? YearBuilt
     {
         get; set;
     }
@@ -22,7 +22,7 @@ public class HistoricalPlace : Place
         StringBuilder messageBuilder = new(base.GetDetails());
         if ( YearBuilt.HasValue )
         {
-            messageBuilder.AppendLine( $"Рік побудови: {YearBuilt.Value.Year}" );
+            messageBuilder.AppendLine( $"Рік побудови: {YearBuilt}" );
         }
         else
         {

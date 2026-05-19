@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 using OOPWPFProject.Models;
 using OOPWPFProject.Services;
@@ -15,19 +16,20 @@ internal class PlaceStore
     public PlaceStore()
     {
         _sqliteStorage = new SQLiteStorage(AppPaths.DatabasePath);
-        LoadPlaces();
+        _ = LoadPlacesAsync();
     }
 
-    private void LoadPlaces()
+    private async Task LoadPlacesAsync()
     {
         try
         {
             Places.Clear();
-            var loadedPlaces = _sqliteStorage.Load();
+            var loadedPlaces = await _sqliteStorage.LoadAsync();
 
             foreach (var place in loadedPlaces)
             {
                 Places.Add(place);
+                PlaceManager.Add(place);
             }
         }
         catch (Exception ex)
@@ -38,25 +40,24 @@ internal class PlaceStore
         {
             Logger.Log(LogLevel.Info, "Успішно завантажено записи!");
         }
-
     }
 
-    public void AddPlace(Place place)
+    public async Task AddPlaceAsync(Place place)
     {
-        place.Id = _sqliteStorage.Insert(place);
+        place.Id = await _sqliteStorage.InsertAsync(place);
         Places.Add(place);
         PlaceManager.Add(place);
     }
 
-    public void RemovePlace(Place place)
+    public async Task RemovePlaceAsync(Place place)
     {
-        _sqliteStorage.Delete(place.Id);
+        await _sqliteStorage.DeleteAsync(place.Id);
         Places.Remove(place);
         PlaceManager.Remove(place);
     }
 
-    public void UpdatePlace(Place place)
+    public async Task UpdatePlaceAsync(Place place)
     {
-        _sqliteStorage.Update(place);
+        await _sqliteStorage.UpdateAsync(place);
     }
 }

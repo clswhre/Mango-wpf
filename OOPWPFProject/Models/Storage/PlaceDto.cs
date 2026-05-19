@@ -15,11 +15,11 @@ public class PlaceDto
     public bool IsVisited { get; set; }
 
     // Historical
-    public DateOnly? YearBuilt { get; set; }
+    public int? YearBuilt { get; set; }
     public int? Significance { get; set; }
 
     // Natural
-    public DateOnly? YearFormed { get; set; }
+    public int? YearFormed { get; set; }
     public bool? ProtectedStatus { get; set; }
 
     public string? IconId { get; set; }
@@ -99,5 +99,4 @@ public class PlaceDto
 
         return place;
     }
-
 }

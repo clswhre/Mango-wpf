@@ -63,7 +63,7 @@
             <!-- Поля для Historical -->
             <StackPanel Visibility="{Binding LeftPanelViewModel.IsHistoricalSelected}" Margin="0,0,0,12">
                 <ui:TextBlock Text="Рік побудови" Margin="0,0,0,4" />
-                <DatePicker SelectedDate="{Binding LeftPanelViewModel.HistoricalYearFormedDate, Mode=TwoWay}" />
+                <ui:TextBox Text="{Binding LeftPanelViewModel.HistoricalYearBuilt, Mode=TwoWay}"/>
 
                 <ui:TextBlock Text="Значимість (1-10)" Margin="0,8,0,4" />
 
@@ -77,7 +77,7 @@
             <!-- Поля для Natural -->
             <StackPanel Visibility="{Binding LeftPanelViewModel.IsNaturalSelected}" Margin="0,0,0,12">
                 <ui:TextBlock Text="Рік утворення" Margin="0,0,0,4" />
-                <DatePicker SelectedDate="{Binding LeftPanelViewModel.NaturalYearBuiltDate, Mode=TwoWay}" />
+                <ui:TextBox Text="{Binding LeftPanelViewModel.NaturalYearFormed, Mode=TwoWay}" />
                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                     <ui:TextBlock Text="Під захистом" VerticalAlignment="Center" Margin="0,0,8,0" />
                     <CheckBox IsChecked="{Binding LeftPanelViewModel.NaturalProtectedStatus, Mode=TwoWay}" />
@@ -116,7 +116,7 @@
                 * - обов'язкові для заповнення поля
             </ui:TextBlock>
 
-            <Expander Header="Додаткові інструменти" IsExpanded="False" Margin="0,8,0,0">
+            <Expander Header="Додаткові інструменти" IsExpanded="False" Margin="0,8,0,0" Visibility="{Binding PlaceListViewModel.IsAnyPlaces}">
 
                 <StackPanel>
                     <Expander Header="Пошук за індексом" IsExpanded="False" Margin="0,8,0,0">
@@ -130,19 +130,19 @@
                                 </Grid.ColumnDefinitions>
 
                                 <ui:NumberBox Grid.Column="0"
-                                              Value="{Binding PlaceListViewModel.IndexToShow, UpdateSourceTrigger=PropertyChanged}"
+                                              Value="{Binding LeftPanelViewModel.IndexToShow, UpdateSourceTrigger=PropertyChanged}"
                                               Minimum="0"
                                               HorizontalAlignment="Stretch" />
 
                                 <ui:Button Grid.Column="2"
                                            Appearance="Secondary"
                                            Icon="{ui:SymbolIcon Symbol=Search20}"
-                                           Command="{Binding PlaceListViewModel.ShowByIndexCommand}"
+                                           Command="{Binding LeftPanelViewModel.ShowByIndexCommand}"
                                            Padding="12,8" />
                             </Grid>
 
                             <ui:TextBlock Text="Результат:" Margin="0,0,0,4" Opacity="0.7" FontSize="12" />
-                            <TextBlock Text="{Binding PlaceListViewModel.PlaceAtIndexDisplay}"
+                            <TextBlock Text="{Binding LeftPanelViewModel.PlaceAtIndexDisplay}"
                                        TextWrapping="Wrap"
                                        MinHeight="40"
                                        Padding="8" />
@@ -152,20 +152,20 @@
                     <Expander Header="Перевантажені оператори" IsExpanded="False" Margin="0,8,0,0">
                         <StackPanel>
                             <TextBlock> 1 об'єкт</TextBlock>
-                            <ComboBox ItemsSource="{Binding PlaceListViewModel.Places}" DisplayMemberPath="Name" SelectedItem="{Binding PlaceListViewModel.SelectedObject1}" Margin="0,0,0,5" />
+                            <ComboBox ItemsSource="{Binding LeftPanelViewModel.Places}" DisplayMemberPath="Name" SelectedItem="{Binding LeftPanelViewModel.SelectedObject1}" Margin="0,0,0,5" />
 
                             <TextBlock> 2 об'єкт</TextBlock>
-                            <ComboBox ItemsSource="{Binding PlaceListViewModel.Places}" DisplayMemberPath="Name" SelectedItem="{Binding PlaceListViewModel.SelectedObject2}" Margin="0,0,0,5" />
+                            <ComboBox ItemsSource="{Binding LeftPanelViewModel.Places}" DisplayMemberPath="Name" SelectedItem="{Binding LeftPanelViewModel.SelectedObject2}" Margin="0,0,0,5" />
 
                             <TextBlock> Операція</TextBlock>
-                            <ComboBox ItemsSource="{Binding PlaceListViewModel.Operators}" SelectedItem="{Binding PlaceListViewModel.SelectedOperator}" Margin="0,0,0,5" />
+                            <ComboBox ItemsSource="{Binding LeftPanelViewModel.Operators}" SelectedItem="{Binding LeftPanelViewModel.SelectedOperator}" Margin="0,0,0,5" />
 
-                            <ui:Button Appearance="Primary" Command="{Binding PlaceListViewModel.OverridedOperatorActon}" HorizontalAlignment="Stretch" Margin="0,5,0,5">
+                            <ui:Button Appearance="Primary" Command="{Binding LeftPanelViewModel.OverridedOperatorActon}" HorizontalAlignment="Stretch" Margin="0,5,0,5">
                                 Виконати операцію
                             </ui:Button>
 
                             <TextBlock Text="Результат:" Margin="0,5,0,2" Opacity="0.7" FontSize="12" />
-                            <TextBlock Text="{Binding PlaceListViewModel.OperatorResult}" TextWrapping="Wrap" MinHeight="40" Background="#1AFFFFFF" Padding="8" />
+                            <TextBlock Text="{Binding LeftPanelViewModel.OperatorResult}" TextWrapping="Wrap" MinHeight="40" Background="#1AFFFFFF" Padding="8" />
                         </StackPanel>
                     </Expander>
                 </StackPanel>
