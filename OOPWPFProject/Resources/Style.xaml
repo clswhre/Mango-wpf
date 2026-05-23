@@ -1,0 +1,160 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+>
+	<Color x:Key="StarIconColor">#FFD700</Color>
+	<SolidColorBrush x:Key="StarIconBrush" Color="{StaticResource StarIconColor}" />
+
+	<Style TargetType="TextBlock" x:Key="LabelText" BasedOn="{StaticResource {x:Type TextBlock}}">
+		<Setter Property="FontSize" Value="14" />
+		<Setter Property="FontWeight" Value="Regular" />
+		<Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+		<Setter Property="Margin" Value="0,0,16,8" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
+
+	<Style TargetType="TextBlock" x:Key="ValueText" BasedOn="{StaticResource {x:Type TextBlock}}">
+		<Setter Property="FontSize" Value="14" />
+		<Setter Property="FontWeight" Value="SemiBold" />
+		<Setter Property="Margin" Value="0,0,0,8" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="HorizontalAlignment" Value="Left" />
+	</Style>
+
+	<Style
+		TargetType="TextBlock"
+		x:Key="WeatherValueNameText"
+		BasedOn="{StaticResource {x:Type TextBlock}}"
+	>
+		<Setter Property="FontSize" Value="14" />
+		<Setter Property="FontWeight" Value="SemiBold" />
+		<Setter Property="HorizontalAlignment" Value="Right" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="Margin" Value="0,0,0,12" />
+	</Style>
+
+	<Style
+		TargetType="TextBlock"
+		x:Key="LeftPanelText"
+		BasedOn="{StaticResource {x:Type TextBlock}}"
+	>
+		<Setter Property="FontSize" Value="14" />
+		<Setter Property="FontWeight" Value="SemiBold" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
+
+	<Style
+		TargetType="TextBlock"
+		x:Key="EmptyStateHeaderStyle"
+		BasedOn="{StaticResource {x:Type TextBlock}}"
+	>
+		<Setter Property="FontSize" Value="40" />
+		<Setter Property="FontWeight" Value="SemiBold" />
+		<Setter Property="HorizontalAlignment" Value="Center" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
+
+	<Style
+		TargetType="TextBlock"
+		x:Key="EmptyStateTextBlockStyle"
+		BasedOn="{StaticResource {x:Type TextBlock}}"
+	>
+		<Setter Property="HorizontalAlignment" Value="Center" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+	</Style>
+
+	<Style
+		TargetType="TextBlock"
+		x:Key="WeatherHeaderText"
+		BasedOn="{StaticResource {x:Type TextBlock}}"
+	>
+		<Setter Property="FontSize" Value="24" />
+		<Setter Property="HorizontalAlignment" Value="Center" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
+
+	<Style
+		TargetType="ui:DataGrid"
+		x:Key="StandardDataGridStyle"
+		BasedOn="{StaticResource {x:Type ui:DataGrid}}"
+	>
+		<Setter Property="AutoGenerateColumns" Value="False" />
+		<Setter Property="IsReadOnly" Value="True" />
+		<Setter Property="SelectionMode" Value="Single" />
+		<Setter Property="HeadersVisibility" Value="Column" />
+		<Setter Property="Margin" Value="0,0,0,16" />
+	</Style>
+
+	<Style TargetType="ui:SymbolIcon" x:Key="StarIcon">
+		<Setter Property="Symbol" Value="Star20" />
+		<Setter Property="Filled" Value="True" />
+		<Setter Property="Foreground" Value="{StaticResource StarIconBrush}" />
+		<Setter Property="Margin" Value="0,0,6,0" />
+		<Setter Property="Visibility" Value="Collapsed" />
+	</Style>
+
+	<Style x:Key="PlannedPlacesListBoxStyle" TargetType="ListBox">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+		<Setter Property="ItemsPanel">
+			<Setter.Value>
+				<ItemsPanelTemplate>
+					<WrapPanel Orientation="Horizontal" Margin="8" />
+				</ItemsPanelTemplate>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="ItemContainerStyle">
+			<Setter.Value>
+				<Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+					<Setter Property="Padding" Value="0" />
+					<Setter Property="Margin" Value="4" />
+				</Style>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<DataTemplate x:Key="PlannedPlaceCardTemplate">
+		<ui:Card Margin="8" Width="260" MinHeight="120" Padding="16">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+
+				<StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,8">
+					<ui:SymbolIcon
+						Symbol="Location20"
+						Foreground="{DynamicResource SystemAccentColorPrimaryBrush}"
+						Margin="0,0,8,0"
+					/>
+					<TextBlock
+						Text="{Binding Name}"
+						FontSize="16"
+						FontWeight="Bold"
+						TextTrimming="CharacterEllipsis"
+					/>
+				</StackPanel>
+
+				<TextBlock
+					Grid.Row="1"
+					Text="{Binding Country}"
+					Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+					Margin="0,0,0,8"
+				/>
+
+				<TextBlock
+					Grid.Row="2"
+					Text="{Binding Description}"
+					TextWrapping="Wrap"
+					TextTrimming="CharacterEllipsis"
+					MaxHeight="60"
+					Opacity="0.8"
+				/>
+			</Grid>
+		</ui:Card>
+	</DataTemplate>
+</ResourceDictionary>

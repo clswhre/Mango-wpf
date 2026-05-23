@@ -1,34 +1,34 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace OOPWPFProject.Services;
 
 public static class AppPaths
 {
-	private const string AppFolderName = "MangoApp";
-	private const string LogsFolderName = "Logs";
-	private const string DatabaseFileName = "MangoDB.sqlite";
+    private const string AppFolderName = "MangoApp";
+    private const string LogsFolderName = "Logs";
+    private const string DatabaseFileName = "MangoDB.sqlite";
 
-	private static readonly string _appDataDir;
-	private static readonly string _logsDir;
+    static AppPaths()
+    {
+        var root = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-	static AppPaths()
-	{
-		var root = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        AppDataDir = Path.Combine( root, AppFolderName );
+        LogsDir = Path.Combine( AppDataDir, LogsFolderName );
+        ApiKey = File.ReadAllText(
+            Path.Combine( AppDomain.CurrentDomain.BaseDirectory, "Services", "Weather", "apiKey.txt" )
+        );
+        Directory.CreateDirectory( AppDataDir );
+        Directory.CreateDirectory( LogsDir );
+    }
 
-		_appDataDir = Path.Combine(root, AppFolderName);
-		_logsDir = Path.Combine(_appDataDir, LogsFolderName);
+    public static string AppDataDir { get; }
 
-		Directory.CreateDirectory(_appDataDir);
-		Directory.CreateDirectory(_logsDir);
-	}
+    public static string LogsDir { get; }
 
-	public static string AppDataDir => _appDataDir;
+    public static string ApiKey { get; }
 
-	public static string LogsDir => _logsDir;
+    public static string DatabasePath => Path.Combine( AppDataDir, DatabaseFileName );
 
-	public static string DatabasePath => Path.Combine(AppDataDir, DatabaseFileName);
-
-	public static string TodayLogPath =>
-		Path.Combine(LogsDir, $"Mango_{DateTime.Now:yyyy-MM-dd}.log");
+    public static string TodayLogPath =>
+        Path.Combine( LogsDir, $"Mango_{DateTime.Now:yyyy-MM-dd}.log" );
 }

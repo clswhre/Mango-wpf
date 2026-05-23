@@ -5,6 +5,10 @@
 	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
 	xmlns:viewmodels="clr-namespace:OOPWPFProject.ViewModels"
 >
+	<UserControl.Resources>
+		<BooleanToVisibilityConverter x:Key="BoolToVis" />
+	</UserControl.Resources>
+
 	<ScrollViewer
 		VerticalScrollBarVisibility="Auto"
 		HorizontalScrollBarVisibility="Disabled"
@@ -12,7 +16,7 @@
 		BorderThickness="0,0,1,0"
 	>
 		<StackPanel Margin="20" HorizontalAlignment="Stretch">
-			<ui:TextBlock Text="Назва міста *" Margin="0,0,0,4" />
+			<ui:TextBlock Text="Назва міста *" Style="{StaticResource LeftPanelText}" />
 			<ui:TextBox
 				x:Name="CityTextBox"
 				Text="{Binding LeftPanelViewModel.NewName, UpdateSourceTrigger=PropertyChanged}"
@@ -20,7 +24,7 @@
 				Margin="0,0,0,16"
 			/>
 
-			<ui:TextBlock Text="Країна *" Margin="0,0,0,4" />
+			<ui:TextBlock Text="Країна *" Style="{StaticResource LeftPanelText}" />
 			<ui:TextBox
 				x:Name="CountryTextBox"
 				Text="{Binding LeftPanelViewModel.NewCountry, UpdateSourceTrigger=PropertyChanged}"
@@ -29,7 +33,7 @@
 				AutomationProperties.IsRequiredForForm="True"
 			/>
 
-			<ui:TextBlock Text="Опис *" Margin="0,0,0,4" />
+			<ui:TextBlock Text="Опис *" Style="{StaticResource LeftPanelText}" />
 			<ui:TextBox
 				x:Name="DescriptionTextBox"
 				Text="{Binding LeftPanelViewModel.NewDescription, UpdateSourceTrigger=PropertyChanged}"
@@ -40,7 +44,19 @@
 				Margin="0,0,0,16"
 			/>
 
-			<Grid Margin="0,0,0,24">
+			<StackPanel Orientation="Horizontal">
+				<CheckBox
+					IsChecked="{Binding LeftPanelViewModel.IsNewPlaceVisited	}"
+					HorizontalAlignment="Left"
+				/>
+				<TextBlock
+					Text="Місто відвідане"
+					Style="{StaticResource LeftPanelText}"
+					HorizontalAlignment="Left"
+				/>
+			</StackPanel>
+
+			<Grid Visibility="{Binding LeftPanelViewModel.IsNewPlaceVisited, Converter={StaticResource BoolToVis}}">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="20" />
@@ -48,7 +64,7 @@
 				</Grid.ColumnDefinitions>
 
 				<StackPanel Grid.Column="0">
-					<ui:TextBlock Text="Дата відвідування" Margin="0,0,0,4" />
+					<ui:TextBlock Text="Дата відвідування" Style="{StaticResource LeftPanelText}" />
 					<DatePicker
 						x:Name="DatePickerBox"
 						SelectedDate="{Binding LeftPanelViewModel.NewVisitDate}"
@@ -57,7 +73,7 @@
 				</StackPanel>
 
 				<StackPanel Grid.Column="2">
-					<ui:TextBlock Text="Рейтинг" Margin="0,0,0,4" />
+					<ui:TextBlock Text="Рейтинг" Style="{StaticResource LeftPanelText}" />
 					<ui:RatingControl
 						x:Name="Rating"
 						Value="{Binding LeftPanelViewModel.NewRating, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -67,9 +83,7 @@
 			</Grid>
 
 			<StackPanel>
-				<ui:TextBlock>
-                    Тип місця
-                </ui:TextBlock>
+				<ui:TextBlock Text="Тип місця" Style="{StaticResource LeftPanelText}" />
 				<ComboBox
 					Margin="0,0,0,20"
 					ItemsSource="{Binding LeftPanelViewModel.PlaceTypes}"
@@ -79,10 +93,10 @@
 
 			<!-- Поля для Historical -->
 			<StackPanel
-				Visibility="{Binding LeftPanelViewModel.IsHistoricalSelected}"
+				Visibility="{Binding LeftPanelViewModel.IsHistoricalSelected,Converter={StaticResource BoolToVis}}"
 				Margin="0,0,0,12"
 			>
-				<ui:TextBlock Text="Рік побудови" Margin="0,0,0,4" />
+				<ui:TextBlock Text="Рік побудови" Style="{StaticResource LeftPanelText}" />
 				<ui:TextBox Text="{Binding LeftPanelViewModel.HistoricalYearBuilt, Mode=TwoWay}" />
 
 				<ui:TextBlock Text="Значимість (1-10)" Margin="0,8,0,4" />
@@ -99,20 +113,15 @@
 
 			<!-- Поля для Natural -->
 			<StackPanel
-				Visibility="{Binding LeftPanelViewModel.IsNaturalSelected}"
+				Visibility="{Binding LeftPanelViewModel.IsNaturalSelected,Converter={StaticResource BoolToVis}}"
 				Margin="0,0,0,12"
 			>
-				<ui:TextBlock Text="Рік утворення" Margin="0,0,0,4" />
+				<ui:TextBlock Text="Рік утворення" Style="{StaticResource LeftPanelText}" />
 				<ui:TextBox Text="{Binding LeftPanelViewModel.NaturalYearFormed, Mode=TwoWay}" />
 				<StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-					<ui:TextBlock Text="Під захистом" VerticalAlignment="Center" Margin="0,0,8,0" />
+					<ui:TextBlock Text="Під захистом" Style="{StaticResource LeftPanelText}" />
 					<CheckBox IsChecked="{Binding LeftPanelViewModel.NaturalProtectedStatus, Mode=TwoWay}" />
 				</StackPanel>
-			</StackPanel>
-
-			<StackPanel Orientation="Horizontal">
-				<CheckBox IsChecked="{Binding LeftPanelViewModel.IsNewPlaceVisited}" />
-				<TextBlock Text="Місто відвідане" VerticalAlignment="Center" />
 			</StackPanel>
 
 			<Grid>
@@ -122,14 +131,13 @@
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
 
-				<!-- КНОПКА "Додати місце" -->
 				<ui:Button
 					Grid.Column="0"
 					HorizontalAlignment="Stretch"
 					Appearance="Success"
 					Icon="{ui:SymbolIcon Symbol=Add20}"
 					Command="{Binding LeftPanelViewModel.AddPlaceCommand}"
-					Content="{Binding LeftPanelViewModel.AddPlaceButtonText, Mode=OneWay}"
+					Content="Додати місце"
 				/>
 
 				<ui:Button
@@ -149,12 +157,15 @@
 				Header="Додаткові інструменти"
 				IsExpanded="False"
 				Margin="0,8,0,0"
-				Visibility="{Binding PlaceListViewModel.IsAnyPlaces}"
+				Visibility="{Binding MainContentViewModel.IsAnyPlaces,Converter={StaticResource BoolToVis}}"
 			>
 				<StackPanel>
 					<Expander Header="Пошук за індексом" IsExpanded="False" Margin="0,8,0,0">
 						<StackPanel>
-							<ui:TextBlock Text="Введіть індекс" Margin="0,0,0,4" />
+							<ui:TextBlock
+								Text="Введіть індекс"
+								Style="{StaticResource LeftPanelText}"
+							/>
 							<Grid Margin="0,0,0,8">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="*" />
@@ -195,7 +206,7 @@
 
 					<Expander Header="Перевантажені оператори" IsExpanded="False" Margin="0,8,0,0">
 						<StackPanel>
-							<TextBlock> 1 об'єкт</TextBlock>
+							<TextBlock Style="{StaticResource LeftPanelText}" Text="1 об'єкт" />
 							<ComboBox
 								ItemsSource="{Binding LeftPanelViewModel.Places}"
 								DisplayMemberPath="Name"
@@ -203,7 +214,7 @@
 								Margin="0,0,0,5"
 							/>
 
-							<TextBlock> 2 об'єкт</TextBlock>
+							<TextBlock Style="{StaticResource LeftPanelText}" Text="2 об'єкт" />
 							<ComboBox
 								ItemsSource="{Binding LeftPanelViewModel.Places}"
 								DisplayMemberPath="Name"
@@ -211,7 +222,7 @@
 								Margin="0,0,0,5"
 							/>
 
-							<TextBlock> Операція</TextBlock>
+							<TextBlock Style="{StaticResource LeftPanelText}" Text="Операція" />
 							<ComboBox
 								ItemsSource="{Binding LeftPanelViewModel.Operators}"
 								SelectedItem="{Binding LeftPanelViewModel.SelectedOperator}"
@@ -227,12 +238,7 @@
                                 Виконати операцію
                             </ui:Button>
 
-							<TextBlock
-								Text="Результат:"
-								Margin="0,5,0,2"
-								Opacity="0.7"
-								FontSize="12"
-							/>
+							<TextBlock Text="Результат:" Style="{StaticResource LeftPanelText}" />
 							<TextBlock
 								Text="{Binding LeftPanelViewModel.OperatorResult}"
 								TextWrapping="Wrap"
