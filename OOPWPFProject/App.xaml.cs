@@ -1,49 +1,46 @@
-﻿using System.IO;
-using System.Windows;
-
-using OOPWPFProject.Models;
-using OOPWPFProject.Services;
+﻿using OOPWPFProject.Services;
+using OOPWPFProject.Services.Weather;
+using OOPWPFProject.Store;
 using OOPWPFProject.ViewModels;
-using OOPWPFProject.ViewModels.Services;
+using System.IO;
+using System.Windows;
 
 namespace OOPWPFProject;
 
 public partial class App : Application
 {
     private PlaceStore? _store;
+    private IWeatherService? _weatherService;
+    private readonly string? _apiKey;
+    public static DateTime StartTime { get; private set; }
 
-    public static DateTime StartTime
+    protected override void OnStartup( StartupEventArgs e )
     {
-        get;
-        private set;
-    }
-
-    protected override void OnStartup(StartupEventArgs e)
-    {
-        base.OnStartup(e);
+        base.OnStartup( e );
 
         StartTime = DateTime.Now;
 
-        Directory.CreateDirectory(AppPaths.AppDataDir);
-        Directory.CreateDirectory(AppPaths.LogsDir);
+        Directory.CreateDirectory( AppPaths.AppDataDir );
+        Directory.CreateDirectory( AppPaths.LogsDir );
 
-        Logger.Initialize(AppPaths.TodayLogPath);
-        Logger.Log(LogLevel.Info, " ==========  Програма почала роботу  ========== ");
+        Logger.Initialize( AppPaths.TodayLogPath );
+        Logger.Log( LogLevel.Info, " ==========  Програма почала роботу  ========== " );
 
         _store = new PlaceStore();
+        _weatherService = new WeatherApi( AppPaths.ApiKey );
 
         var mainWindow = new MainWindow
         {
-            DataContext = new MainViewModel(_store)
+            DataContext = new MainViewModel(_store, _weatherService),
         };
         mainWindow.Show();
     }
 
-    protected override void OnExit(ExitEventArgs e)
+    protected override void OnExit( ExitEventArgs e )
     {
         var workingTime = Logger.WorkingTime();
-        Logger.Log(LogLevel.Info, $" ==== Програма завершила роботу ({workingTime}) ==== ");
+        Logger.Log( LogLevel.Info, $" ==== Програма завершила роботу ({workingTime}) ==== " );
         Logger.Close();
-        base.OnExit(e);
+        base.OnExit( e );
     }
 }

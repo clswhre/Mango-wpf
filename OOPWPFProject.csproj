@@ -9,18 +9,20 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Data.Sqlite" Version="11.0.0-preview.4.26230.115" />
-		<PackageReference Include="WPF-UI" Version="4.3.0" />
 		<PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.4" />
+		<PackageReference Include="Microsoft.Data.Sqlite" Version="11.0.0-preview.3.26207.106" />
+		<PackageReference Include="WPF-UI" Version="4.3.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Resource Include="Resources\Mango.ico" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Update="Services\Weather\apiKey.txt">
+		<None Update="Services\apiKey.txt">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Resource Include="Resources\Mango.ico">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
 	</ItemGroup>
 </Project>

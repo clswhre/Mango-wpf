@@ -1,30 +1,21 @@
 ﻿using System.Text;
 
-namespace OOPWPFProject.Models;
+namespace OOPWPFProject.Models.Places;
 
 public class NaturalPlace : Place
 {
+    public int? YearFormed { get; set; }
+    public bool? ProtectedStatus { get; set; }
 
-    public DateOnly? YearFormed
-    {
-        get; set;
-    } 
-    public bool? ProtectedStatus
-    {
-        get; set;
-    }
-
-    public NaturalPlace()
-    {
-    }
+    public NaturalPlace() { }
 
     public override string GetDetails()
     {
-        StringBuilder messageBuilder = new (base.GetDetails());
+        StringBuilder messageBuilder = new(base.GetDetails());
 
         if ( YearFormed.HasValue )
         {
-            messageBuilder.AppendLine( $"Рік утворення: {YearFormed.Value.Year}" );
+            messageBuilder.AppendLine( $"Рік утворення: {YearFormed}" );
         }
         else
         {
