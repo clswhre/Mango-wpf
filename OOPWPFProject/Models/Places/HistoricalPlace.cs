@@ -1,32 +1,23 @@
 ﻿using System.Text;
 
-namespace OOPWPFProject.Models;
+namespace OOPWPFProject.Models.Places;
 
 public class HistoricalPlace : Place
 {
-    public HistoricalPlace()
-    {
-    }
+    public HistoricalPlace() { }
 
-    public DateOnly? YearBuilt
-    {
-        get; set;
-    }
-    public int? Significance
-    {
-        get; set;
-    }
+    public int? YearBuilt { get; set; }
+    public int? Significance { get; set; }
 
     public override string GetDetails()
     {
         StringBuilder messageBuilder = new(base.GetDetails());
         if ( YearBuilt.HasValue )
         {
-            messageBuilder.AppendLine( $"Рік побудови: {YearBuilt.Value.Year}" );
+            messageBuilder.AppendLine( $"Рік побудови: {YearBuilt}" );
         }
         else
         {
-
             messageBuilder.AppendLine( "Рік побудови: Невідомо" );
         }
 

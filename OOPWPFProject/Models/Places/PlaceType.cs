@@ -1,8 +1,8 @@
-﻿namespace OOPWPFProject.Models;
+﻿namespace OOPWPFProject.Models.Places;
 
 public enum PlaceType
 {
     Normal,
     Historical,
-    Natural
+    Natural,
 }
