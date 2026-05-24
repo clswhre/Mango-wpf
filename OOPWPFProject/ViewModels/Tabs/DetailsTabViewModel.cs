@@ -2,6 +2,7 @@ using OOPWPFProject.Models.Places;
 using OOPWPFProject.Services;
 using OOPWPFProject.Store;
 using OOPWPFProject.ViewModels.Base;
+using Wpf.Ui;
 
 namespace OOPWPFProject.ViewModels.Tabs;
 
@@ -15,7 +16,7 @@ internal class DetailsTabViewModel : BaseViewModel
         _store = store;
         store.SelectedPlaceChanged += SetSelectedPlace;
 
-        DeletePlaceCommand = new RelayCommand( _ => DeletePlace(), _ => _selectedPlace != null );
+        DeletePlaceCommand = new RelayCommand( _ => DeletePlaceAsync(), _ => _selectedPlace != null );
         ToggleEditCommand = new RelayCommand( _ => ExecuteDynamicEdit(), _ => CanExecuteDynamicEdit() );
         CancelEditCommand = new RelayCommand( _ => CancelEdit(), _ => IsEditing );
     }
@@ -199,7 +200,7 @@ internal class DetailsTabViewModel : BaseViewModel
         IsEditing = false;
     }
 
-    private void DeletePlace()
+    private async Task DeletePlaceAsync()
     {
         if ( _selectedPlace == null )
         {
@@ -208,11 +209,38 @@ internal class DetailsTabViewModel : BaseViewModel
 
         var removedPlaceName = _selectedPlace.Name;
         var removedPlaceCountry = _selectedPlace.Country;
-        _store.RemovePlaceAsync( _selectedPlace );
-        Logger.Log(
-            LogLevel.Info,
-            $"Дія (Видалено): Видалено місце '{removedPlaceName}', країна '{removedPlaceCountry}'"
-        );
+
+        try
+        {
+            await _store.RemovePlaceAsync( _selectedPlace );
+
+            Logger.Log(
+                LogLevel.Info,
+                $"Дія (Видалено): Видалено місце '{removedPlaceName}', країна '{removedPlaceCountry}'"
+            );
+
+            var messageBox = new Wpf.Ui.Controls.MessageBox
+            {
+                Title = "Успіх",
+                Content = $"Місце '{removedPlaceName}' у країні '{removedPlaceCountry}' успішно видалено!",
+                PrimaryButtonText = "ОК",
+                Owner = System.Windows.Application.Current.MainWindow,
+            };
+            await messageBox.ShowDialogAsync();
+        }
+        catch ( Exception ex )
+        {
+            Logger.Log( LogLevel.Error, $"Помилка під час видалення '{removedPlaceName}': {ex.Message}" );
+
+            var errorBox = new Wpf.Ui.Controls.MessageBox
+            {
+                Title = "Помилка",
+                Content = $"Не вдалося видалити місце.\nДеталі: {ex.Message}",
+                PrimaryButtonText = "Закрити",
+                Owner = System.Windows.Application.Current.MainWindow,
+            };
+            await errorBox.ShowDialogAsync();
+        }
     }
 
     private void LoadEditFields()
