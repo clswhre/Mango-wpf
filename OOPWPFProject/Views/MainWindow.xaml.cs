@@ -4,5 +4,5 @@ namespace OOPWPFProject;
 
 public partial class MainWindow : FluentWindow
 {
-    public MainWindow() => InitializeComponent();
+	public MainWindow() => InitializeComponent();
 }

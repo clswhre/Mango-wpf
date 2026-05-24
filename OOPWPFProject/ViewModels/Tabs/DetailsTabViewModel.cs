@@ -14,35 +14,19 @@ internal class DetailsTabViewModel : BaseViewModel
     {
         _store = store;
         store.SelectedPlaceChanged += SetSelectedPlace;
+
         DeletePlaceCommand = new RelayCommand( _ => DeletePlace(), _ => _selectedPlace != null );
-        SaveEditCommand = new RelayCommand( _ => SaveEdit(), _ => CanSaveEdit() );
-        CancelEditCommand = new RelayCommand( _ => CancelEdit(), _ => _selectedPlace != null );
-        ToggleEditCommand = new RelayCommand( _ => ToggleEdit(), _ => _selectedPlace != null );
+        ToggleEditCommand = new RelayCommand( _ => ExecuteDynamicEdit(), _ => CanExecuteDynamicEdit() );
+        CancelEditCommand = new RelayCommand( _ => CancelEdit(), _ => IsEditing );
     }
 
     public RelayCommand DeletePlaceCommand { get; }
-    public RelayCommand SaveEditCommand { get; }
-    public RelayCommand CancelEditCommand { get; }
     public RelayCommand ToggleEditCommand { get; }
+    public RelayCommand CancelEditCommand { get; }
 
     public bool IsEditHistoricalVisible => _selectedPlace is HistoricalPlace;
     public bool IsEditNaturalVisible => _selectedPlace is NaturalPlace;
     public bool? IsPlaceVisited => _selectedPlace?.IsVisited is true;
-
-    public bool IsEditing
-    {
-        get;
-        set
-        {
-            if ( field != value )
-            {
-                field = value;
-                OnPropertyChanged();
-                SaveEditCommand.RaiseCanExecuteChanged();
-                CancelEditCommand.RaiseCanExecuteChanged();
-            }
-        }
-    }
 
     public string EditedName
     {
@@ -53,7 +37,7 @@ internal class DetailsTabViewModel : BaseViewModel
             {
                 field = value;
                 OnPropertyChanged();
-                SaveEditCommand.RaiseCanExecuteChanged();
+                ToggleEditCommand.RaiseCanExecuteChanged();
             }
         }
     } = string.Empty;
@@ -67,7 +51,7 @@ internal class DetailsTabViewModel : BaseViewModel
             {
                 field = value;
                 OnPropertyChanged();
-                SaveEditCommand.RaiseCanExecuteChanged();
+                ToggleEditCommand.RaiseCanExecuteChanged();
             }
         }
     } = string.Empty;
@@ -81,7 +65,7 @@ internal class DetailsTabViewModel : BaseViewModel
             {
                 field = value;
                 OnPropertyChanged();
-                SaveEditCommand.RaiseCanExecuteChanged();
+                ToggleEditCommand.RaiseCanExecuteChanged();
             }
         }
     } = string.Empty;
@@ -177,15 +161,32 @@ internal class DetailsTabViewModel : BaseViewModel
         }
     }
 
+    public bool IsEditing
+    {
+        get;
+        set
+        {
+            if ( field != value )
+            {
+                field = value;
+                OnPropertyChanged();
+                OnPropertyChanged( nameof( EditButtonText ) );
+                ToggleEditCommand.RaiseCanExecuteChanged();
+                CancelEditCommand.RaiseCanExecuteChanged();
+            }
+        }
+    }
+
+    public string EditButtonText => IsEditing ? "Зберегти" : "Редагувати";
+
     private void SetSelectedPlace( Place? place )
     {
         _selectedPlace = place;
         OnPropertyChanged( nameof( IsEditHistoricalVisible ) );
         OnPropertyChanged( nameof( IsEditNaturalVisible ) );
         OnPropertyChanged( nameof( IsPlaceVisited ) );
+
         DeletePlaceCommand.RaiseCanExecuteChanged();
-        SaveEditCommand.RaiseCanExecuteChanged();
-        CancelEditCommand.RaiseCanExecuteChanged();
         ToggleEditCommand.RaiseCanExecuteChanged();
 
         if ( _selectedPlace == null )
@@ -251,11 +252,24 @@ internal class DetailsTabViewModel : BaseViewModel
         }
     }
 
-    private bool CanSaveEdit() =>
-        _selectedPlace != null
-        && !string.IsNullOrWhiteSpace( EditedName )
-        && !string.IsNullOrWhiteSpace( EditedCountry )
-        && !string.IsNullOrWhiteSpace( EditedDescription );
+    private bool CanExecuteDynamicEdit() => !IsEditing
+            ? _selectedPlace != null
+            : _selectedPlace != null
+            && !string.IsNullOrWhiteSpace( EditedName )
+            && !string.IsNullOrWhiteSpace( EditedCountry )
+            && !string.IsNullOrWhiteSpace( EditedDescription );
+
+    private void ExecuteDynamicEdit()
+    {
+        if ( IsEditing )
+        {
+            SaveEdit();
+        }
+        else
+        {
+            IsEditing = true;
+        }
+    }
 
     private void SaveEdit()
     {
@@ -285,28 +299,12 @@ internal class DetailsTabViewModel : BaseViewModel
         }
 
         _store.UpdatePlaceAsync( place );
-        SaveEditCommand.RaiseCanExecuteChanged();
         IsEditing = false;
     }
 
     private void CancelEdit()
     {
         LoadEditFields();
-        SaveEditCommand.RaiseCanExecuteChanged();
         IsEditing = false;
-    }
-
-    private void ToggleEdit()
-    {
-        if ( _selectedPlace == null )
-        {
-            return;
-        }
-
-        IsEditing = !IsEditing;
-        if ( !IsEditing )
-        {
-            LoadEditFields();
-        }
     }
 }

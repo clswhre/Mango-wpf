@@ -41,6 +41,8 @@
 	>
 		<Setter Property="FontSize" Value="14" />
 		<Setter Property="FontWeight" Value="SemiBold" />
+		<Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+		<Setter Property="Margin" Value="0,16,0,8" />
 		<Setter Property="VerticalAlignment" Value="Center" />
 	</Style>
 
@@ -157,4 +159,20 @@
 			</Grid>
 		</ui:Card>
 	</DataTemplate>
+
+	<Style TargetType="ui:TextBox" BasedOn="{StaticResource {x:Type ui:TextBox}}">
+		<Setter Property="Margin" Value="0" />
+	</Style>
+	<Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+		<Setter Property="Margin" Value="0" />
+	</Style>
+	<Style TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
+		<Setter Property="Margin" Value="0" />
+	</Style>
+	<Style TargetType="DatePicker" BasedOn="{StaticResource {x:Type DatePicker}}">
+		<Setter Property="Margin" Value="0" />
+	</Style>
+	<Style TargetType="Slider" BasedOn="{StaticResource {x:Type Slider}}">
+		<Setter Property="Margin" Value="0" />
+	</Style>
 </ResourceDictionary>
