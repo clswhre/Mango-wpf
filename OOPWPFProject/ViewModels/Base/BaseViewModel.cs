@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace OOPWPFProject.ViewModels.Base;
 
-internal abstract class BaseViewModel : INotifyPropertyChanged
+internal abstract class BaseViewModel : INotifyPropertyChanged, IDisposable
 {
 	protected bool SetProperty<T>(
 		ref T field,
@@ -25,4 +25,6 @@ internal abstract class BaseViewModel : INotifyPropertyChanged
 
 	protected void OnPropertyChanged([CallerMemberName] string? propertyName = null) =>
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+	public virtual void Dispose(){}
 }

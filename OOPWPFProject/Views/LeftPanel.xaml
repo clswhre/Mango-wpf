@@ -4,10 +4,12 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
 	xmlns:viewmodels="clr-namespace:OOPWPFProject.ViewModels"
->
-	<UserControl.Resources>
-		<BooleanToVisibilityConverter x:Key="BoolToVis" />
-	</UserControl.Resources>
+    xmlns:converters="clr-namespace:OOPWPFProject.Converters">
+    
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <converters:BoolToBrushConverter x:Key="BoolToBrushConverter" />
+    </UserControl.Resources>
 
 	<ScrollViewer
 		VerticalScrollBarVisibility="Auto"
@@ -96,10 +98,21 @@
 			/>
 
 			<StackPanel Visibility="{Binding LeftPanelViewModel.IsHistoricalSelected,Converter={StaticResource BoolToVis}}">
-				<ui:TextBlock Text="Рік побудови" Style="{StaticResource LeftPanelText}" />
-				<ui:TextBox Text="{Binding LeftPanelViewModel.HistoricalYearBuilt, Mode=TwoWay}" />
-
-				<ui:TextBlock Text="Значимість (1-10)" Style="{StaticResource LeftPanelText}" />
+                <ui:TextBlock Text="Рік побудови" Style="{StaticResource LeftPanelText}" />
+                <ui:TextBox Text="{Binding LeftPanelViewModel.HistoricalYearBuilt, UpdateSourceTrigger=PropertyChanged}"
+                            PlaceholderText="Невід'ємне значення ( можна до н.е, близько ...)">
+                <ui:TextBox.Style>
+                        <Style TargetType="ui:TextBox" BasedOn="{StaticResource {x:Type ui:TextBox}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding LeftPanelViewModel.IsYearBuiltError}" Value="True">
+                                    <Setter Property="BorderBrush" Value="Red" />
+                                    <Setter Property="BorderThickness" Value="2" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ui:TextBox.Style>
+                </ui:TextBox>
+                <ui:TextBlock Text="Значимість (1-10)" Style="{StaticResource LeftPanelText}" />
 				<Slider
 					TickPlacement="Both"
 					Minimum="1"
@@ -112,7 +125,8 @@
 
 			<StackPanel Visibility="{Binding LeftPanelViewModel.IsNaturalSelected,Converter={StaticResource BoolToVis}}">
 				<ui:TextBlock Text="Рік утворення" Style="{StaticResource LeftPanelText}" />
-				<ui:TextBox Text="{Binding LeftPanelViewModel.NaturalYearFormed, Mode=TwoWay}" />
+				<ui:TextBox Text="{Binding LeftPanelViewModel.NaturalYearFormed, Mode=TwoWay}" 
+                            PlaceholderText="Невід'ємне значення ( можна до н.е, близько ...)"/>
 
 				<StackPanel Orientation="Horizontal" Margin="0,16,0,8">
 					<CheckBox IsChecked="{Binding LeftPanelViewModel.NaturalProtectedStatus, Mode=TwoWay}" />

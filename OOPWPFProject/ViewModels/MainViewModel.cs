@@ -25,8 +25,7 @@ internal class MainViewModel : BaseViewModel
 		LeftPanelViewModel = new LeftPanelViewModel(_sharedStore);
 		MainContentViewModel = new MainContentViewModel(_sharedStore);
 		StatisticTabViewModel = new StatisticTabViewModel(_sharedStore);
-		DetailsTabViewModel = new DetailsTabViewModel(_sharedStore);
-
+		DetailsTabViewModel = new DetailsTabViewModel( _sharedStore );	
 		WeatherTabViewModel = new WeatherTabViewModel(_sharedStore, weatherService);
 	}
 }

@@ -131,7 +131,39 @@ internal class LeftPanelViewModel : BaseViewModel
 		}
 	}
 
-	public string? HistoricalYearBuilt
+    public bool IsYearBuiltError
+    {
+        get ;
+		set 
+		{
+			field = value;
+            OnPropertyChanged( nameof( IsYearBuiltError ) );
+		}
+    }
+
+    public string? HistoricalYearBuilt
+    {
+        get => field;
+        set
+        {
+            if ( field != value )
+            {
+                field = value;
+
+                bool hasError = !string.IsNullOrEmpty(value) && 
+					(value.StartsWith('-') || value.StartsWith('+') || value.StartsWith('/') || value.StartsWith('*'));
+
+                if ( IsYearBuiltError != hasError )
+                {
+                    IsYearBuiltError = hasError;
+                }
+
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public int HistoricalSignificance
 	{
 		get;
 		set
@@ -144,31 +176,36 @@ internal class LeftPanelViewModel : BaseViewModel
 		}
 	}
 
-	public int HistoricalSignificance
+    public bool IsYearFormedError
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged( nameof( IsYearFormedError ) );
+        }
+    }
+    public string? NaturalYearFormed
 	{
 		get;
-		set
-		{
-			if (field != value)
-			{
-				field = value;
-				OnPropertyChanged();
-			}
-		}
-	}
+        set
+        {
+            if ( field != value )
+            {
+                field = value;
 
-	public string? NaturalYearFormed
-	{
-		get;
-		set
-		{
-			if (field != value)
-			{
-				field = value;
-				OnPropertyChanged();
-			}
-		}
-	}
+                bool hasError = !string.IsNullOrEmpty(value) &&
+                    (value.StartsWith('-') || value.StartsWith('+') || value.StartsWith('/') || value.StartsWith('*'));
+
+                if ( IsYearFormedError != hasError )
+                {
+                    IsYearFormedError = hasError;
+                }
+
+                OnPropertyChanged();
+            }
+        }
+    }
 
 	public bool NaturalProtectedStatus
 	{
@@ -199,89 +236,107 @@ internal class LeftPanelViewModel : BaseViewModel
 	private bool CanAddPlace() =>
 		!string.IsNullOrWhiteSpace(NewName)
 		&& !string.IsNullOrWhiteSpace(NewCountry)
-		&& !string.IsNullOrWhiteSpace(NewDescription);
+		&& !string.IsNullOrWhiteSpace(NewDescription)
+		&& (IsYearBuiltError || IsYearFormedError );
 
-	private async void AddPlace()
+    private bool _isProcessing;
+    private async void AddPlace()
 	{
-		DateOnly? checkedVisitDate = NewVisitDate.HasValue
-			? DateOnly.FromDateTime(NewVisitDate.Value)
-			: null;
-		double? checkedRating = NewRating > 0 ? NewRating : null;
-
-		Place? newPlace = SelectedPlaceType switch
+        if ( _isProcessing )
 		{
-			PlaceType.Normal => new NormalPlace
-			{
-				Name = NewName,
-				Country = NewCountry,
-				Description = NewDescription,
-				Date = checkedVisitDate,
-				Rating = checkedRating,
-				IsVisited = IsNewPlaceVisited,
-			},
-			PlaceType.Historical => new HistoricalPlace
-			{
-				Name = NewName,
-				Country = NewCountry,
-				Description = NewDescription,
-				Date = checkedVisitDate,
-				Rating = checkedRating,
-				YearBuilt = HistoricalYearBuilt,
-				Significance = HistoricalSignificance,
-				IsVisited = IsNewPlaceVisited,
-			},
-			PlaceType.Natural => new NaturalPlace
-			{
-				Name = NewName,
-				Country = NewCountry,
-				Description = NewDescription,
-				Date = checkedVisitDate,
-				Rating = checkedRating,
-				YearFormed = NaturalYearFormed,
-				ProtectedStatus = NaturalProtectedStatus,
-				IsVisited = IsNewPlaceVisited,
-			},
-			_ => null,
-		};
-
-		if (newPlace is not null && !PlaceAlreadyExists(newPlace))
-		{
-			_store.AddPlaceAsync(newPlace);
-			Logger.Log(
-				LogLevel.Info,
-				$"Дія (Додано): Додано місце '{newPlace.Name}', країна '{newPlace.Country}'"
-			);
-
-			var messageBox = new Wpf.Ui.Controls.MessageBox
-			{
-				Title = "Успіх",
-				Content = $"Місце '{newPlace.Name}' у країні '{newPlace.Country}' успішно додано!",
-				PrimaryButtonText = "ОК",
-				Owner = Application.Current.MainWindow,
-			};
-			await messageBox.ShowDialogAsync();
+			return;
 		}
-		else if (newPlace is not null)
+        _isProcessing = true;
+		try
 		{
-			Logger.Log(
-				LogLevel.Info,
-				$"Дія (Змінено): Спроба додати дублікат місця '{newPlace.Name}'"
-			);
+            DateOnly? checkedVisitDate = NewVisitDate.HasValue
+            ? DateOnly.FromDateTime(NewVisitDate.Value)
+            : null;
+            double? checkedRating = NewRating > 0 ? NewRating : null;
 
-			Place duplicatePlace = _store.Places.First(p =>
-				p.Name.Equals(newPlace.Name, StringComparison.OrdinalIgnoreCase)
-				&& p.Country.Equals(newPlace.Country, StringComparison.OrdinalIgnoreCase)
-			);
+            Place? newPlace = SelectedPlaceType switch
+            {
+                PlaceType.Normal => new NormalPlace
+                {
+                    Name = NewName,
+                    Country = NewCountry,
+                    Description = NewDescription,
+                    Date = checkedVisitDate,
+                    Rating = checkedRating,
+                    IsVisited = IsNewPlaceVisited,
+                },
+                PlaceType.Historical => new HistoricalPlace
+                {
+                    Name = NewName,
+                    Country = NewCountry,
+                    Description = NewDescription,
+                    Date = checkedVisitDate,
+                    Rating = checkedRating,
+                    YearBuilt = HistoricalYearBuilt,
+                    Significance = HistoricalSignificance,
+                    IsVisited = IsNewPlaceVisited,
+                },
+                PlaceType.Natural => new NaturalPlace
+                {
+                    Name = NewName,
+                    Country = NewCountry,
+                    Description = NewDescription,
+                    Date = checkedVisitDate,
+                    Rating = checkedRating,
+                    YearFormed = NaturalYearFormed,
+                    ProtectedStatus = NaturalProtectedStatus,
+                    IsVisited = IsNewPlaceVisited,
+                },
+                _ => null,
+            };
 
-			var errorBox = new Wpf.Ui.Controls.MessageBox
-			{
-				Title = "Дублікат місця",
-				Content = MessageBoxTextForDuplicate(duplicatePlace),
-				PrimaryButtonText = "ОК",
-				Owner = Application.Current.MainWindow,
-			};
-			await errorBox.ShowDialogAsync();
+            if ( newPlace is not null && !PlaceAlreadyExists( newPlace ) )
+            {
+                await _store.AddPlaceAsync( newPlace );
+                Logger.Log(
+                    LogLevel.Info,
+                    $"Дія (Додано): Додано місце '{newPlace.Name}', країна '{newPlace.Country}'"
+                );
+
+                var messageBox = new Wpf.Ui.Controls.MessageBox
+                {
+                    Title = "Успіх",
+                    Content = $"Місце '{newPlace.Name}' у країні '{newPlace.Country}' успішно додано!",
+                    PrimaryButtonText = "ОК",
+                    Owner = Application.Current.MainWindow,
+                };
+                await messageBox.ShowDialogAsync();
+            }
+            else if ( newPlace is not null )
+            {
+                Logger.Log(
+                    LogLevel.Info,
+                    $"Дія (Змінено): Спроба додати дублікат місця '{newPlace.Name}'"
+                );
+
+                Place duplicatePlace = _store.Places.First(p =>
+                p.Name.Equals(newPlace.Name, StringComparison.OrdinalIgnoreCase)
+                && p.Country.Equals(newPlace.Country, StringComparison.OrdinalIgnoreCase)
+            );
+
+                var errorBox = new Wpf.Ui.Controls.MessageBox
+                {
+                    Title = "Дублікат місця",
+                    Content = MessageBoxTextForDuplicate(duplicatePlace),
+                    PrimaryButtonText = "ОК",
+                    Owner = Application.Current.MainWindow,
+                };
+                await errorBox.ShowDialogAsync();
+            }
+        }
+		catch(Exception ex ) 
+		{
+			Logger.Log(LogLevel.Error, ex.ToString());	
 		}
+		finally
+		{
+            _isProcessing = false;
+        }
 
 		ClearForm();
 	}
@@ -451,4 +506,10 @@ internal class LeftPanelViewModel : BaseViewModel
 			PlaceAtIndexDisplay = $"Помилка: {ex.Message}";
 		}
 	}
+    public override void Dispose()
+    {
+        _store.Places.CollectionChanged -= OnPlacesChanged;
+
+        base.Dispose();
+    }
 }

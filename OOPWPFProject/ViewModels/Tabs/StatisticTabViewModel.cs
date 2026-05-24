@@ -174,4 +174,16 @@ internal class StatisticTabViewModel : BaseViewModel
 		UpdateChartSeries();
 		UpdateTopCountriesChart();
 	}
+    public override void Dispose()
+    {
+        _store.SelectedPlaceChanged -= SetSelectedPlace;
+        _store.Places.CollectionChanged -= OnPlacesChanged;
+
+        foreach ( Place place in _store.Places )
+        {
+            place.PropertyChanged -= OnPlacePropertyChanged;
+        }
+
+        base.Dispose();
+    }
 }

@@ -335,4 +335,9 @@ internal class DetailsTabViewModel : BaseViewModel
         LoadEditFields();
         IsEditing = false;
     }
+    public override void Dispose()
+    {
+        _store.SelectedPlaceChanged -= SetSelectedPlace;
+        base.Dispose();
+    }
 }

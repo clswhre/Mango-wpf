@@ -171,21 +171,21 @@ internal class MainContentViewModel : BaseViewModel
 		}
 	}
 
-	private void TrackPlace(Place place)
-	{
-		place.PropertyChanged += OnPlacePropertyChanged;
-		UpdateDerivedCollections(place);
-	}
+    private void TrackPlace( Place place )
+    {
+        place.PropertyChanged += OnPlacePropertyChanged;
+        UpdateDerivedCollections( place );
+    }
 
-	private void UntrackPlace(Place place)
-	{
-		place.PropertyChanged -= OnPlacePropertyChanged;
-		VisitedPlaces.Remove(place);
-		PlannedPlaces.Remove(place);
-		RaisePlaceVisibilityChanged();
-	}
+    private void UntrackPlace( Place place )
+    {
+        place.PropertyChanged -= OnPlacePropertyChanged;
+        VisitedPlaces.Remove( place );
+        PlannedPlaces.Remove( place );
+        RaisePlaceVisibilityChanged();
+    }
 
-	private void UpdateDerivedCollections(Place place)
+    private void UpdateDerivedCollections(Place place)
 	{
 		if (place.IsVisited)
 		{
@@ -229,4 +229,17 @@ internal class MainContentViewModel : BaseViewModel
 		OnPropertyChanged(nameof(IsPlannedPlaceExists));
 		OnPropertyChanged(nameof(IsAnyPlaces));
 	}
+
+    public override void Dispose()
+    {
+        _store.Places.CollectionChanged -= OnPlacesChanged;
+        _store.SelectedPlaceChanged -= OnStoreSelectedPlaceChanged;
+
+        foreach ( Place place in _store.Places )
+        {
+            place.PropertyChanged -= OnPlacePropertyChanged;
+        }
+
+        base.Dispose();
+    }
 }

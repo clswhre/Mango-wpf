@@ -177,4 +177,9 @@ internal class WeatherTabViewModel : BaseViewModel
 			ErrorMessage = "Відсутній зв'язок із сервером погоди";
 		}
 	}
+    public override void Dispose()
+    {
+        _store.SelectedPlaceChanged -= SetSelectedPlace;
+        base.Dispose();
+    }
 }
