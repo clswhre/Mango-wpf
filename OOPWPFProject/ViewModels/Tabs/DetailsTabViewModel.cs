@@ -15,12 +15,13 @@ internal class DetailsTabViewModel : BaseViewModel
     {
         _store = store;
         store.SelectedPlaceChanged += SetSelectedPlace;
-
+        SaveEditCommand = new RelayCommand( _ => SaveEdit() );
         DeletePlaceCommand = new RelayCommand( _ => DeletePlaceAsync(), _ => _selectedPlace != null );
         ToggleEditCommand = new RelayCommand( _ => ExecuteDynamicEdit(), _ => CanExecuteDynamicEdit() );
         CancelEditCommand = new RelayCommand( _ => CancelEdit(), _ => IsEditing );
     }
 
+    public RelayCommand SaveEditCommand { get; }
     public RelayCommand DeletePlaceCommand { get; }
     public RelayCommand ToggleEditCommand { get; }
     public RelayCommand CancelEditCommand { get; }
