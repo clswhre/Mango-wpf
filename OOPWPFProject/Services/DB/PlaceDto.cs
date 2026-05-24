@@ -14,11 +14,11 @@ public class PlaceDto
 	public bool IsVisited { get; set; }
 
 	// Historical
-	public int? YearBuilt { get; set; }
+	public string? YearBuilt { get; set; }
 	public int? Significance { get; set; }
 
 	// Natural
-	public int? YearFormed { get; set; }
+	public string? YearFormed { get; set; }
 	public bool? ProtectedStatus { get; set; }
 
 	public static PlaceDto FromPlace(Place place)

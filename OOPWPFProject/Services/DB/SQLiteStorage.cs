@@ -96,16 +96,10 @@ public class SQLiteStorage
 					Rating = reader.IsDBNull(5) ? null : reader.GetDouble(5),
 					Date = reader.IsDBNull(6) ? null : DateOnly.Parse(reader.GetString(6)),
 					IsVisited = reader.GetInt32(7) == 1,
-					YearBuilt =
-						reader.IsDBNull(8) ? null
-						: int.TryParse(reader.GetString(8), out var yb) ? yb
-						: null,
-					Significance = reader.IsDBNull(9) ? null : reader.GetInt32(9),
-					YearFormed =
-						reader.IsDBNull(10) ? null
-						: int.TryParse(reader.GetString(10), out var yf) ? yf
-						: null,
-					ProtectedStatus = reader.IsDBNull(11) ? null : reader.GetInt32(11) == 1,
+                    YearBuilt = reader.IsDBNull( 8 ) ? null : reader.GetString( 8 ),
+                    Significance = reader.IsDBNull(9) ? null : reader.GetInt32(9),
+                    YearFormed = reader.IsDBNull( 10 ) ? null : reader.GetString( 10 ),
+                    ProtectedStatus = reader.IsDBNull(11) ? null : reader.GetInt32(11) == 1,
 				}
 			);
 		}
@@ -113,15 +107,14 @@ public class SQLiteStorage
 		return dtos.Select(d => d.ToPlace()).ToList();
 	}
 
-	public async Task UpdateAsync(Place place)
-	{
-		var dto = PlaceDto.FromPlace(place);
+    public async Task UpdateAsync( Place place )
+    {
+        var dto = PlaceDto.FromPlace(place);
 
-		using var connection = new SqliteConnection(_connectionString);
-		await connection.OpenAsync();
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
 
-		var updateQuery =
-			@"
+        var updateQuery = @"
         UPDATE Places SET 
             Type = @Type, Name = @Name, Country = @Country, Description = @Description,
             Rating = @Rating, Date = @Date, IsVisited = @IsVisited,
@@ -129,12 +122,21 @@ public class SQLiteStorage
             ProtectedStatus = @ProtectedStatus
         WHERE Id = @Id";
 
-		using var command = new SqliteCommand(updateQuery, connection);
-		BindDto(command, dto, isIdIncluded: true);
-		await command.ExecuteNonQueryAsync();
-	}
+        using var command = new SqliteCommand(updateQuery, connection);
 
-	public async Task DeleteAsync(int id)
+        BindDto( command, dto, isIdIncluded: true );
+        var rowsAffected = await command.ExecuteNonQueryAsync();
+
+        if ( rowsAffected == 0 )
+        {
+            var errorMessage = $"Запис з Id {place.Id} не знайдено в базі даних";
+            Logger.Log( LogLevel.Error, errorMessage );
+
+            throw new InvalidOperationException( errorMessage );
+        }
+    }
+
+    public async Task DeleteAsync(int id)
 	{
 		using var connection = new SqliteConnection(_connectionString);
 		await connection.OpenAsync();
@@ -169,14 +171,8 @@ public class SQLiteStorage
 			"@ProtectedStatus",
 			dto.ProtectedStatus.HasValue ? (dto.ProtectedStatus.Value ? 1 : 0) : DBNull.Value
 		);
-		cmd.Parameters.AddWithValue(
-			"@YearBuilt",
-			dto.YearBuilt?.ToString() ?? (object)DBNull.Value
-		);
-		cmd.Parameters.AddWithValue("@Significance", dto.Significance ?? (object)DBNull.Value);
-		cmd.Parameters.AddWithValue(
-			"@YearFormed",
-			dto.YearFormed?.ToString() ?? (object)DBNull.Value
-		);
-	}
+        cmd.Parameters.AddWithValue( "@YearBuilt", dto.YearBuilt ?? (object) DBNull.Value );
+        cmd.Parameters.AddWithValue("@Significance", dto.Significance ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue( "@YearFormed", dto.YearFormed ?? (object) DBNull.Value );
+    }
 }

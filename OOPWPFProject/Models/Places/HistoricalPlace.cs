@@ -6,13 +6,13 @@ public class HistoricalPlace : Place
 {
 	public HistoricalPlace() { }
 
-	public int? YearBuilt { get; set; }
-	public int? Significance { get; set; }
+    public string? YearBuilt { get; set; }
+    public int? Significance { get; set; }
 
 	public override string GetDetails()
 	{
 		StringBuilder messageBuilder = new(base.GetDetails());
-		if (YearBuilt.HasValue)
+		if ( !string.IsNullOrEmpty(YearBuilt))
 		{
 			messageBuilder.AppendLine($"Рік побудови: {YearBuilt}");
 		}

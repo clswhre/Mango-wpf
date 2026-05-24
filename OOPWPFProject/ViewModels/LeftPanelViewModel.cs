@@ -131,7 +131,7 @@ internal class LeftPanelViewModel : BaseViewModel
 		}
 	}
 
-	public int? HistoricalYearBuilt
+	public string? HistoricalYearBuilt
 	{
 		get;
 		set
@@ -157,7 +157,7 @@ internal class LeftPanelViewModel : BaseViewModel
 		}
 	}
 
-	public int? NaturalYearFormed
+	public string? NaturalYearFormed
 	{
 		get;
 		set

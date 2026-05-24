@@ -4,8 +4,8 @@ namespace OOPWPFProject.Models.Places;
 
 public class NaturalPlace : Place
 {
-	public int? YearFormed { get; set; }
-	public bool? ProtectedStatus { get; set; }
+    public string? YearFormed { get; set; }
+    public bool? ProtectedStatus { get; set; }
 
 	public NaturalPlace() { }
 
@@ -13,7 +13,7 @@ public class NaturalPlace : Place
 	{
 		StringBuilder messageBuilder = new(base.GetDetails());
 
-		if (YearFormed.HasValue)
+		if (!string.IsNullOrEmpty(YearFormed))
 		{
 			messageBuilder.AppendLine($"Рік утворення: {YearFormed}");
 		}

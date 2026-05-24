@@ -110,7 +110,7 @@ internal class DetailsTabViewModel : BaseViewModel
         }
     }
 
-    public int? EditedHistoricalYearBuilt
+    public string? EditedHistoricalYearBuilt
     {
         get;
         set
@@ -136,7 +136,7 @@ internal class DetailsTabViewModel : BaseViewModel
         }
     }
 
-    public int? EditedNaturalYearFormed
+    public string? EditedNaturalYearFormed
     {
         get;
         set
