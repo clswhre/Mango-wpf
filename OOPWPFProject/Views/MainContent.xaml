@@ -12,10 +12,7 @@
 
 	<Grid>
 		<TabControl SelectedIndex="{Binding MainContentViewModel.SelectedTabIndex, Mode=TwoWay}">
-			<TabItem
-				Visibility="{Binding MainContentViewModel.IsVisitedPlaceExists,Converter={StaticResource BoolToVis}}"
-				IsSelected="True"
-			>
+			<TabItem IsSelected="True">
 				<TabItem.Header>
 					<StackPanel Orientation="Horizontal">
 						<ui:SymbolIcon Symbol="Location20" Margin="0,0,6,0" />
@@ -96,7 +93,7 @@
 				</Grid>
 			</TabItem>
 
-			<TabItem Visibility="{Binding MainContentViewModel.IsPlannedPlaceExists,Converter={StaticResource BoolToVis}}">
+			<TabItem>
 				<TabItem.Header>
 					<StackPanel Orientation="Horizontal">
 						<ui:SymbolIcon Symbol="Map20" Margin="0,0,6,0" />
@@ -217,7 +214,7 @@
 						<TextBlock
 							Grid.Row="4"
 							Grid.Column="2"
-							Text="{Binding AverageRating, StringFormat='{}{0:F2}'}"
+							Text="{Binding AverageRating}"
 							Style="{StaticResource ValueText}"
 						/>
 
@@ -243,7 +240,7 @@
 						<TextBlock
 							Grid.Row="6"
 							Grid.Column="2"
-							Text="{Binding MostRecentVisitDate, TargetNullValue='Немає даних', StringFormat='{}{0:dd.MM.yyyy}'}"
+							Text="{Binding MostRecentVisitDate}"
 							Style="{StaticResource ValueText}"
 						/>
 
@@ -273,12 +270,30 @@
 							Style="{StaticResource ValueText}"
 						/>
 					</Grid>
-                    <lvc:PieChart 
-						Series="{Binding PlacesSeries}"
-						LegendPosition="Right" 
-						Height="250" 
-						Margin="0,20,0,0" />
-                </StackPanel>
+
+					<Grid Margin="0,20,0,0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="20" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+
+						<lvc:PieChart
+							Grid.Column="0"
+							Series="{Binding PlacesSeries}"
+							LegendPosition="Bottom"
+							Height="250"
+							HorizontalAlignment="Stretch"
+						/>
+						<lvc:CartesianChart
+							Grid.Column="2"
+							Series="{Binding TopCountriesSeries}"
+							YAxes="{Binding YAxesCountries}"
+							Height="250"
+							HorizontalAlignment="Stretch"
+						/>
+					</Grid>
+				</StackPanel>
 			</TabItem>
 		</TabControl>
 	</Grid>

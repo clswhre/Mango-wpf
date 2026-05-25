@@ -1,342 +1,259 @@
 ﻿<UserControl
-	x:Class="OOPWPFProject.Views.PlaceDetailsControl"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    x:Class="OOPWPFProject.Views.PlaceDetailsControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
 >
-	<UserControl.Resources>
-		<BooleanToVisibilityConverter x:Key="BoolToVis" />
-	</UserControl.Resources>
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </UserControl.Resources>
 
-	<Border Padding="16" Margin="0,8,0,0" CornerRadius="8">
-		<TabControl>
-			<TabItem DataContext="{Binding DetailsTabViewModel}">
-				<TabItem.Header>
-					<StackPanel Orientation="Horizontal">
-						<ui:SymbolIcon Symbol="Info20" Margin="0,0,8,0" />
-						<TextBlock Text="Деталі" VerticalAlignment="Center" />
-					</StackPanel>
-				</TabItem.Header>
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="*" />
-					</Grid.RowDefinitions>
+    <Border Padding="16" Margin="0,8,0,0" CornerRadius="8">
+        <TabControl>
+            <TabItem DataContext="{Binding DetailsTabViewModel}">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon Symbol="Info20" Margin="0,0,8,0" />
+                        <TextBlock Text="Деталі" VerticalAlignment="Center" />
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
 
-					<Grid Margin="0,0,0,24">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="8" />
-							<ColumnDefinition Width="Auto" />
-						</Grid.ColumnDefinitions>
-						<ui:TextBlock
-							Grid.Column="0"
-							Text="Деталі місця"
-							FontSize="20"
-							FontWeight="SemiBold"
-							VerticalAlignment="Center"
-						/>
-						<ui:Button
-							Grid.Column="1"
-							Appearance="Caution"
-							Icon="{ui:SymbolIcon Symbol=Edit20}"
-							Command="{Binding ToggleEditCommand}"
-							>Редагувати</ui:Button
-						>
-						<ui:Button
-							Grid.Column="3"
-							Appearance="Danger"
-							Command="{Binding DeletePlaceCommand}"
-							Icon="{ui:SymbolIcon Symbol=Delete20}"
-							>Видалити обраний запис</ui:Button
-						>
-					</Grid>
+                    <Grid Margin="0,0,0,24">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-					<ScrollViewer
-						Grid.Row="1"
-						VerticalScrollBarVisibility="Auto"
-						CanContentScroll="True"
-					>
-						<StackPanel IsEnabled="{Binding IsEditing}">
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="12" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
+                        <ui:TextBlock
+                            Grid.Column="0"
+                            Text="Деталі місця"
+                            FontSize="20"
+                            FontWeight="SemiBold"
+                            VerticalAlignment="Center"
+                        />
+                        <ui:Button
+                            Grid.Column="1"
+                            Appearance="Caution"
+                            Icon="{ui:SymbolIcon Symbol=Edit20}"
+                            Command="{Binding ToggleEditCommand}"
+                            Margin="0,0,8,0"
+                            Content="{Binding EditButtonText, Mode=OneWay}"
+                        />
+                        <ui:Button
+                            Grid.Column="2"
+                            Appearance="Danger"
+                            Command="{Binding DeletePlaceCommand}"
+                            Icon="{ui:SymbolIcon Symbol=Delete20}"
+                            Content="Видалити"
+                        />
+                    </Grid>
 
-								<StackPanel Grid.Column="0">
-									<ui:TextBlock Text="Назва *" Margin="0,0,0,8" />
-									<ui:TextBox Text="{Binding EditedName, UpdateSourceTrigger=PropertyChanged}" />
-								</StackPanel>
+                    <ScrollViewer
+                        Grid.Row="1"
+                        VerticalScrollBarVisibility="Auto"
+                        CanContentScroll="True"
+                    >
+                        <StackPanel IsEnabled="{Binding IsEditing}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-								<StackPanel Grid.Column="2">
-									<ui:TextBlock Text="Країна *" />
-									<ui:TextBox Text="{Binding EditedCountry, UpdateSourceTrigger=PropertyChanged}" />
-								</StackPanel>
-							</Grid>
+                                <StackPanel Grid.Column="0" Margin="0,0,6,0">
+                                    <ui:TextBlock Text="Назва *" Style="{StaticResource LeftPanelText}" Margin="0,0,0,8" />
+                                    <ui:TextBox Text="{Binding EditedName, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
 
-							<ui:TextBlock Text="Опис *" />
-							<ui:TextBox
-								Text="{Binding EditedDescription, UpdateSourceTrigger=PropertyChanged}"
-								AcceptsReturn="True"
-								TextWrapping="Wrap"
-								MinHeight="60"
-								Margin="0,0,0,12"
-							/>
+                                <StackPanel Grid.Column="1" Margin="6,0,0,0">
+                                    <ui:TextBlock Text="Країна *" Style="{StaticResource LeftPanelText}" Margin="0,0,0,8" />
+                                    <ui:TextBox Text="{Binding EditedCountry, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                            </Grid>
 
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="12" />
-									<ColumnDefinition Width="0.5*" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
-								<ui:TextBlock
-									Text="Дата відвідування"
-									Grid.Column="0"
-									HorizontalAlignment="Center"
-									VerticalAlignment="Center"
-									Visibility="{Binding IsPlaceVisited, Converter={StaticResource BoolToVis}}"
-								/>
-								<DatePicker
-									Grid.Column="1"
-									SelectedDate="{Binding EditedVisitDate}"
-									Visibility="{Binding IsPlaceVisited, Converter={StaticResource BoolToVis}}"
-								/>
+                            <ui:TextBlock Text="Опис *" Style="{StaticResource LeftPanelText}" />
+                            <ui:TextBox
+                                Text="{Binding EditedDescription, UpdateSourceTrigger=PropertyChanged}"
+                                AcceptsReturn="True"
+                                TextWrapping="Wrap"
+                                MinHeight="60"
+                            />
 
-								<ui:TextBlock
-									Text="Рейтинг"
-									Grid.Column="3"
-									VerticalAlignment="Center"
-									Margin="0,0,0,8"
-									Visibility="{Binding IsPlaceVisited, Converter={StaticResource BoolToVis}}"
-								/>
-								<ui:RatingControl
-									Grid.Column="4"
-									Value="{Binding EditedRating, Mode=TwoWay, TargetNullValue=0}"
-									HalfStarEnabled="False"
-									HorizontalAlignment="Center"
-									VerticalAlignment="Center"
-									Visibility="{Binding IsPlaceVisited, Converter={StaticResource BoolToVis}}"
-								/>
-							</Grid>
+                            <StackPanel Orientation="Horizontal" Margin="0,16,0,8">
+                                <CheckBox IsChecked="{Binding EditedIsVisited}" />
+                                <TextBlock
+                                    Text="Місто відвідане"
+                                    VerticalAlignment="Center"
+                                    Margin="8,0,0,0"
+                                    FontWeight="SemiBold"
+                                />
+                            </StackPanel>
 
-							<StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-								<CheckBox IsChecked="{Binding EditedIsVisited}" />
-								<TextBlock
-									Text="Місто відвідане"
-									VerticalAlignment="Center"
-									Margin="8,0,0,0"
-								/>
-							</StackPanel>
+                            <StackPanel Visibility="{Binding IsPlaceVisited, Converter={StaticResource BoolToVis}}">
 
-							<StackPanel Visibility="{Binding IsPlaceVisited, Converter={StaticResource BoolToVis}}">
-								<ui:TextBlock Text="Рік побудови" />
-								<ui:TextBox Text="{Binding EditedHistoricalYearBuilt, Mode=TwoWay}" />
-								<ui:TextBlock Text="Значимість (1-10)" />
-								<Slider
-									TickPlacement="Both"
-									Minimum="1"
-									Maximum="10"
-									IsSnapToTickEnabled="True"
-									TickFrequency="1"
-									Value="{Binding EditedHistoricalSignificance, Mode=TwoWay}"
-								/>
-							</StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
-							<StackPanel Visibility="{Binding IsPlaceVisited, Converter={StaticResource BoolToVis}}">
-								<ui:TextBlock Text="Рік утворення" Margin="0,0,0,8" />
-								<ui:TextBox Text="{Binding EditedNaturalYearFormed, Mode=TwoWay}" />
-								<StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-									<ui:TextBlock
-										Text="Під захистом"
-										VerticalAlignment="Center"
-										Margin="0,0,8,0"
-									/>
-									<CheckBox IsChecked="{Binding EditedNaturalProtectedStatus, Mode=TwoWay}" />
-								</StackPanel>
-							</StackPanel>
+                                    <StackPanel Grid.Column="0" Margin="0,0,6,0">
+                                        <ui:TextBlock Text="Дата відвідування" Style="{StaticResource LeftPanelText}" Margin="0,0,0,8" />
+                                        <DatePicker SelectedDate="{Binding EditedVisitDate}" HorizontalAlignment="Stretch" />
+                                    </StackPanel>
 
-							<StackPanel
-								Orientation="Horizontal"
-								Margin="0,12,0,0"
-								IsEnabled="{Binding IsEditing}"
-							>
-								<ui:Button
-									Appearance="Primary"
-									Command="{Binding Path=SaveEditCommand}"
-									>Зберегти</ui:Button
-								>
-								<ui:Button
-									Appearance="Secondary"
-									Command="{Binding Path=CancelEditCommand}"
-									Margin="8,0,0,0"
-									>Скасувати</ui:Button
-								>
-							</StackPanel>
-						</StackPanel>
-					</ScrollViewer>
-				</Grid>
-			</TabItem>
-			<TabItem DataContext="{Binding WeatherTabViewModel}">
-				<TabItem.Header>
-					<StackPanel Orientation="Horizontal">
-						<ui:SymbolIcon Symbol="WeatherHaze20" Margin="0,0,6,0" />
-						<TextBlock Text="Погода" VerticalAlignment="Center" />
-					</StackPanel>
-				</TabItem.Header>
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" MinWidth="350" />
-						<ColumnDefinition Width="10" />
-						<ColumnDefinition Width="*" />
-					</Grid.ColumnDefinitions>
-					<ScrollViewer Grid.Column="0">
-						<StackPanel Orientation="Vertical" Margin="16">
-							<ui:TextBlock
-								Style="{StaticResource WeatherHeaderText}"
-								Text="{Binding SelectedPlaceTitle}"
-							/>
-							<Grid Margin="16">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto" MinWidth="100" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
-								<Grid.RowDefinitions>
-									<RowDefinition Height="Auto" />
-									<RowDefinition Height="Auto" />
-									<RowDefinition Height="Auto" />
-									<RowDefinition Height="Auto" />
-								</Grid.RowDefinitions>
+                                    <StackPanel Grid.Column="1" Margin="6,0,0,0">
+                                        <ui:TextBlock Text="Рейтинг" Style="{StaticResource LeftPanelText}" Margin="0,0,0,8" />
+                                        <ui:RatingControl
+                                            Value="{Binding EditedRating, Mode=TwoWay, TargetNullValue=0}"
+                                            HalfStarEnabled="False"
+                                            HorizontalAlignment="Left"
+                                        />
+                                    </StackPanel>
+                                </Grid>
 
-								<TextBlock
-									Grid.Row="0"
-									Grid.Column="0"
-									Text="Погода:"
-									Style="{StaticResource LabelText}"
-								/>
-								<StackPanel
-									Grid.Row="0"
-									Grid.Column="1"
-									Orientation="Horizontal"
-									Margin="0,0,0,12"
-									VerticalAlignment="Center"
-									HorizontalAlignment="Right"
-								>
-									<Image
-										Source="{Binding WeatherIconPath, TargetNullValue={x:Null}}"
-										Width="32"
-										Height="32"
-										Margin="0,0,8,0"
-									/>
-									<TextBlock
-										Text="{Binding WeatherMain}"
-										Style="{StaticResource WeatherValueNameText}"
-										Margin="0"
-									/>
-								</StackPanel>
-								<TextBlock
-									Grid.Row="1"
-									Grid.Column="0"
-									Text="Опис:"
-									Style="{StaticResource LabelText}"
-								/>
-								<TextBlock
-									Grid.Row="1"
-									Grid.Column="1"
-									Text="{Binding WeatherDescription}"
-									Style="{StaticResource WeatherValueNameText}"
-								/>
+                                <ui:TextBlock Text="Рік побудови" Style="{StaticResource LeftPanelText}" />
+                                <ui:TextBox Text="{Binding EditedHistoricalYearBuilt, Mode=TwoWay}" />
 
-								<TextBlock
-									Grid.Row="2"
-									Grid.Column="0"
-									Text="Температура:"
-									Style="{StaticResource LabelText}"
-								/>
-								<TextBlock
-									Grid.Row="2"
-									Grid.Column="1"
-									Text="{Binding PlaceTemperature}"
-									Style="{StaticResource WeatherValueNameText}"
-								/>
+                                <ui:TextBlock Text="Значимість (1-10)" Style="{StaticResource LeftPanelText}" />
+                                <Slider
+                                    TickPlacement="Both"
+                                    Minimum="1"
+                                    Maximum="10"
+                                    IsSnapToTickEnabled="True"
+                                    TickFrequency="1"
+                                    Value="{Binding EditedHistoricalSignificance, Mode=TwoWay}"
+                                />
 
-								<TextBlock
-									Grid.Row="3"
-									Grid.Column="0"
-									Text="Вітер:"
-									Style="{StaticResource LabelText}"
-								/>
-								<TextBlock
-									Grid.Row="3"
-									Grid.Column="1"
-									Text="{Binding WeatherWindSpeed}"
-									Style="{StaticResource WeatherValueNameText}"
-								/>
-							</Grid>
-						</StackPanel>
-					</ScrollViewer>
+                                <ui:TextBlock Text="Рік утворення" Style="{StaticResource LeftPanelText}" />
+                                <ui:TextBox Text="{Binding EditedNaturalYearFormed, Mode=TwoWay}" />
 
-					<ScrollViewer Grid.Column="2">
-						<StackPanel Grid.Column="2" Orientation="Vertical">
-							<ui:TextBlock
-								Style="{StaticResource WeatherHeaderText}"
-								Text="Прогноз на 5 днів"
-							/>
+                                <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                                    <CheckBox IsChecked="{Binding EditedNaturalProtectedStatus, Mode=TwoWay}" />
+                                    <TextBlock
+                                        Text="Під захистом"
+                                        VerticalAlignment="Center"
+                                        Margin="8,0,0,0"
+                                        FontWeight="SemiBold"
+                                    />
+                                </StackPanel>
+                            </StackPanel>
 
-							<ItemsControl ItemsSource="{Binding Forecast}" Margin="16">
-								<ItemsControl.ItemTemplate>
-									<DataTemplate>
-										<Grid Margin="0,0,0,12">
-											<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="100" />
-												<ColumnDefinition Width="*" />
-											</Grid.ColumnDefinitions>
-											<Grid.RowDefinitions>
-												<RowDefinition Height="Auto" />
-												<RowDefinition Height="Auto" />
-											</Grid.RowDefinitions>
+                            <StackPanel
+                                Orientation="Horizontal"
+                                Margin="0,24,0,0"
+                            >
+                                <ui:Button
+                                    Appearance="Primary"
+                                    Command="{Binding SaveEditCommand}"
+                                    Content="Зберегти"
+                                />
+                                <ui:Button
+                                    Appearance="Secondary"
+                                    Command="{Binding CancelEditCommand}"
+                                    Margin="8,0,0,0"
+                                    Content="Скасувати"
+                                />
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
 
-											<TextBlock
-												Grid.Row="0"
-												Grid.Column="0"
-												Grid.RowSpan="2"
-												Text="{Binding Date}"
-												Style="{StaticResource LabelText}"
-												VerticalAlignment="Center"
-											/>
+            <TabItem DataContext="{Binding WeatherTabViewModel}">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon Symbol="WeatherHaze20" Margin="0,0,6,0" />
+                        <TextBlock Text="Погода" VerticalAlignment="Center" />
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" MinWidth="300" />
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-											<StackPanel
-												Grid.Row="0"
-												Grid.Column="1"
-												Orientation="Horizontal"
-											>
-												<TextBlock
-													Text="{Binding Temperature, StringFormat='{}{0:0.#}°C'}"
-													FontWeight="Bold"
-													Margin="0,0,8,0"
-												/>
-												<TextBlock Text="{Binding Description}" />
-											</StackPanel>
+                    <ScrollViewer Grid.Column="0">
+                        <StackPanel Orientation="Vertical" Margin="16">
+                            <ui:TextBlock
+                                Style="{StaticResource WeatherHeaderText}"
+                                Text="{Binding SelectedPlaceTitle}"
+                                Margin="0,0,0,24"
+                            />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" MinWidth="100" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
 
-											<TextBlock
-												Grid.Row="1"
-												Grid.Column="1"
-												Text="{Binding WindSpeed, StringFormat='Вітер: {0} м/с'}"
-												FontSize="12"
-												Opacity="0.7"
-											/>
-										</Grid>
-									</DataTemplate>
-								</ItemsControl.ItemTemplate>
-							</ItemsControl>
-						</StackPanel>
-					</ScrollViewer>
-				</Grid>
-			</TabItem>
-		</TabControl>
-	</Border>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Погода:" Style="{StaticResource LabelText}" />
+                                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="0,0,0,12" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                    <Image Source="{Binding WeatherIconPath, TargetNullValue={x:Null}}" Width="32" Height="32" Margin="0,0,8,0" />
+                                    <TextBlock Text="{Binding WeatherMain}" Style="{StaticResource WeatherValueNameText}" Margin="0" />
+                                </StackPanel>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Опис:" Style="{StaticResource LabelText}" />
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding WeatherDescription}" Style="{StaticResource WeatherValueNameText}" />
+
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Температура:" Style="{StaticResource LabelText}" />
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding PlaceTemperature}" Style="{StaticResource WeatherValueNameText}" />
+
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Вітер:" Style="{StaticResource LabelText}" />
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding WeatherWindSpeed}" Style="{StaticResource WeatherValueNameText}" />
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <ScrollViewer Grid.Column="2">
+                        <StackPanel Orientation="Vertical" Margin="16">
+                            <ui:TextBlock
+                                Style="{StaticResource WeatherHeaderText}"
+                                Text="Прогноз на 5 днів"
+                                Margin="0,0,0,24"
+                            />
+                            <ItemsControl ItemsSource="{Binding Forecast}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,0,0,16">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="100" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Text="{Binding Date}" Style="{StaticResource LabelText}" VerticalAlignment="Center" />
+
+                                            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Temperature, StringFormat='{}{0:0.#}°C'}" FontWeight="Bold" Margin="0,0,8,0" />
+                                                <TextBlock Text="{Binding Description}" />
+                                            </StackPanel>
+
+                                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding WindSpeed, StringFormat='Вітер: {0} м/с'}" FontSize="12" Opacity="0.7" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Border>
+    
 </UserControl>

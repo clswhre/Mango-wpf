@@ -2,7 +2,7 @@
 
 public enum PlaceType
 {
-    Normal,
-    Historical,
-    Natural,
+	Normal,
+	Historical,
+	Natural,
 }
