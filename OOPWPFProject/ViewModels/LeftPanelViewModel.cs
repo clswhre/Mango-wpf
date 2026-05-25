@@ -12,138 +12,139 @@ namespace OOPWPFProject.ViewModels;
 
 internal class LeftPanelViewModel : BaseViewModel
 {
-	private readonly PlaceStore _store;
-	private static readonly TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
+    private readonly PlaceStore _store;
+    private static readonly TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
 
-	public RelayCommand AddPlaceCommand { get; }
-	public RelayCommand ClearFormCommand { get; }
-	public RelayCommand ShowByIndexCommand { get; }
-	public RelayCommand OverridedOperatorActon { get; }
+    public RelayCommand AddPlaceCommand { get; }
+    public RelayCommand ClearFormCommand { get; }
+    public RelayCommand ShowByIndexCommand { get; }
+    public RelayCommand OverridedOperatorActon { get; }
 
-	public ObservableCollection<PlaceType> PlaceTypes { get; } =
-	[PlaceType.Normal, PlaceType.Historical, PlaceType.Natural];
-	public ObservableCollection<Place> Places => _store.Places;
+    public ObservableCollection<PlaceType> PlaceTypes { get; } =
+    [PlaceType.Normal, PlaceType.Historical, PlaceType.Natural];
+    public ObservableCollection<Place> Places => _store.Places;
 
-	public LeftPanelViewModel(PlaceStore store)
-	{
-		_store = store;
-		_store.Places.CollectionChanged += OnPlacesChanged;
-		AddPlaceCommand = new RelayCommand(_ => AddPlace(), _ => CanAddPlace());
-		ClearFormCommand = new RelayCommand(_ => ClearForm());
-		ShowByIndexCommand = new RelayCommand(_ => ShowByIndex());
-		OverridedOperatorActon = new RelayCommand(
-			_ => ExecuteOperator(),
-			_ =>
-				SelectedObject1 != null
-				&& SelectedObject2 != null
-				&& !string.IsNullOrEmpty(SelectedOperator)
-		);
-	}
+    public LeftPanelViewModel(PlaceStore store)
+    {
+        _store = store;
+        _store.Places.CollectionChanged += OnPlacesChanged;
+        AddPlaceCommand = new RelayCommand(_ => AddPlace(), _ => CanAddPlace());
+        ClearFormCommand = new RelayCommand(_ => ClearForm());
+        ShowByIndexCommand = new RelayCommand(_ => ShowByIndex());
+        OverridedOperatorActon = new RelayCommand(
+            _ => ExecuteOperator(),
+            _ =>
+                SelectedObject1 != null
+                && SelectedObject2 != null
+                && !string.IsNullOrEmpty(SelectedOperator)
+        );
+    }
 
-	public PlaceType SelectedPlaceType
-	{
-		get;
-		set
-		{
-			if (SetProperty(ref field, value))
-			{
-				OnPropertyChanged(nameof(IsNaturalSelected));
-				OnPropertyChanged(nameof(IsHistoricalSelected));
-				ClearSpecializedFields();
-			}
-		}
-	} = PlaceType.Normal;
+    public PlaceType SelectedPlaceType
+    {
+        get;
+        set
+        {
+            if (SetProperty(ref field, value))
+            {
+                OnPropertyChanged(nameof(IsNaturalSelected));
+                OnPropertyChanged(nameof(IsHistoricalSelected));
+                ClearSpecializedFields();
+            }
+        }
+    } = PlaceType.Normal;
 
-	public bool IsNaturalSelected => SelectedPlaceType == PlaceType.Natural ? true : false;
-	public bool IsHistoricalSelected => SelectedPlaceType == PlaceType.Historical ? true : false;
-	public bool IsPlaceExists => _store.Places.Any() ? true : false;
-	public bool IsPlaceVisited => IsNewPlaceVisited ? true : false;
+    public bool IsNaturalSelected => SelectedPlaceType == PlaceType.Natural ? true : false;
+    public bool IsHistoricalSelected => SelectedPlaceType == PlaceType.Historical ? true : false;
+    public bool IsPlaceExists => _store.Places.Any() ? true : false;
+    public bool IsPlaceVisited => IsNewPlaceVisited ? true : false;
 
-	private void OnPlacesChanged(object? sender, NotifyCollectionChangedEventArgs e) =>
-		OnPropertyChanged(nameof(IsPlaceExists));
+    private void OnPlacesChanged(object? sender, NotifyCollectionChangedEventArgs e) =>
+        OnPropertyChanged(nameof(IsPlaceExists));
 
-	public string NewName
-	{
-		get;
-		set
-		{
-			if (field != value)
-			{
-				field = textInfo.ToTitleCase(value);
-				OnPropertyChanged();
-				AddPlaceCommand.RaiseCanExecuteChanged();
-			}
-		}
-	} = string.Empty;
+    public string NewName
+    {
+        get;
+        set
+        {
+            if (field != value)
+            {
+                field = textInfo.ToTitleCase(value);
+                OnPropertyChanged();
+                AddPlaceCommand.RaiseCanExecuteChanged();
+            }
+        }
+    } = string.Empty;
 
-	public string NewCountry
-	{
-		get;
-		set
-		{
-			if (field != value)
-			{
-				field = textInfo.ToTitleCase(value);
-				OnPropertyChanged();
-				AddPlaceCommand.RaiseCanExecuteChanged();
-			}
-		}
-	} = string.Empty;
+    public string NewCountry
+    {
+        get;
+        set
+        {
+            if (field != value)
+            {
+                field = textInfo.ToTitleCase(value);
+                OnPropertyChanged();
+                AddPlaceCommand.RaiseCanExecuteChanged();
+            }
+        }
+    } = string.Empty;
 
-	public string NewDescription
-	{
-		get;
-		set
-		{
-			if (field != value)
-			{
-				field = value;
-				OnPropertyChanged();
-				AddPlaceCommand.RaiseCanExecuteChanged();
-			}
-		}
-	} = string.Empty;
+    public string NewDescription
+    {
+        get;
+        set
+        {
+            if (field != value)
+            {
+                field = value;
+                OnPropertyChanged();
+                AddPlaceCommand.RaiseCanExecuteChanged();
+            }
+        }
+    } = string.Empty;
 
-	public DateTime? NewVisitDate
-	{
-		get;
-		set
-		{
-			if (field != value)
-			{
-				field = value;
-				OnPropertyChanged();
-				AddPlaceCommand.RaiseCanExecuteChanged();
-			}
-		}
-	}
+    public DateTime? NewVisitDate
+    {
+        get;
+        set
+        {
+            if (field != value)
+            {
+                field = value;
+                OnPropertyChanged();
+                AddPlaceCommand.RaiseCanExecuteChanged();
+            }
+        }
+    }
 
-	public double NewRating
-	{
-		get;
-		set
-		{
-			if (field != value)
-			{
-				field = value;
-				OnPropertyChanged();
-			}
-		}
-	}
+    public double NewRating
+    {
+        get;
+        set
+        {
+            if (field != value)
+            {
+                field = value;
+                OnPropertyChanged();
+            }
+        }
+    }
 
     public bool IsYearBuiltError
     {
         get ;
-		set 
-		{
-			field = value;
+        set 
+        {
+            field = value;
+            AddPlaceCommand.RaiseCanExecuteChanged();
             OnPropertyChanged( nameof( IsYearBuiltError ) );
-		}
+        }
     }
 
     public string? HistoricalYearBuilt
     {
-        get => field;
+        get;
         set
         {
             if ( field != value )
@@ -151,7 +152,7 @@ internal class LeftPanelViewModel : BaseViewModel
                 field = value;
 
                 bool hasError = !string.IsNullOrEmpty(value) && 
-					(value.StartsWith('-') || value.StartsWith('+') || value.StartsWith('/') || value.StartsWith('*'));
+                    (value.StartsWith('-') || value.StartsWith('+') || value.StartsWith('/') || value.StartsWith('*'));
 
                 if ( IsYearBuiltError != hasError )
                 {
@@ -164,17 +165,17 @@ internal class LeftPanelViewModel : BaseViewModel
     }
 
     public int HistoricalSignificance
-	{
-		get;
-		set
-		{
-			if (field != value)
-			{
-				field = value;
-				OnPropertyChanged();
-			}
-		}
-	}
+    {
+        get;
+        set
+        {
+            if (field != value)
+            {
+                field = value;
+                OnPropertyChanged();
+            }
+        }
+    }
 
     public bool IsYearFormedError
     {
@@ -182,12 +183,13 @@ internal class LeftPanelViewModel : BaseViewModel
         set
         {
             field = value;
+            AddPlaceCommand.RaiseCanExecuteChanged();
             OnPropertyChanged( nameof( IsYearFormedError ) );
         }
     }
     public string? NaturalYearFormed
-	{
-		get;
+    {
+        get;
         set
         {
             if ( field != value )
@@ -207,48 +209,54 @@ internal class LeftPanelViewModel : BaseViewModel
         }
     }
 
-	public bool NaturalProtectedStatus
-	{
-		get;
-		set
-		{
-			if (field != value)
-			{
-				field = value;
-				OnPropertyChanged();
-			}
-		}
-	}
+    public bool NaturalProtectedStatus
+    {
+        get;
+        set
+        {
+            if (field != value)
+            {
+                field = value;
+                OnPropertyChanged();
+            }
+        }
+    }
 
-	public bool IsNewPlaceVisited
-	{
-		get;
-		set
-		{
-			if (field != value)
-			{
-				field = value;
-				OnPropertyChanged();
-			}
-		}
-	}
+    public bool IsNewPlaceVisited
+    {
+        get;
+        set
+        {
+            if (field != value)
+            {
+                field = value;
+                OnPropertyChanged();
+            }
+        }
+    }
 
-	private bool CanAddPlace() =>
-		!string.IsNullOrWhiteSpace(NewName)
-		&& !string.IsNullOrWhiteSpace(NewCountry)
-		&& !string.IsNullOrWhiteSpace(NewDescription)
-		&& (IsYearBuiltError || IsYearFormedError );
+    private bool CanAddPlace()
+    {
+        bool isBasicInfoValid = !string.IsNullOrWhiteSpace(NewName)
+                            && !string.IsNullOrWhiteSpace(NewCountry)
+                            && !string.IsNullOrWhiteSpace(NewDescription);
+
+        bool isHistoricalValid = !IsHistoricalSelected || !IsYearBuiltError;
+        bool isNaturalValid = !IsNaturalSelected || !IsYearFormedError;
+
+        return isBasicInfoValid && isHistoricalValid && isNaturalValid;
+    }
 
     private bool _isProcessing;
     private async void AddPlace()
-	{
+    {
         if ( _isProcessing )
-		{
-			return;
-		}
+        {
+            return;
+        }
         _isProcessing = true;
-		try
-		{
+        try
+        {
             DateOnly? checkedVisitDate = NewVisitDate.HasValue
             ? DateOnly.FromDateTime(NewVisitDate.Value)
             : null;
@@ -329,183 +337,183 @@ internal class LeftPanelViewModel : BaseViewModel
                 await errorBox.ShowDialogAsync();
             }
         }
-		catch(Exception ex ) 
-		{
-			Logger.Log(LogLevel.Error, ex.ToString());	
-		}
-		finally
-		{
+        catch(Exception ex ) 
+        {
+            Logger.Log(LogLevel.Error, ex.ToString());	
+        }
+        finally
+        {
             _isProcessing = false;
         }
 
-		ClearForm();
-	}
+        ClearForm();
+    }
 
-	private string MessageBoxTextForDuplicate(Place duplicate)
-	{
-		var stringBuilder = new StringBuilder();
-		stringBuilder.AppendLine(
-			$"Місце '{duplicate.Name}' у країні '{duplicate.Country}' вже існує."
-		);
-		stringBuilder.AppendLine("Будь ласка, змініть назву або країну, щоб додати це місце.");
-		return stringBuilder.ToString();
-	}
+    private string MessageBoxTextForDuplicate(Place duplicate)
+    {
+        var stringBuilder = new StringBuilder();
+        stringBuilder.AppendLine(
+            $"Місце '{duplicate.Name}' у країні '{duplicate.Country}' вже існує."
+        );
+        stringBuilder.AppendLine("Будь ласка, змініть назву або країну, щоб додати це місце.");
+        return stringBuilder.ToString();
+    }
 
-	private void ClearForm()
-	{
-		NewName = string.Empty;
-		NewCountry = string.Empty;
-		NewDescription = string.Empty;
-		NewVisitDate = null;
-		NewRating = 0;
-		SelectedPlaceType = PlaceType.Normal;
-		IsNewPlaceVisited = false;
-		ClearSpecializedFields();
-	}
+    private void ClearForm()
+    {
+        NewName = string.Empty;
+        NewCountry = string.Empty;
+        NewDescription = string.Empty;
+        NewVisitDate = null;
+        NewRating = 0;
+        SelectedPlaceType = PlaceType.Normal;
+        IsNewPlaceVisited = false;
+        ClearSpecializedFields();
+    }
 
-	private void ClearSpecializedFields()
-	{
-		HistoricalYearBuilt = null;
-		HistoricalSignificance = 1;
-		NaturalYearFormed = null;
-		NaturalProtectedStatus = false;
-	}
+    private void ClearSpecializedFields()
+    {
+        HistoricalYearBuilt = null;
+        HistoricalSignificance = 1;
+        NaturalYearFormed = null;
+        NaturalProtectedStatus = false;
+    }
 
-	private bool PlaceAlreadyExists(Place candidate) =>
-		_store.Places.Any(p =>
-			p.Name.Equals(candidate.Name, StringComparison.OrdinalIgnoreCase)
-			&& p.Country.Equals(candidate.Country, StringComparison.OrdinalIgnoreCase)
-		);
+    private bool PlaceAlreadyExists(Place candidate) =>
+        _store.Places.Any(p =>
+            p.Name.Equals(candidate.Name, StringComparison.OrdinalIgnoreCase)
+            && p.Country.Equals(candidate.Country, StringComparison.OrdinalIgnoreCase)
+        );
 
-	public Place? SelectedObject1
-	{
-		get;
-		set
-		{
-			if (field != value)
-			{
-				field = value;
-				OnPropertyChanged();
-				OverridedOperatorActon.RaiseCanExecuteChanged();
-			}
-		}
-	}
+    public Place? SelectedObject1
+    {
+        get;
+        set
+        {
+            if (field != value)
+            {
+                field = value;
+                OnPropertyChanged();
+                OverridedOperatorActon.RaiseCanExecuteChanged();
+            }
+        }
+    }
 
-	public Place? SelectedObject2
-	{
-		get;
-		set
-		{
-			if (field != value)
-			{
-				field = value;
-				OnPropertyChanged();
-				OverridedOperatorActon.RaiseCanExecuteChanged();
-			}
-		}
-	}
+    public Place? SelectedObject2
+    {
+        get;
+        set
+        {
+            if (field != value)
+            {
+                field = value;
+                OnPropertyChanged();
+                OverridedOperatorActon.RaiseCanExecuteChanged();
+            }
+        }
+    }
 
-	public string? SelectedOperator
-	{
-		get;
-		set
-		{
-			if (field != value)
-			{
-				field = value;
-				OnPropertyChanged();
-				OverridedOperatorActon.RaiseCanExecuteChanged();
-			}
-		}
-	}
+    public string? SelectedOperator
+    {
+        get;
+        set
+        {
+            if (field != value)
+            {
+                field = value;
+                OnPropertyChanged();
+                OverridedOperatorActon.RaiseCanExecuteChanged();
+            }
+        }
+    }
 
-	public string OperatorResult
-	{
-		get;
-		set
-		{
-			if (field != value)
-			{
-				field = value;
-				OnPropertyChanged();
-			}
-		}
-	} = string.Empty;
+    public string OperatorResult
+    {
+        get;
+        set
+        {
+            if (field != value)
+            {
+                field = value;
+                OnPropertyChanged();
+            }
+        }
+    } = string.Empty;
 
-	public int IndexToShow
-	{
-		get;
-		set => SetProperty(ref field, value);
-	}
+    public int IndexToShow
+    {
+        get;
+        set => SetProperty(ref field, value);
+    }
 
-	public string PlaceAtIndexDisplay
-	{
-		get;
-		set => SetProperty(ref field, value);
-	} = string.Empty;
+    public string PlaceAtIndexDisplay
+    {
+        get;
+        set => SetProperty(ref field, value);
+    } = string.Empty;
 
-	public ObservableCollection<string> Operators { get; } = [">", "<", "==", "!="];
+    public ObservableCollection<string> Operators { get; } = [">", "<", "==", "!="];
 
-	private void ExecuteOperator()
-	{
-		if (
-			SelectedObject1 == null
-			|| SelectedObject2 == null
-			|| string.IsNullOrEmpty(SelectedOperator)
-		)
-		{
-			return;
-		}
+    private void ExecuteOperator()
+    {
+        if (
+            SelectedObject1 == null
+            || SelectedObject2 == null
+            || string.IsNullOrEmpty(SelectedOperator)
+        )
+        {
+            return;
+        }
 
-		OperatorResult = SelectedOperator switch
-		{
-			"==" => (SelectedObject1 == SelectedObject2).ToString(),
-			"!=" => (SelectedObject1 != SelectedObject2).ToString(),
-			">" => $"1-й має більший рейтинг: {SelectedObject1 > SelectedObject2}",
-			"<" => $"1-й має менший рейтинг: {SelectedObject1 < SelectedObject2}",
-			_ => "Невідома операція",
-		};
-	}
+        OperatorResult = SelectedOperator switch
+        {
+            "==" => (SelectedObject1 == SelectedObject2).ToString(),
+            "!=" => (SelectedObject1 != SelectedObject2).ToString(),
+            ">" => $"1-й має більший рейтинг: {SelectedObject1 > SelectedObject2}",
+            "<" => $"1-й має менший рейтинг: {SelectedObject1 < SelectedObject2}",
+            _ => "Невідома операція",
+        };
+    }
 
-	private void ShowByIndex()
-	{
-		try
-		{
-			if (IndexToShow < 0 || IndexToShow >= _store.PlaceManager.GetAll().Count())
-			{
-				PlaceAtIndexDisplay = $"Індекс [{IndexToShow}] не в межах списку";
-				return;
-			}
+    private void ShowByIndex()
+    {
+        try
+        {
+            if (IndexToShow < 0 || IndexToShow >= _store.PlaceManager.GetAll().Count())
+            {
+                PlaceAtIndexDisplay = $"Індекс [{IndexToShow}] не в межах списку";
+                return;
+            }
 
-			Place place = _store.PlaceManager[IndexToShow];
-			if (place != null)
-			{
-				StringBuilder messageBuilder = new();
-				messageBuilder.Append(
-					$" [{IndexToShow}] | {place.Name} , {place.Country}: {place.Description} "
-				);
-				if (place.Date.HasValue)
-				{
-					messageBuilder.Append($" @ {place.Date.Value:dd/MM/yyyy} ");
-				}
+            Place place = _store.PlaceManager[IndexToShow];
+            if (place != null)
+            {
+                StringBuilder messageBuilder = new();
+                messageBuilder.Append(
+                    $" [{IndexToShow}] | {place.Name} , {place.Country}: {place.Description} "
+                );
+                if (place.Date.HasValue)
+                {
+                    messageBuilder.Append($" @ {place.Date.Value:dd/MM/yyyy} ");
+                }
 
-				if (place.Rating.HasValue)
-				{
-					messageBuilder.Append($" | {place.Rating.Value}★");
-				}
+                if (place.Rating.HasValue)
+                {
+                    messageBuilder.Append($" | {place.Rating.Value}★");
+                }
 
-				PlaceAtIndexDisplay = messageBuilder.ToString().Trim();
-			}
-			else
-			{
-				PlaceAtIndexDisplay = $"Індекс[{IndexToShow}] = null";
-			}
-		}
-		catch (ArgumentOutOfRangeException ex)
-		{
-			PlaceAtIndexDisplay = $"Помилка: {ex.Message}";
-		}
-	}
+                PlaceAtIndexDisplay = messageBuilder.ToString().Trim();
+            }
+            else
+            {
+                PlaceAtIndexDisplay = $"Індекс[{IndexToShow}] = null";
+            }
+        }
+        catch (ArgumentOutOfRangeException ex)
+        {
+            PlaceAtIndexDisplay = $"Помилка: {ex.Message}";
+        }
+    }
     public override void Dispose()
     {
         _store.Places.CollectionChanged -= OnPlacesChanged;
