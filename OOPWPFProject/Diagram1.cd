@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="OOPWPFProject.Models.Places.HistoricalPlace" Collapsed="true">
+    <Position X="2.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIQAAAAAAAAAAAAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Places\HistoricalPlace.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Models.Places.NaturalPlace" Collapsed="true">
+    <Position X="4.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAEAAAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Places\NaturalPlace.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Models.Places.NormalPlace" Collapsed="true">
+    <Position X="6" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Places\NormalPlace.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Models.Places.Place" Collapsed="true">
+    <Position X="4.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAECAEAAQgAgAAgAoACAAgQAgAIAAIEBAAAAAAIAAiA=</HashCode>
+      <FileName>Models\Places\Place.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OOPWPFProject.Services.DB.PlaceDto">
+    <Position X="1.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAgAooQIAAAAAAAUAAAIAAAEBAQAAAAAAAAA=</HashCode>
+      <FileName>Services\DB\PlaceDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Services.DB.SQLiteStorage">
+    <Position X="3.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAgCAAAAAAAABAAAAAAAAAAAAgIAAAAAAAAAIA=</HashCode>
+      <FileName>Services\DB\SQLiteStorage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Services.Weather.WeatherApi" BaseTypeListCollapsed="true">
+    <Position X="12.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAQAAAAAEAAAAAAAQQAAAAAACAAAAAAAgAAAAA=</HashCode>
+      <FileName>Services\Weather\WeatherApi.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="OOPWPFProject.Services.Weather.ForecastItem">
+    <Position X="9.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAEBAAAAAA=</HashCode>
+      <FileName>Services\Weather\WeatherApi.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Services.Weather.ForecastResponse">
+    <Position X="11" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Services\Weather\WeatherApi.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Services.Weather.GeoLocation">
+    <Position X="12.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAQIAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Weather\WeatherApi.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Services.Weather.WeatherCondition">
+    <Position X="11" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAgAAEAAAA=</HashCode>
+      <FileName>Services\Weather\WeatherApi.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Services.Weather.MainData">
+    <Position X="9.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAEAAA=</HashCode>
+      <FileName>Services\Weather\WeatherApi.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Services.Weather.WindData">
+    <Position X="11" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACAAAAARAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Weather\WeatherApi.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Services.Weather.WeatherResponse">
+    <Position X="9.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAEBAAAAAA=</HashCode>
+      <FileName>Services\Weather\WeatherApi.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Services.AppPaths">
+    <Position X="17.5" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAAAgABCAAAIAAAAAAAAYAAAAAE=</HashCode>
+      <FileName>Services\AppPaths.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Store.EntityManager&lt;T&gt;">
+    <Position X="7" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAACAAABAAAAAAAACAAAgAAAAAAAAA=</HashCode>
+      <FileName>Store\EntityManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Store.PlaceStore">
+    <Position X="5.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEABAAAAAAABAAAACAIAAEgEAAIAAAAAA=</HashCode>
+      <FileName>Store\PlaceStore.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.ViewModels.Base.BaseViewModel" Collapsed="true">
+    <Position X="8.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAgAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Base\BaseViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OOPWPFProject.ViewModels.Base.RelayCommand" Collapsed="true">
+    <Position X="11" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQEACAAQAAECAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Base\RelayCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OOPWPFProject.ViewModels.Tabs.DetailsTabViewModel">
+    <Position X="8.5" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BEAAIEgBRAAQAgAIgAEAACAAAABgGBIAAIACAAAgAAI=</HashCode>
+      <FileName>ViewModels\Tabs\DetailsTabViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.ViewModels.Tabs.StatisticTabViewModel">
+    <Position X="12" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAggAIAAAAAAAAEAACEQIAAmAAIAAAECE=</HashCode>
+      <FileName>ViewModels\Tabs\StatisticTabViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.ViewModels.Tabs.WeatherTabViewModel">
+    <Position X="6.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BQAAAAAAAAgAAhAIAAACAAAAAAQAEAAYEAAggAIAgAA=</HashCode>
+      <FileName>ViewModels\Tabs\WeatherTabViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.ViewModels.MainContentViewModel">
+    <Position X="13.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABQBgAAAAAQIAggEAAAAACAACAgAAACAAEAAIgCAEBA=</HashCode>
+      <FileName>ViewModels\MainContentViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.ViewModels.LeftPanelViewModel">
+    <Position X="10.25" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>DAAACBgQAYGYAgAIBiAAQAAAEEQAAAAMAkAiICCAYRA=</HashCode>
+      <FileName>ViewModels\LeftPanelViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.ViewModels.MainViewModel">
+    <Position X="5" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAABAAAAAAAEAAAAAAIgAAEEAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\MainViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOPWPFProject.Views.LeftPanel">
+    <Position X="19.25" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\LeftPanel.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.1" />
+  </Class>
+  <Class Name="OOPWPFProject.Views.MainContent">
+    <Position X="21.25" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\MainContent.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.1" />
+  </Class>
+  <Class Name="OOPWPFProject.MainWindow">
+    <Position X="21.25" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="OOPWPFProject.Views.PlaceDetailsControl">
+    <Position X="23.25" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\PlaceDetailsControl.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.1" />
+  </Class>
+  <Interface Name="OOPWPFProject.Models.Interface.IWeather">
+    <Position X="2.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAgAAAAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Models\Interface\IWeather.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="OOPWPFProject.Services.Weather.IWeatherService">
+    <Position X="11" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAAAAAAAAQQAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>Services\Weather\IWeatherService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="OOPWPFProject.Models.Places.PlaceType">
+    <Position X="6.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAAIAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Models\Places\PlaceType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="JetBrains Mono" Size="9" />
+</ClassDiagram>

@@ -1,12 +1,12 @@
-﻿using OOPWPFProject.Models.Places;
-using OOPWPFProject.Services;
-using OOPWPFProject.Store;
-using OOPWPFProject.ViewModels.Base;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Text;
 using System.Windows;
+using OOPWPFProject.Models.Places;
+using OOPWPFProject.Services;
+using OOPWPFProject.Store;
+using OOPWPFProject.ViewModels.Base;
 
 namespace OOPWPFProject.ViewModels;
 
@@ -24,19 +24,19 @@ internal class LeftPanelViewModel : BaseViewModel
     [PlaceType.Normal, PlaceType.Historical, PlaceType.Natural];
     public ObservableCollection<Place> Places => _store.Places;
 
-    public LeftPanelViewModel( PlaceStore store )
+    public LeftPanelViewModel(PlaceStore store)
     {
         _store = store;
         _store.Places.CollectionChanged += OnPlacesChanged;
-        AddPlaceCommand = new RelayCommand( _ => AddPlace(), _ => CanAddPlace() );
-        ClearFormCommand = new RelayCommand( _ => ClearForm() );
-        ShowByIndexCommand = new RelayCommand( _ => ShowByIndex() );
+        AddPlaceCommand = new RelayCommand(_ => AddPlace(), _ => CanAddPlace());
+        ClearFormCommand = new RelayCommand(_ => ClearForm());
+        ShowByIndexCommand = new RelayCommand(_ => ShowByIndex());
         OverridedOperatorActon = new RelayCommand(
             _ => ExecuteOperator(),
             _ =>
                 SelectedObject1 != null
                 && SelectedObject2 != null
-                && !string.IsNullOrEmpty( SelectedOperator )
+                && !string.IsNullOrEmpty(SelectedOperator)
         );
     }
 
@@ -45,10 +45,10 @@ internal class LeftPanelViewModel : BaseViewModel
         get;
         set
         {
-            if ( SetProperty( ref field, value ) )
+            if (SetProperty(ref field, value))
             {
-                OnPropertyChanged( nameof( IsNaturalSelected ) );
-                OnPropertyChanged( nameof( IsHistoricalSelected ) );
+                OnPropertyChanged(nameof(IsNaturalSelected));
+                OnPropertyChanged(nameof(IsHistoricalSelected));
                 ClearSpecializedFields();
             }
         }
@@ -59,17 +59,17 @@ internal class LeftPanelViewModel : BaseViewModel
     public bool IsPlaceExists => _store.Places.Any() ? true : false;
     public bool IsPlaceVisited => IsNewPlaceVisited ? true : false;
 
-    private void OnPlacesChanged( object? sender, NotifyCollectionChangedEventArgs e ) =>
-        OnPropertyChanged( nameof( IsPlaceExists ) );
+    private void OnPlacesChanged(object? sender, NotifyCollectionChangedEventArgs e) =>
+        OnPropertyChanged(nameof(IsPlaceExists));
 
     public string NewName
     {
         get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
-                field = textInfo.ToTitleCase( value );
+                field = textInfo.ToTitleCase(value);
                 OnPropertyChanged();
                 AddPlaceCommand.RaiseCanExecuteChanged();
             }
@@ -81,9 +81,9 @@ internal class LeftPanelViewModel : BaseViewModel
         get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
-                field = textInfo.ToTitleCase( value );
+                field = textInfo.ToTitleCase(value);
                 OnPropertyChanged();
                 AddPlaceCommand.RaiseCanExecuteChanged();
             }
@@ -95,7 +95,7 @@ internal class LeftPanelViewModel : BaseViewModel
         get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
                 field = value;
                 OnPropertyChanged();
@@ -109,7 +109,7 @@ internal class LeftPanelViewModel : BaseViewModel
         get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
                 field = value;
                 OnPropertyChanged();
@@ -123,7 +123,7 @@ internal class LeftPanelViewModel : BaseViewModel
         get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
                 field = value;
                 OnPropertyChanged();
@@ -131,7 +131,18 @@ internal class LeftPanelViewModel : BaseViewModel
         }
     }
 
-    public int? HistoricalYearBuilt
+    public bool IsYearBuiltError
+    {
+        get ;
+        set 
+        {
+            field = value;
+            AddPlaceCommand.RaiseCanExecuteChanged();
+            OnPropertyChanged( nameof( IsYearBuiltError ) );
+        }
+    }
+
+    public string? HistoricalYearBuilt
     {
         get;
         set
@@ -139,6 +150,15 @@ internal class LeftPanelViewModel : BaseViewModel
             if ( field != value )
             {
                 field = value;
+
+                bool hasError = !string.IsNullOrEmpty(value) && 
+                    (value.StartsWith('-') || value.StartsWith('+') || value.StartsWith('/') || value.StartsWith('*'));
+
+                if ( IsYearBuiltError != hasError )
+                {
+                    IsYearBuiltError = hasError;
+                }
+
                 OnPropertyChanged();
             }
         }
@@ -149,7 +169,7 @@ internal class LeftPanelViewModel : BaseViewModel
         get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
                 field = value;
                 OnPropertyChanged();
@@ -157,7 +177,17 @@ internal class LeftPanelViewModel : BaseViewModel
         }
     }
 
-    public int? NaturalYearFormed
+    public bool IsYearFormedError
+    {
+        get;
+        set
+        {
+            field = value;
+            AddPlaceCommand.RaiseCanExecuteChanged();
+            OnPropertyChanged( nameof( IsYearFormedError ) );
+        }
+    }
+    public string? NaturalYearFormed
     {
         get;
         set
@@ -165,6 +195,15 @@ internal class LeftPanelViewModel : BaseViewModel
             if ( field != value )
             {
                 field = value;
+
+                bool hasError = !string.IsNullOrEmpty(value) &&
+                    (value.StartsWith('-') || value.StartsWith('+') || value.StartsWith('/') || value.StartsWith('*'));
+
+                if ( IsYearFormedError != hasError )
+                {
+                    IsYearFormedError = hasError;
+                }
+
                 OnPropertyChanged();
             }
         }
@@ -175,7 +214,7 @@ internal class LeftPanelViewModel : BaseViewModel
         get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
                 field = value;
                 OnPropertyChanged();
@@ -188,7 +227,7 @@ internal class LeftPanelViewModel : BaseViewModel
         get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
                 field = value;
                 OnPropertyChanged();
@@ -196,97 +235,127 @@ internal class LeftPanelViewModel : BaseViewModel
         }
     }
 
-    private bool CanAddPlace() =>
-        !string.IsNullOrWhiteSpace( NewName )
-        && !string.IsNullOrWhiteSpace( NewCountry )
-        && !string.IsNullOrWhiteSpace( NewDescription );
-
-    private void AddPlace()
+    private bool CanAddPlace()
     {
-        DateOnly? checkedVisitDate = NewVisitDate.HasValue
+        bool isBasicInfoValid = !string.IsNullOrWhiteSpace(NewName)
+                            && !string.IsNullOrWhiteSpace(NewCountry)
+                            && !string.IsNullOrWhiteSpace(NewDescription);
+
+        bool isHistoricalValid = !IsHistoricalSelected || !IsYearBuiltError;
+        bool isNaturalValid = !IsNaturalSelected || !IsYearFormedError;
+
+        return isBasicInfoValid && isHistoricalValid && isNaturalValid;
+    }
+
+    private bool _isProcessing;
+    private async void AddPlace()
+    {
+        if ( _isProcessing )
+        {
+            return;
+        }
+        _isProcessing = true;
+        try
+        {
+            DateOnly? checkedVisitDate = NewVisitDate.HasValue
             ? DateOnly.FromDateTime(NewVisitDate.Value)
             : null;
-        double? checkedRating = NewRating > 0 ? NewRating : null;
+            double? checkedRating = NewRating > 0 ? NewRating : null;
 
-        Place? newPlace = SelectedPlaceType switch
-        {
-            PlaceType.Normal => new NormalPlace
+            Place? newPlace = SelectedPlaceType switch
             {
-                Name = NewName,
-                Country = NewCountry,
-                Description = NewDescription,
-                Date = checkedVisitDate,
-                Rating = checkedRating,
-                IsVisited = IsNewPlaceVisited,
-            },
-            PlaceType.Historical => new HistoricalPlace
-            {
-                Name = NewName,
-                Country = NewCountry,
-                Description = NewDescription,
-                Date = checkedVisitDate,
-                Rating = checkedRating,
-                YearBuilt = HistoricalYearBuilt,
-                Significance = HistoricalSignificance,
-                IsVisited = IsNewPlaceVisited,
-            },
-            PlaceType.Natural => new NaturalPlace
-            {
-                Name = NewName,
-                Country = NewCountry,
-                Description = NewDescription,
-                Date = checkedVisitDate,
-                Rating = checkedRating,
-                YearFormed = NaturalYearFormed,
-                ProtectedStatus = NaturalProtectedStatus,
-                IsVisited = IsNewPlaceVisited,
-            },
-            _ => null,
-        };
+                PlaceType.Normal => new NormalPlace
+                {
+                    Name = NewName,
+                    Country = NewCountry,
+                    Description = NewDescription,
+                    Date = checkedVisitDate,
+                    Rating = checkedRating,
+                    IsVisited = IsNewPlaceVisited,
+                },
+                PlaceType.Historical => new HistoricalPlace
+                {
+                    Name = NewName,
+                    Country = NewCountry,
+                    Description = NewDescription,
+                    Date = checkedVisitDate,
+                    Rating = checkedRating,
+                    YearBuilt = HistoricalYearBuilt,
+                    Significance = HistoricalSignificance,
+                    IsVisited = IsNewPlaceVisited,
+                },
+                PlaceType.Natural => new NaturalPlace
+                {
+                    Name = NewName,
+                    Country = NewCountry,
+                    Description = NewDescription,
+                    Date = checkedVisitDate,
+                    Rating = checkedRating,
+                    YearFormed = NaturalYearFormed,
+                    ProtectedStatus = NaturalProtectedStatus,
+                    IsVisited = IsNewPlaceVisited,
+                },
+                _ => null,
+            };
 
-        if ( newPlace is not null && !PlaceAlreadyExists( newPlace ) )
-        {
-            _store.AddPlaceAsync( newPlace );
-            MessageBox.Show(
-                $"Місце '{newPlace.Name}' у країні '{newPlace.Country}' успішно додано!",
-                "Успіх",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information
+            if ( newPlace is not null && !PlaceAlreadyExists( newPlace ) )
+            {
+                await _store.AddPlaceAsync( newPlace );
+                Logger.Log(
+                    LogLevel.Info,
+                    $"Дія (Додано): Додано місце '{newPlace.Name}', країна '{newPlace.Country}'"
+                );
+
+                var messageBox = new Wpf.Ui.Controls.MessageBox
+                {
+                    Title = "Успіх",
+                    Content = $"Місце '{newPlace.Name}' у країні '{newPlace.Country}' успішно додано!",
+                    PrimaryButtonText = "ОК",
+                    Owner = Application.Current.MainWindow,
+                };
+                await messageBox.ShowDialogAsync();
+            }
+            else if ( newPlace is not null )
+            {
+                Logger.Log(
+                    LogLevel.Info,
+                    $"Дія (Змінено): Спроба додати дублікат місця '{newPlace.Name}'"
+                );
+
+                Place duplicatePlace = _store.Places.First(p =>
+                p.Name.Equals(newPlace.Name, StringComparison.OrdinalIgnoreCase)
+                && p.Country.Equals(newPlace.Country, StringComparison.OrdinalIgnoreCase)
             );
-            Logger.Log(
-                LogLevel.Info,
-                $"Дія (Додано): Додано місце '{newPlace.Name}', країна '{newPlace.Country}'"
-            );
+
+                var errorBox = new Wpf.Ui.Controls.MessageBox
+                {
+                    Title = "Дублікат місця",
+                    Content = MessageBoxTextForDuplicate(duplicatePlace),
+                    PrimaryButtonText = "ОК",
+                    Owner = Application.Current.MainWindow,
+                };
+                await errorBox.ShowDialogAsync();
+            }
         }
-        else if ( newPlace is not null )
+        catch(Exception ex ) 
         {
-            MessageBox.Show(
-                MessageBoxTextForDuplicate(
-                    _store.Places.First( p =>
-                        p.Name.Equals( newPlace.Name, StringComparison.OrdinalIgnoreCase )
-                        && p.Country.Equals( newPlace.Country, StringComparison.OrdinalIgnoreCase )
-                    )
-                ),
-                "Дублікат місця",
-                MessageBoxButton.OK,
-                MessageBoxImage.Warning
-            );
-            Logger.Log(
-                LogLevel.Info,
-                $"Дія (Змінено): Спроба додати дублікат місця '{newPlace.Name}'"
-            );
+            Logger.Log(LogLevel.Error, ex.ToString());	
+        }
+        finally
+        {
+            _isProcessing = false;
         }
 
         ClearForm();
     }
 
-    private string MessageBoxTextForDuplicate( Place duplicate )
+    private string MessageBoxTextForDuplicate(Place duplicate)
     {
         var stringBuilder = new StringBuilder();
         stringBuilder.AppendLine(
             $"Місце '{duplicate.Name}' у країні '{duplicate.Country}' вже існує."
         );
-        stringBuilder.AppendLine( "Будь ласка, змініть назву або країну, щоб додати це місце." );
+        stringBuilder.AppendLine("Будь ласка, змініть назву або країну, щоб додати це місце.");
         return stringBuilder.ToString();
     }
 
@@ -310,10 +379,10 @@ internal class LeftPanelViewModel : BaseViewModel
         NaturalProtectedStatus = false;
     }
 
-    private bool PlaceAlreadyExists( Place candidate ) =>
-        _store.Places.Any( p =>
-            p.Name.Equals( candidate.Name, StringComparison.OrdinalIgnoreCase )
-            && p.Country.Equals( candidate.Country, StringComparison.OrdinalIgnoreCase )
+    private bool PlaceAlreadyExists(Place candidate) =>
+        _store.Places.Any(p =>
+            p.Name.Equals(candidate.Name, StringComparison.OrdinalIgnoreCase)
+            && p.Country.Equals(candidate.Country, StringComparison.OrdinalIgnoreCase)
         );
 
     public Place? SelectedObject1
@@ -321,7 +390,7 @@ internal class LeftPanelViewModel : BaseViewModel
         get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
                 field = value;
                 OnPropertyChanged();
@@ -335,7 +404,7 @@ internal class LeftPanelViewModel : BaseViewModel
         get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
                 field = value;
                 OnPropertyChanged();
@@ -349,7 +418,7 @@ internal class LeftPanelViewModel : BaseViewModel
         get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
                 field = value;
                 OnPropertyChanged();
@@ -363,7 +432,7 @@ internal class LeftPanelViewModel : BaseViewModel
         get;
         set
         {
-            if ( field != value )
+            if (field != value)
             {
                 field = value;
                 OnPropertyChanged();
@@ -374,13 +443,13 @@ internal class LeftPanelViewModel : BaseViewModel
     public int IndexToShow
     {
         get;
-        set => SetProperty( ref field, value );
+        set => SetProperty(ref field, value);
     }
 
     public string PlaceAtIndexDisplay
     {
         get;
-        set => SetProperty( ref field, value );
+        set => SetProperty(ref field, value);
     } = string.Empty;
 
     public ObservableCollection<string> Operators { get; } = [">", "<", "==", "!="];
@@ -390,7 +459,7 @@ internal class LeftPanelViewModel : BaseViewModel
         if (
             SelectedObject1 == null
             || SelectedObject2 == null
-            || string.IsNullOrEmpty( SelectedOperator )
+            || string.IsNullOrEmpty(SelectedOperator)
         )
         {
             return;
@@ -398,8 +467,8 @@ internal class LeftPanelViewModel : BaseViewModel
 
         OperatorResult = SelectedOperator switch
         {
-            "==" => ( SelectedObject1 == SelectedObject2 ).ToString(),
-            "!=" => ( SelectedObject1 != SelectedObject2 ).ToString(),
+            "==" => (SelectedObject1 == SelectedObject2).ToString(),
+            "!=" => (SelectedObject1 != SelectedObject2).ToString(),
             ">" => $"1-й має більший рейтинг: {SelectedObject1 > SelectedObject2}",
             "<" => $"1-й має менший рейтинг: {SelectedObject1 < SelectedObject2}",
             _ => "Невідома операція",
@@ -410,27 +479,27 @@ internal class LeftPanelViewModel : BaseViewModel
     {
         try
         {
-            if ( IndexToShow < 0 || IndexToShow >= _store.PlaceManager.GetAll().Count() )
+            if (IndexToShow < 0 || IndexToShow >= _store.PlaceManager.GetAll().Count())
             {
                 PlaceAtIndexDisplay = $"Індекс [{IndexToShow}] не в межах списку";
                 return;
             }
 
             Place place = _store.PlaceManager[IndexToShow];
-            if ( place != null )
+            if (place != null)
             {
                 StringBuilder messageBuilder = new();
                 messageBuilder.Append(
                     $" [{IndexToShow}] | {place.Name} , {place.Country}: {place.Description} "
                 );
-                if ( place.Date.HasValue )
+                if (place.Date.HasValue)
                 {
-                    messageBuilder.Append( $" @ {place.Date.Value:dd/MM/yyyy} " );
+                    messageBuilder.Append($" @ {place.Date.Value:dd/MM/yyyy} ");
                 }
 
-                if ( place.Rating.HasValue )
+                if (place.Rating.HasValue)
                 {
-                    messageBuilder.Append( $" | {place.Rating.Value}★" );
+                    messageBuilder.Append($" | {place.Rating.Value}★");
                 }
 
                 PlaceAtIndexDisplay = messageBuilder.ToString().Trim();
@@ -440,9 +509,15 @@ internal class LeftPanelViewModel : BaseViewModel
                 PlaceAtIndexDisplay = $"Індекс[{IndexToShow}] = null";
             }
         }
-        catch ( ArgumentOutOfRangeException ex )
+        catch (ArgumentOutOfRangeException ex)
         {
             PlaceAtIndexDisplay = $"Помилка: {ex.Message}";
         }
+    }
+    public override void Dispose()
+    {
+        _store.Places.CollectionChanged -= OnPlacesChanged;
+
+        base.Dispose();
     }
 }

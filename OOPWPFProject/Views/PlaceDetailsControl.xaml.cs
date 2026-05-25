@@ -7,5 +7,5 @@ namespace OOPWPFProject.Views;
 /// </summary>
 public partial class PlaceDetailsControl : UserControl
 {
-    public PlaceDetailsControl() => InitializeComponent();
+	public PlaceDetailsControl() => InitializeComponent();
 }
